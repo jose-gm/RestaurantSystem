@@ -1,0 +1,59 @@
+﻿<!doctype html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"] - Monografico</title>
+    <!-- CoreUI CSS -->
+    <environment include="Development">
+        <link href="~/lib/coreui-master/dist/css/coreui.min.css" rel="stylesheet" />
+        <link href="~/lib/coreui-icons-master/css/free.min.css" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link rel="stylesheet" href="https://unpkg.com/@@coreui/coreui/dist/css/coreui.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/@@coreui/icons/css/coreui-icons.min.css">
+    </environment>
+
+    @RenderSection("link",false)
+</head>
+<body class="app header-fixed sidebar-show sidebar-fixed">
+    <!-- Header -->
+    <partial name="~/Views/Admin/Partial/_Header.cshtml" />
+
+    <div class="app-body">
+        <!-- SideBar -->
+        <partial name="~/Views/Admin/Partial/_SidebarNav.cshtml" />
+
+        <main class="main">
+            <!-- Breadcrumb -->
+            <partial name="~/Views/Admin/Partial/_Breadcrumb.cshtml" />
+
+            <!-- Main content here -->
+            <div class="container-fluid">
+                <div class="animated fadeIn">
+                    @RenderBody()
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Footer -->
+    <partial name="~/Views/Admin/Partial/_Footer.cshtml" />
+
+    <!-- jQuery first, then Popper.js, Bootstrap, then CoreUI  -->
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/popper.js/popper.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/lib/coreui-master/dist/js/coreui.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/@@coreui/coreui/dist/js/coreui.min.js"></script>
+    </environment>
+
+    @RenderSection("script", false);
+</body>
+</html>
