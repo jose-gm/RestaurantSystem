@@ -10,8 +10,8 @@ using Monografico.Data;
 namespace Monografico.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20191115042826_MigracionInicial")]
-    partial class MigracionInicial
+    [Migration("20191118051047_Inicial")]
+    partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
