@@ -8,5 +8,6 @@ namespace Monografico.Models
 {
     public class Usuario : IdentityUser
     {
+
     }
 }
