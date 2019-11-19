@@ -4,57 +4,53 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Monografico.Models;
 
 namespace Monografico.Controllers
 {
-    public class InventarioController : Controller
+    public class UsuarioController : Controller
     {
-        // GET: Inventario
+        // GET: Usuario
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: Inventario/Details/5
+        // GET: Usuario/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: Inventario/Create
+        // GET: Usuario/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Inventario/Create
+        // POST: Usuario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Inventarios inventario)
+        public ActionResult Create(IFormCollection collection)
         {
             try
             {
                 // TODO: Add insert logic here
-                if (ModelState.IsValid)
-                {
-                    AdminController.inventarios.Add(inventario);
-                }
-                return LocalRedirect("~/Admin/Inventario");
+
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return LocalRedirect("~/Admin/Inventario");
+                return View();
             }
         }
 
-        // GET: Inventario/Edit/5
+        // GET: Usuario/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: Inventario/Edit/5
+        // POST: Usuario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -71,13 +67,13 @@ namespace Monografico.Controllers
             }
         }
 
-        // GET: Inventario/Delete/5
+        // GET: Usuario/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: Inventario/Delete/5
+        // POST: Usuario/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
@@ -95,4 +91,3 @@ namespace Monografico.Controllers
         }
     }
 }
-
