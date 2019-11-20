@@ -1,0 +1,95 @@
+﻿@model Monografico.Models.Inventarios
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form id="form-editar" method="post" asp-antiforgery="false" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label hidden asp-for="Id" class="control-label"></label>
+                <input hidden id="IdInput" asp-for="Id" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label hidden asp-for="FechaEntrada" class="control-label"></label>
+                <input hidden id="FechaEntradaInput" asp-for="FechaEntrada" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input id="DescripcionInput" asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cantidad" class="control-label"></label>
+                <input id="CantidadInput" asp-for="Cantidad" class="form-control" />
+                <span asp-validation-for="Cantidad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Precio" class="control-label"></label>
+                <input id="PrecioInput" asp-for="Precio" class="form-control" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input id="EsContabilizableInput" class="form-check-input" asp-for="EsContabilizable" /> @Html.DisplayNameFor(model => model.EsContabilizable)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Minimo" class="control-label"></label>
+                <input id="MinimoInput" asp-for="Minimo" class="form-control" />
+                <span asp-validation-for="Minimo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Unidad" class="control-label"></label>
+                <input id="UnidadInput" asp-for="Unidad" class="form-control" />
+                <span asp-validation-for="Unidad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <input type="hidden" id="RequestVerificationToken"
+                   name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+        </form>
+    </div>
+</div>
+
+<script>
+    var formulario = document.getElementById("form-editar");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (formulario.checkValidity()) {
+            var model = {
+                "Id": document.getElementById("IdInput").value,
+                "Descripcion": document.getElementById("DescripcionInput").value,
+                "Cantidad": document.getElementById("CantidadInput").value,
+                "Precio": document.getElementById("PrecioInput").value,
+                "EsContabilizable": document.getElementById("EsContabilizableInput").value,
+                "FechaEntrada" : document.getElementById("FechaEntradaInput").value,
+                "Minimo": document.getElementById("MinimoInput").value,
+                "Unidad": document.getElementById("UnidadInput").value
+            };
+            
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Edit","Inventario")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                success: function (data) {
+                    alert(model.Descripcion + " " + model.EsContabilizable + " "
+                        + model.Unidad + " " + model.FechaEntrada + " " + model.Id);
+                    $('#inventario-datatable').DataTable().ajax.reload();
+                }
+            });
+        }
+    });
+</script>

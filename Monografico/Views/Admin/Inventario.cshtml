@@ -1,87 +1,182 @@
 ﻿@model IEnumerable<Monografico.Models.Inventarios>
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Inventario";
 }
 
-<h1>Details</h1>
-
+@section link {
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+}
 
 <div class="card">
     <div class="card-body">
-
-        <h1>Index</h1>
-
-        <p>
-            <a asp-action="Create">Create New</a>
-        </p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Id)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Descripcion)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Cantidad)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Precio)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.EsContabilizable)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.FechaEntrada)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Minimo)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Unidad)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Descripcion)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Cantidad)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Precio)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EsContabilizable)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FechaEntrada)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Minimo)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Unidad)
-                        </td>
-                        <td>
-                            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <a asp-controller="Inventario" asp-action="List">Link</a>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#CrearModal">
+                    Agregar Inventario
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="inventario-datatable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Id)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Descripcion)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Cantidad)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Precio)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.EsContabilizable)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.FechaEntrada)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Minimo)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Unidad)
+                                </th>
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
+
+<!-- Modal Crear-->
+<div class="modal fade" id="CrearModal" tabindex="-1" role="dialog" aria-labelledby="CrearModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Fornulario de @ViewData["Title"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @await Html.PartialAsync("~/Views/Admin/PartialViews/Inventario/_FormularioInventario.cshtml", new Monografico.Models.Inventarios())
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar-->
+<div class="modal fade" id="editarModal" tabindex="-1" role="dialog" aria-labelledby="EditarModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditarModalLabel">Editar @ViewData["Title"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="editarModal-body" class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmacion de eliminacion-->
+<div class="modal fade" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="EliminarModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div id="editarModal-body" class="modal-body">
+                <h4>Seguro que desea borrar el elemento</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button id="botonEliminar" type="button" class="btn btn-danger">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+        
+    <script>
+        $(document).ready(() => {
+            $('#inventario-datatable').DataTable({
+                ajax: {
+                    url: "@Url.Action("List","Inventario")",
+                    dataSrc: ''
+                },
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }
+                ],
+                columns: [
+                    { data: 'id' },
+                    { data: 'descripcion' },
+                    { data: 'cantidad' },
+                    { data: 'precio' },
+                    { data: 'esContabilizable' },
+                    { data: 'fechaEntrada' },
+                    { data: 'minimo' },
+                    { data: 'unidad' },
+                    {
+                        data: 'id',
+                        render: function (data, type, row, meta) {
+                            return '<input onclick="editarModal(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                            '<input onclick="borrarModal(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                        }
+                    }
+                ]
+            });
+        });
+
+        function editarModal(id) {
+            var url = "@Url.Action("Edit","Inventario")";
+            $.ajax({
+                url: url,
+                data: { id: id },
+                error: function () { alert("no sirvio"); },
+                success: function(data) {
+                    $('#editarModal-body').html(data);
+                    $('#editarModal').modal('show');
+                }
+            });
+        }
+
+        function borrarModal(id) {
+            $('#borrarModal').modal('show');
+        }
+
+        document.getElementById('botonEliminar').addEventListener('click', () => {
+
+        });
+    </script>
+}
