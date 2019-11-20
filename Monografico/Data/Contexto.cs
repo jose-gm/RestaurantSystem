@@ -22,5 +22,7 @@ namespace Monografico.Data
         }
 
         public DbSet<Monografico.Models.Productos> Productos { get; set; }
+
+        public DbSet<Monografico.Models.ProductosCategorias> ProductosCategorias { get; set; }
     }
 }
