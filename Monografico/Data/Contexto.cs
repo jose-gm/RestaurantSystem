@@ -21,6 +21,5 @@ namespace Monografico.Data
             base.OnModelCreating(builder);
         }
 
-        public DbSet<Monografico.Models.Productos> Productos { get; set; }
     }
 }
