@@ -76,6 +76,7 @@ namespace Monografico
                 options.SlidingExpiration = true;
             });
 
+            services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

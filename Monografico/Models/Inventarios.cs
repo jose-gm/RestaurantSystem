@@ -9,12 +9,11 @@ using System.Threading.Tasks;
 
 namespace Monografico.Models
 {
-    [BindProperties]
+    [BindProperties(SupportsGet = true)]
     public class Inventarios
     {
         [Key]
-        [BindNever]
-        public int? Id { get; set; }
+        public int Id { get; set; }
         [StringLength(100)]
         [Required]
         public string? Descripcion { get; set; }
