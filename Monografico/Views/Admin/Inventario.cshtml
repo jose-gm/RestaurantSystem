@@ -6,15 +6,15 @@
 
 @section link {
     <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
 }
 
 <div class="card">
     <div class="card-body">
         <div class="row mb-2">
             <div class="col-md-3">
-                <a asp-controller="Inventario" asp-action="List">Link</a>
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#CrearModal">
+                <button type="button" class="btn btn-primary" onclick="abrirModalAgregar()">
                     Agregar Inventario
                 </button>
             </div>
@@ -63,7 +63,7 @@
 
 
 <!-- Modal Crear-->
-<div class="modal fade" id="CrearModal" tabindex="-1" role="dialog" aria-labelledby="CrearModalLabel" aria-hidden="true">
+<div class="modal fade" id="crearModal" tabindex="-1" role="dialog" aria-labelledby="CrearModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -74,10 +74,6 @@
             </div>
             <div class="modal-body">
                 @await Html.PartialAsync("~/Views/Admin/PartialViews/Inventario/_FormularioInventario.cshtml", new Monografico.Models.Inventarios())
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
@@ -95,25 +91,20 @@
             </div>
             <div id="editarModal-body" class="modal-body">
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
         </div>
     </div>
 </div>
 
 <!-- Modal de confirmacion de eliminacion-->
 <div class="modal fade" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="EliminarModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-
             <div id="editarModal-body" class="modal-body">
                 <h4>Seguro que desea borrar el elemento</h4>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                <button id="botonEliminar" type="button" class="btn btn-danger">Eliminar</button>
+                <button id="botonEliminar" type="button" class="btn btn-danger" onclick="eliminar()">Eliminar</button>
             </div>
         </div>
     </div>
@@ -124,9 +115,11 @@
 
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
         
     <script>
-        $(document).ready(() => {
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {         
             $('#inventario-datatable').DataTable({
                 ajax: {
                     url: "@Url.Action("List","Inventario")",
@@ -150,33 +143,56 @@
                     {
                         data: 'id',
                         render: function (data, type, row, meta) {
-                            return '<input onclick="editarModal(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
-                            '<input onclick="borrarModal(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                            return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                            '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
                         }
                     }
                 ]
             });
         });
 
-        function editarModal(id) {
-            var url = "@Url.Action("Edit","Inventario")";
-            $.ajax({
-                url: url,
-                data: { id: id },
-                error: function () { alert("no sirvio"); },
-                success: function(data) {
-                    $('#editarModal-body').html(data);
-                    $('#editarModal').modal('show');
-                }
+        //Abre el modal formulario para agregar un nuevo inventario
+        function abrirModalAgregar() {
+            $('#crearModal').modal({
+                keyboard: false,
+                backdrop: 'static'
             });
         }
 
-        function borrarModal(id) {
-            $('#borrarModal').modal('show');
+        //Abre modal con los campos del inventario a editar
+        function abrirModalEditar(id) {
+            //Recive el partial view atravez de ajax y lo inserta dentro del elemento #editarModal-body
+            $('#editarModal-body').load("@Url.Action("Edit","Inventario")" + "/" + id, () => {
+                $('#editarModal').modal({
+                    keyboard: false,
+                    backdrop: 'static'
+                });
+            });
         }
 
-        document.getElementById('botonEliminar').addEventListener('click', () => {
+        //Abre el modal de mensaje de confirmacion para eliminar un inventario
+        var temp;
+        function abrirModalBorrar(id) {
+            temp = id;
+            $('#borrarModal').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+        }
 
-        });
+        //Elimina un inventario
+        function eliminar() {
+            var url = "@Url.Action("Delete","Inventario")";
+            $.ajax({
+                url: url,
+                data: { id: temp },
+                error: function (response) { alert(response); },
+                success: function () {
+                    $('#inventario-datatable').DataTable().ajax.reload();
+                    $('#borrarModal').modal('hide');
+                    toastr.success("Eliminado");
+                }
+            });
+        }
     </script>
 }

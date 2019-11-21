@@ -74,7 +74,7 @@ namespace Monografico.Controllers
         // POST: Inventario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Inventarios inventario)
+        public ActionResult Create([FromBody]Inventarios inventario)
         {
             try
             {
@@ -83,11 +83,11 @@ namespace Monografico.Controllers
                 {
                     inventarios.Add(inventario);
                 }
-                return LocalRedirect("~/Admin/Inventario");
+                return Ok();
             }
             catch
             {
-                return LocalRedirect("~/Admin/Inventario");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -120,18 +120,20 @@ namespace Monografico.Controllers
         // GET: Inventario/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var entity = inventarios.Find(x => x.Id == id);
+            inventarios.Remove(entity);
+            return Ok();
         }
 
         // POST: Inventario/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, bool notData)
         {
             try
             {
                 // TODO: Add delete logic here
-
+                
                 return RedirectToAction(nameof(Index));
             }
             catch
