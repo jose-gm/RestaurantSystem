@@ -5,7 +5,31 @@
             <li class="nav-title">Nav Title</li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <i class="nav-icon cui-speedometer"></i> Empleados
+                    <i class="nav-icon cui-speedometer"></i> Dashboard
+                    <span class="badge badge-primary">NEW</span>
+                </a>
+            </li>
+            <li class="nav-item nav-dropdown">
+                <a class="nav-link nav-dropdown-toggle" href="#">
+                    <i class="nav-icon cui-puzzle"></i> Empleado
+                </a>
+                <ul class="nav-dropdown-items">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="nav-icon cui-puzzle"></i> Roles
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="nav-icon cui-puzzle"></i> Empleados
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Admin" asp-action="Inventario">
+                    <i class="nav-icon cui-speedometer"></i> Inventario
+                    <span class="badge badge-primary">NEW</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -19,28 +43,30 @@
                     <i class="nav-icon cui-speedometer"></i> Menu
                     <span class="badge badge-primary">NEW</span>
                 </a>
-            </li><li class="nav-item">
-                <a class="nav-link" asp-controller="Admin" asp-action="Inventario">
-                    <i class="nav-icon cui-speedometer"></i> Inventario
-                    <span class="badge badge-primary">NEW</span>
-                </a>
             </li>
+
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#">
-                    <i class="nav-icon cui-puzzle"></i> Inventario
+                    <i class="nav-icon cui-puzzle"></i> Productor
                 </a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="nav-icon cui-puzzle"></i> Nav dropdown item
+                        <a class="nav-link" asp-controller="Admin" asp-action="Producto">
+                            <i class="nav-icon cui-puzzle"></i> Productos
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">
-                            <i class="nav-icon cui-puzzle"></i> Nav dropdown item
+                            <i class="nav-icon cui-puzzle"></i> Categoria de productos
                         </a>
                     </li>
                 </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="nav-icon cui-speedometer"></i> Calendar
+                    <span class="badge badge-primary">NEW</span>
+                </a>
             </li>
         </ul>
     </nav>
