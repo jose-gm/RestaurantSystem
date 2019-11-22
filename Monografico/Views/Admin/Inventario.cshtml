@@ -14,7 +14,7 @@
         <div class="row mb-2">
             <div class="col-md-3">
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" onclick="abrirModalAgregar()">
+                <button type="button" class="btn btn-primary" onclick="abrirModal(-1);">
                     Agregar Inventario
                 </button>
             </div>
@@ -61,35 +61,17 @@
     </div>
 </div>
 
-
-<!-- Modal Crear-->
-<div class="modal fade" id="crearModal" tabindex="-1" role="dialog" aria-labelledby="CrearModalLabel" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Fornulario de @ViewData["Title"]</h5>
+                <h5 class="modal-title" id="myModalLabel">Fornulario de @ViewData["Title"]</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                @await Html.PartialAsync("~/Views/Admin/PartialViews/Inventario/_FormularioInventario.cshtml", new Monografico.Models.Inventarios())
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Editar-->
-<div class="modal fade" id="editarModal" tabindex="-1" role="dialog" aria-labelledby="EditarModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="EditarModalLabel">Editar @ViewData["Title"]</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div id="editarModal-body" class="modal-body">
+            <div id="modalBody" class="modal-body">
             </div>
         </div>
     </div>
@@ -111,15 +93,14 @@
 </div>
 
 @section script {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
+   
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/toastr.js/toastr.min.js"></script>
-        
+
     <script>
         //Carga la tabla cuando el documento html esta cargado
-        $(document).ready(() => {         
+        $(document).ready(() => {
             $('#inventario-datatable').DataTable({
                 ajax: {
                     url: "@Url.Action("List","Inventario")",
@@ -143,7 +124,7 @@
                     {
                         data: 'id',
                         render: function (data, type, row, meta) {
-                            return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                            return '<input onclick="abrirModal(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
                             '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
                         }
                     }
@@ -151,19 +132,31 @@
             });
         });
 
-        //Abre el modal formulario para agregar un nuevo inventario
-        function abrirModalAgregar() {
-            $('#crearModal').modal({
-                keyboard: false,
-                backdrop: 'static'
+        //Abre el modal con con un formulario dependiendo del valor del parametro:
+        //-1: agrega el formulario de crear al modal
+        //>0: agrega el formulario de editar al modal
+        function abrirModal(id) {           
+            if (id == -1) 
+                agregarCrear();
+            else 
+                agregarEditar(id);           
+        }
+
+        //Agrega el formulario de inventario al body del modal
+        function agregarCrear() {
+            $('#modalBody').load("@Url.Action("Create","Inventario")", () => {
+                $('#myModal').modal({
+                    keyboard: false,
+                    backdrop: 'static'
+                });
             });
         }
 
-        //Abre modal con los campos del inventario a editar
-        function abrirModalEditar(id) {
+        //Agrega el formulario de editar al body del modal
+        function agregarEditar(id) {
             //Recive el partial view atravez de ajax y lo inserta dentro del elemento #editarModal-body
-            $('#editarModal-body').load("@Url.Action("Edit","Inventario")" + "/" + id, () => {
-                $('#editarModal').modal({
+            $('#modalBody').load("@Url.Action("Edit","Inventario")" + "/" + id, () => {
+                $('#myModal').modal({
                     keyboard: false,
                     backdrop: 'static'
                 });

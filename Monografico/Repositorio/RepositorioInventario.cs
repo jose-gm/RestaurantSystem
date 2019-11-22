@@ -3,13 +3,14 @@ using Monografico.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Monografico.Repositorio
 {
-    public class RepositorioInventario : RepositorioBase<Inventarios>
+    public class RepositorioInventario : RepositorioBase2
     {
-        public RepositorioInventario(Contexto contexto) : base(contexto)
+        public RepositorioInventario(Contexto contexto) : base()
         {
         }
 
@@ -38,14 +39,19 @@ namespace Monografico.Repositorio
             return base.Guardar(entity);
         }
 
-        public override bool Modificar(Inventarios entity)
+        public override bool Editar(Inventarios entity)
         {
-            return base.Modificar(entity);
+            return base.Editar(entity);
         }
 
         public override string ToString()
         {
             return base.ToString();
+        }
+
+        public override List<Inventarios> GetList(Expression<Func<Inventarios, bool>> expression)
+        {
+            return base.GetList(expression);
         }
     }
 }
