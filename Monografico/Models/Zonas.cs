@@ -8,6 +8,8 @@ namespace Monografico.Models
 {
     public class Zonas
     {
-        
+        public int Id { get; set; }
+        public string Descripcion { get; set; }
+
     }
 }

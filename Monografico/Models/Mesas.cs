@@ -8,6 +8,9 @@ namespace Monografico.Models
 {
     public class Mesas
     {
-        
+        public int Id { get; set; }
+        public int ZonaId { get; set; }
+        public int Asientos { get; set; }
+
     }
 }
