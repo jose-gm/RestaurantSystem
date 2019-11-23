@@ -45,7 +45,7 @@ namespace Monografico.Repositorio
         /// </summary>
         /// <param name="entity">Una instancia de la entidad a guardar</param>
         /// <returns>Retorna True si Modifico o Falso si falló </returns>
-        public virtual bool Modificar(T entity)
+        public virtual bool Editar(T entity)
         {
             bool paso = false;
             try

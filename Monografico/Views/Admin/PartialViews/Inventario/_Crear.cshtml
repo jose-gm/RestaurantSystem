@@ -10,48 +10,40 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form id="form-editar" method="post" asp-antiforgery="false" novalidate>
+        <form id="form-crear" method="post" asp-antiforgery="false" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label hidden asp-for="Id" class="control-label"></label>
-                <input hidden id="IdInput" asp-for="Id" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label hidden asp-for="FechaEntrada" class="control-label"></label>
-                <input hidden id="FechaEntradaInput" asp-for="FechaEntrada" class="form-control" />
-            </div>
-            <div class="form-group">
                 <label asp-for="Descripcion" class="control-label"></label>
-                <input id="DescripcionInput" asp-for="Descripcion" class="form-control" />
+                <input asp-for="Descripcion" class="form-control" required />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Cantidad" class="control-label"></label>
-                <input id="CantidadInput" asp-for="Cantidad" class="form-control" />
+                <input asp-for="Cantidad" class="form-control" />
                 <span asp-validation-for="Cantidad" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Precio" class="control-label"></label>
-                <input id="PrecioInput" asp-for="Precio" class="form-control" />
+                <input asp-for="Precio" class="form-control" />
                 <span asp-validation-for="Precio" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input id="EsContabilizableInput" class="form-check-input" asp-for="EsContabilizable" /> @Html.DisplayNameFor(model => model.EsContabilizable)
+                    <input class="form-check-input" asp-for="EsContabilizable" /> @Html.DisplayNameFor(model => model.EsContabilizable)
                 </label>
             </div>
             <div class="form-group">
                 <label asp-for="Minimo" class="control-label"></label>
-                <input id="MinimoInput" asp-for="Minimo" class="form-control" />
+                <input asp-for="Minimo" class="form-control" />
                 <span asp-validation-for="Minimo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Unidad" class="control-label"></label>
-                <input id="UnidadInput" asp-for="Unidad" class="form-control" />
+                <input asp-for="Unidad" class="form-control" />
                 <span asp-validation-for="Unidad" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
             <input type="hidden" id="RequestVerificationToken"
                    name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
@@ -59,38 +51,41 @@
     </div>
 </div>
 
+
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
-    var formulario = document.getElementById("form-editar");
+    var formulario = document.getElementById("form-crear");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
-
+        alert(formulario.checkValidity());
         if (formulario.checkValidity()) {
             var model = {
-                "Id": document.getElementById("IdInput").value,
-                "Descripcion": document.getElementById("DescripcionInput").value,
-                "Cantidad": document.getElementById("CantidadInput").value,
-                "Precio": document.getElementById("PrecioInput").value,
-                "EsContabilizable": document.getElementById("EsContabilizableInput").checked,
-                "FechaEntrada" : document.getElementById("FechaEntradaInput").value,
-                "Minimo": document.getElementById("MinimoInput").value,
-                "Unidad": document.getElementById("UnidadInput").value
+                "Descripcion": document.getElementById("Descripcion").value,
+                "Cantidad": document.getElementById("Cantidad").value,
+                "Precio": document.getElementById("Precio").value,
+                "EsContabilizable": document.getElementById("EsContabilizable").checked,
+                "FechaEntrada": new Date().toJSON().slice(0,10),
+                "Minimo": document.getElementById("Minimo").value,
+                "Unidad": document.getElementById("Unidad").value
             };
-            
+
+            //alert(model.Descripcion + model.Cantidad + model.Precio + model.FechaEntrada + model.EsContabilizable);
+
             $.ajax({
                 method: "POST",
-                url: "@Url.Action("Edit","Inventario")",
+                url: "@Url.Action("Create","Inventario")",
                 headers: {
                     "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
                     "Content-type": "application/json"
                 },
                 data: JSON.stringify(model),
                 error: function () {
-                    toastr.error("Error al editar el inventario");
+                    toastr.error("Error al guardar");
                 },
-                success: function (data) {
+                success: function () {
                     $('#inventario-datatable').DataTable().ajax.reload();
                     $('#myModal').modal('hide');
-                    toastr.success("Se a editado con exito");
+                    toastr.success("Guardado con exito");
                 }
             });
         }

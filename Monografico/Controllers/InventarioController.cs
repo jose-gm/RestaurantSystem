@@ -4,53 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Monografico.Data;
 using Monografico.Models;
+using Monografico.Repositorio;
 
 namespace Monografico.Controllers
 {
     public class InventarioController : Controller
     {
-        public static List<Inventarios> inventarios;
-
-        public InventarioController()
+        RepositorioInventario repo;
+        public InventarioController(Contexto contexto)
         {
-            if (inventarios == null)
-            {
-                inventarios = new List<Inventarios>()
-                {
-                    new Inventarios
-                    {
-                        Id = 1,
-                        Descripcion = "Salsa rica",
-                        Cantidad = 3,
-                        FechaEntrada = DateTime.Now.Date,
-                        EsContabilizable = true,
-                        Precio = 20,
-                        Minimo = 5,
-                        Unidad = "ml"
-                    },new Inventarios
-                    {
-                        Id = 2,
-                        Descripcion = "Queso jeo",
-                        Cantidad = 3,
-                        FechaEntrada = DateTime.Now.Date,
-                        EsContabilizable = true,
-                        Precio = 10,
-                        Minimo = 2,
-                        Unidad = "lbs"
-                    },new Inventarios
-                    {
-                        Id = 3,
-                        Descripcion = "Pan rica",
-                        Cantidad = 7,
-                        FechaEntrada = DateTime.Now.Date,
-                        EsContabilizable = true,
-                        Precio = 30,
-                        Minimo = 2,
-                        Unidad = "slice"
-                    }
-                };
-            }
+            repo = new RepositorioInventario(contexto);
         }
 
         // GET: Inventario
@@ -68,70 +33,68 @@ namespace Monografico.Controllers
         // GET: Inventario/Create
         public ActionResult Create()
         {
-            return View();
+            return PartialView("~/Views/Admin/PartialViews/Inventario/_Crear.cshtml", new Inventarios());
         }
 
         // POST: Inventario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Inventarios inventario)
+        public ActionResult Create([FromBody]Inventarios inventario)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    inventarios.Add(inventario);
+                    repo.Guardar(inventario);
                 }
-                return LocalRedirect("~/Admin/Inventario");
+                return Ok();
             }
             catch
             {
-                return LocalRedirect("~/Admin/Inventario");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
         // GET: Inventario/Edit/5
         public ActionResult Edit(int id)
         {  
-            return PartialView("~/Views/Admin/PartialViews/Inventario/_Editar.cshtml",inventarios[id-1]);
+            return PartialView("~/Views/Admin/PartialViews/Inventario/_Editar.cshtml",repo.Buscar(id));
         }
 
         // POST: Inventario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult Edit([FromBody]Inventarios inventario)
+        public IActionResult Edit([FromBody]Inventarios inventario)
         {
             try
             {
                 // TODO: Add update logic here
-                var index = inventarios.Find(x => x.Id == inventario.Id).Id;
-                inventarios[index - 1] = inventario;
-                return Json(inventarios);
-                //return RedirectToAction(nameof(Index));
+                repo.Editar(inventario);
+                return Ok();
             }
             catch
             {
-                return Json(inventarios);
-                //return View("~/Views/Admin/Inventario.cshtml");
+                return BadRequest();
             }
         }
 
         // GET: Inventario/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            repo.Eliminar(id);
+            return Ok();
         }
 
         // POST: Inventario/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, bool notData)
         {
             try
             {
                 // TODO: Add delete logic here
-
+                
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -143,7 +106,7 @@ namespace Monografico.Controllers
         //GET:
         public JsonResult List()
         {
-            return Json(inventarios);
+            return Json(repo.GetList(x => true));
         }
     }
 }
