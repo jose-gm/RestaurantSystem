@@ -37,7 +37,7 @@ namespace Monografico
 
             services.AddDbContext<Contexto>(options => options.UseSqlServer(Configuration.GetConnectionString("ConStr")));
 
-            services.AddIdentity<Usuario, IdentityRole>()
+            services.AddIdentity<Empleados, IdentityRole>()
                 .AddEntityFrameworkStores<Contexto>()
                 .AddDefaultTokenProviders();
 

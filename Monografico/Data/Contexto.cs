@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Monografico.Data
 {
-    public class Contexto : IdentityDbContext<Usuario>
+    public class Contexto : IdentityDbContext<Empleados>
     {
         public Contexto(DbContextOptions<Contexto> options) : base(options)
         {

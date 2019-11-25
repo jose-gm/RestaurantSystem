@@ -1,0 +1,169 @@
+﻿@model IEnumerable<Monografico.ViewModels.RolesViewModel>
+
+@{
+    ViewData["Title"] = "Empleado";
+    ViewData["Controller"] = "Empleado";
+}
+
+@section link {
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" onclick="abrirModal(-1);">
+                    Añadir Rol
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="rol-datatable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Id)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Nombre)
+                                </th>
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Fornulario de @ViewData["Title"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modalBody" class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmacion de eliminacion-->
+<div class="modal fade" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="EliminarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="editarModal-body" class="modal-body">
+                <h4>Seguro que desea borrar el elemento</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button id="botonEliminar" type="button" class="btn btn-danger" onclick="eliminar()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script {
+
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+
+    <script>
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {
+            $('#rol-datatable').DataTable({
+                ajax: {
+                    url: "@Url.Action("List", "Rol")",
+                    dataSrc: ''
+                },
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }
+                ],
+                columns: [
+                    { data: 'id' },
+                    { data: 'nombre' },
+                    {
+                        data: 'id',
+                        render: function (data, type, row, meta) {
+                            return '<input onclick="abrirModal(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                            '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                        }
+                    }
+                ]
+            });
+        });
+
+        //Abre el modal con con un formulario dependiendo del valor del parametro:
+        //-1: agrega el formulario de crear al modal
+        //>0: agrega el formulario de editar al modal
+        function abrirModal(id) {
+            if (id == -1)
+                agregarCrear();
+            else
+                agregarEditar(id);
+        }
+
+        //Agrega el formulario de inventario al body del modal
+        function agregarCrear() {
+            $('#modalBody').load("@Url.Action("Create","Rol")", () => {
+                $('#myModal').modal({
+                    keyboard: false,
+                    backdrop: 'static'
+                });
+            });
+        }
+
+        //Agrega el formulario de editar al body del modal
+        function agregarEditar(id) {
+            //Recive el partial view atravez de ajax y lo inserta dentro del elemento #editarModal-body
+            $('#modalBody').load("@Url.Action("Edit","Rol")" + "/" + id, () => {
+                $('#myModal').modal({
+                    keyboard: false,
+                    backdrop: 'static'
+                });
+            });
+        }
+
+        //Abre el modal de mensaje de confirmacion para eliminar un inventario
+        var temp;
+        function abrirModalBorrar(id) {
+            temp = id;
+            $('#borrarModal').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+        }
+
+        //Elimina un inventario
+        function eliminar() {
+            var url = "@Url.Action("Delete","Rol")";
+            $.ajax({
+                url: url,
+                data: { id: temp },
+                error: function (response) { alert(response); },
+                success: function () {
+                    $('#rol-datatable').DataTable().ajax.reload();
+                    $('#borrarModal').modal('hide');
+                    toastr.success("Eliminado");
+                }
+            });
+        }
+    </script>
+}
+

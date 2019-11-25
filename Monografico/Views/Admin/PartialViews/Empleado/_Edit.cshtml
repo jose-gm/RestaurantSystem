@@ -1,0 +1,111 @@
+﻿@model Monografico.ViewModels.EmpleadosViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="form-editar" method="post" asp-antiforgery="false" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label hidden asp-for="Id" class="control-label"></label>
+                <input hidden asp-for="Id" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label hidden asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Apellido" class="control-label"></label>
+                <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="form-check form-check-inline">
+                    <input asp-for="Sexo" class="form-check-input" type="radio" value="false">
+                    <label asp-for="Sexo" class="form-check-label">Hombre</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input asp-for="Sexo" class="form-check-input" type="radio" value="true">
+                    <label asp-for="Sexo" class="form-check-label">Mujer</label>
+                </div>
+                <span asp-validation-for="Sexo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cedula" class="control-label"></label>
+                <input asp-for="Cedula" class="form-control" />
+                <span asp-validation-for="Cedula" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Direccion" class="control-label"></label>
+                <input asp-for="Direccion" class="form-control" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NombreUsuario" class="control-label"></label>
+                <input asp-for="NombreUsuario" class="form-control" />
+                <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Clave" class="control-label"></label>
+                <input asp-for="Clave" class="form-control" />
+                <span asp-validation-for="Clave" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <input type="hidden" id="RequestVerificationToken"
+                   name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+        </form>
+    </div>
+</div>
+
+<script>
+    var formulario = document.getElementById("form-editar");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (formulario.checkValidity()) {
+            var model = {
+                "Id": document.getElementById("Id").value,
+                "Nombre": document.getElementById("Nombre").value,
+                "Apellido": document.getElementById("Apellido").value,
+                "Sexo": document.getElementById("Sexo").value,
+                "Cedula": document.getElementById("Cedula").value,
+                "Direccion" : document.getElementById("Direccion").value,
+                "NombreUsuario": document.getElementById("NombreUsuario").value,
+                "Email": document.getElementById("Email").value,
+                "Clave": document.getElementById("Clave").value
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Edit","Empleado")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                    toastr.error("Error al editar el inventario");
+                },
+                success: function (data) {
+                    $('#empleado-datatable').DataTable().ajax.reload();
+                    $('#myModal').modal('hide');
+                    toastr.success("Se a editado con exito");
+                }
+            });
+        }
+    });
+</script>
+

@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Monografico.ViewModel
+namespace Monografico.ViewModels
 {
-    public class UsuarioViewModel
+    public class EmpleadosViewModel
     {
+        public int Id { get; set; }
         [Required]
         public string NombreUsuario { get; set; }
         [Required]

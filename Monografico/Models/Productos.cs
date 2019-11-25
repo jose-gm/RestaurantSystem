@@ -16,23 +16,5 @@ namespace Monografico.Models
         public string Descripcion { get; set; }
         public Decimal Precio { get; set; }
         public string ImagenURL { get; set; }
-
-        public Productos ()
-        {
-            Id = 0;
-            IdProductosCategorias = 0;
-            Descripcion = string.Empty;
-            Precio = 0;
-            ImagenURL = string.Empty;
-        }
-
-        public Productos (int Id, int IdProductosCategorias, string Descripcion, Decimal Precio, string ImagenUrl)
-        {
-            this.Id = Id;
-            this.IdProductosCategorias = IdProductosCategorias;
-            this.Descripcion = Descripcion;
-            this.Precio = Precio;
-            this.ImagenURL = ImagenURL;
-        }
     }
 }

@@ -4,49 +4,49 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Monografico.Data;
-using Monografico.Models;
 using Monografico.Repositorio;
+using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
-    public class InventarioController : Controller
+    public class RolController : Controller
     {
-        RepositorioInventario repo;
-        public InventarioController(Contexto contexto)
+        RepositorioBaseTest<RolesViewModel> repo;
+
+        public RolController()
         {
-            repo = new RepositorioInventario(contexto);
+            repo = new RepositorioBaseTest<RolesViewModel>();
         }
 
-        // GET: Inventario
+        // GET: Rol
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: Inventario/Details/5
+        // GET: Rol/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: Inventario/Create
+        // GET: Rol/Create
         public ActionResult Create()
         {
-            return PartialView("~/Views/Admin/PartialViews/Inventario/_Create.cshtml", new Inventarios());
+            return PartialView("~/Views/Admin/PartialViews/Rol/_Create.cshtml", new RolesViewModel());
         }
 
-        // POST: Inventario/Create
+        // POST: Rol/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]Inventarios inventario)
+        public ActionResult Create([FromBody]RolesViewModel rol)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    repo.Guardar(inventario);
+                    repo.Guardar(rol);
                 }
                 return Ok();
             }
@@ -56,21 +56,21 @@ namespace Monografico.Controllers
             }
         }
 
-        // GET: Inventario/Edit/5
+        // GET: Rol/Edit/5
         public ActionResult Edit(int id)
-        {  
-            return PartialView("~/Views/Admin/PartialViews/Inventario/_Edit.cshtml",repo.Buscar(id));
+        {
+            return PartialView("~/Views/Admin/PartialViews/Rol/_Edit.cshtml", repo.Buscar(id));
         }
 
-        // POST: Inventario/Edit/5
+        // POST: Rol/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromBody]Inventarios inventario)
+        public ActionResult Edit([FromBody]RolesViewModel rol)
         {
             try
             {
                 // TODO: Add update logic here
-                repo.Editar(inventario);
+                repo.Editar(rol);
                 return Ok();
             }
             catch
@@ -79,7 +79,7 @@ namespace Monografico.Controllers
             }
         }
 
-        // GET: Inventario/Delete/5
+        // GET: Rol/Delete/5
         public ActionResult Delete(int id)
         {
             try
@@ -92,23 +92,22 @@ namespace Monografico.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
         }
 
-        // POST: Inventario/Delete/5
+        // POST: Rol/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, bool notData)
+        public ActionResult Delete(int id, IFormCollection collection)
         {
             try
             {
                 // TODO: Add delete logic here
-                
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return View();
             }
         }
 
@@ -119,4 +118,3 @@ namespace Monografico.Controllers
         }
     }
 }
-

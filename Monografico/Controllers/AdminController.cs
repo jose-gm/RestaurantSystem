@@ -19,5 +19,15 @@ namespace Monografico.Controllers
         {
             return View();
         }
+        
+        public IActionResult Empleado()
+        {
+            return View();
+        }
+        
+        public IActionResult Rol()
+        {
+            return View();
+        }
     }
 }
