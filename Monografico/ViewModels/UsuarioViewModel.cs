@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Monografico.ViewModels
 {
-    public class EmpleadosViewModel
+    public class UsuarioViewModel
     {
         public int Id { get; set; }
         [Required]

@@ -33,13 +33,13 @@ namespace Monografico.Controllers
         // GET: Inventario/Create
         public ActionResult Create()
         {
-            return PartialView("~/Views/Admin/PartialViews/Inventario/_Create.cshtml", new Inventarios());
+            return PartialView("~/Views/Admin/PartialViews/Inventario/_Create.cshtml", new Inventario());
         }
 
         // POST: Inventario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]Inventarios inventario)
+        public ActionResult Create([FromBody]Inventario inventario)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace Monografico.Controllers
         // POST: Inventario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromBody]Inventarios inventario)
+        public IActionResult Edit([FromBody]Inventario inventario)
         {
             try
             {

@@ -9,14 +9,14 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
-    public class EmpleadoController : Controller
+    public class UsuarioController : Controller
     {
 
-        RepositorioBaseTest<EmpleadosViewModel> repo;
+        RepositorioBaseTest<UsuarioViewModel> repo;
 
-        public EmpleadoController()
+        public UsuarioController()
         {
-            repo = new RepositorioBaseTest<EmpleadosViewModel>();
+            repo = new RepositorioBaseTest<UsuarioViewModel>();
         }
 
         // GET: Usuario
@@ -34,20 +34,20 @@ namespace Monografico.Controllers
         // GET: Usuario/Create
         public ActionResult Create()
         {
-            return PartialView("~/Views/Admin/PartialViews/Empleado/_Create.cshtml", new EmpleadosViewModel());
+            return PartialView("~/Views/Admin/PartialViews/Empleado/_Create.cshtml", new UsuarioViewModel());
         }
 
         // POST: Usuario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]EmpleadosViewModel empleado)
+        public ActionResult Create([FromBody]UsuarioViewModel usuario)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    repo.Guardar(empleado);
+                    repo.Guardar(usuario);
                 }
                 return Ok();
             }
@@ -66,12 +66,12 @@ namespace Monografico.Controllers
         // POST: Usuario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([FromBody]EmpleadosViewModel empleado)
+        public ActionResult Edit([FromBody]UsuarioViewModel usuario)
         {
             try
             {
                 // TODO: Add update logic here
-                repo.Editar(empleado);
+                repo.Editar(usuario);
                 return Ok();
             }
             catch
@@ -91,7 +91,7 @@ namespace Monografico.Controllers
             }
             catch
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return NotFound();
             }
         }
 

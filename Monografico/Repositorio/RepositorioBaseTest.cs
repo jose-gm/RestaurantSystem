@@ -16,12 +16,12 @@ namespace Monografico.Repositorio
                 lista = new List<T>();
         }
 
-        public T Buscar(int id)
+        public virtual T Buscar(int id)
         {
             return lista.Find(x => (int)x.GetType().GetProperty("Id").GetValue(x) == id);
         }
 
-        public bool Editar(T entity)
+        public virtual bool Editar(T entity)
         {
             bool flag = false;
             try
@@ -39,7 +39,7 @@ namespace Monografico.Repositorio
             return flag;
         }
 
-        public bool Eliminar(int id)
+        public virtual bool Eliminar(int id)
         {
             bool flag = false;
             try
@@ -56,12 +56,12 @@ namespace Monografico.Repositorio
             return flag;
         }
 
-        public List<T> GetList(System.Linq.Expressions.Expression<Func<T, bool>> expression)
+        public virtual List<T> GetList(System.Linq.Expressions.Expression<Func<T, bool>> expression)
         {
             return lista;
         }
 
-        public bool Guardar(T entity)
+        public virtual bool Guardar(T entity)
         {
             bool flag = false;
             try

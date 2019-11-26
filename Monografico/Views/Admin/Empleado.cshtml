@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Monografico.ViewModels.EmpleadosViewModel>
+﻿@model IEnumerable<Monografico.ViewModels.UsuarioViewModel>
 
 @{
     ViewData["Title"] = "Empleado";
@@ -101,7 +101,7 @@
         $(document).ready(() => {
             $('#empleado-datatable').DataTable({
                 ajax: {
-                    url: "@Url.Action("List", "Empleado")",
+                    url: "@Url.Action("List", "Usuario")",
                     dataSrc: ''
                 },
                 columnDefs: [
@@ -141,7 +141,7 @@
 
         //Agrega el formulario de inventario al body del modal
         function agregarCrear() {
-            $('#modalBody').load("@Url.Action("Create","Empleado")", () => {
+            $('#modalBody').load("@Url.Action("Create","Usuario")", () => {
                 $('#myModal').modal({
                     keyboard: false,
                     backdrop: 'static'
@@ -152,7 +152,7 @@
         //Agrega el formulario de editar al body del modal
         function agregarEditar(id) {
             //Recive el partial view atravez de ajax y lo inserta dentro del elemento #editarModal-body
-            $('#modalBody').load("@Url.Action("Edit","Empleado")" + "/" + id, () => {
+            $('#modalBody').load("@Url.Action("Edit","Usuario")" + "/" + id, () => {
                 $('#myModal').modal({
                     keyboard: false,
                     backdrop: 'static'
@@ -172,7 +172,7 @@
 
         //Elimina un inventario
         function eliminar() {
-            var url = "@Url.Action("Delete","Empleado")";
+            var url = "@Url.Action("Delete","Usuario")";
             $.ajax({
                 url: url,
                 data: { id: temp },

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Monografico.Models
 {
     [BindProperties(SupportsGet = true)]
-    public class Inventarios
+    public class Inventario
     {
         [Key]
         public int Id { get; set; }

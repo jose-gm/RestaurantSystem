@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Monografico.Controllers
 {
-    public class ProductoController : Controller
+    public class CategoriaController : Controller
     {
         // GET: Productos
         public ActionResult Index()

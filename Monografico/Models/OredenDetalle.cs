@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Monografico.Models
 {
-    public class OredenesDetalles
+    public class OredenDetalle
     {
         
     }

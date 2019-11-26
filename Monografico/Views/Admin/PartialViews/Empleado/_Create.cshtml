@@ -1,4 +1,4 @@
-﻿@model Monografico.ViewModels.EmpleadosViewModel
+﻿@model Monografico.ViewModels.UsuarioViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
 @functions {
@@ -90,7 +90,7 @@
 
             $.ajax({
                 method: "POST",
-                url: "@Url.Action("Create","Empleado")",
+                url: "@Url.Action("Create","Usuario")",
                 headers: {
                     "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
                     "Content-type": "application/json"
