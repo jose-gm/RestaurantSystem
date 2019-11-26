@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace Monografico.Models
 {
-    [Table("Zona")]
+    [Table("Zona", Schema = "dbo")]
     public class Zona
     {
-        
+        public int IdZona { get; set; }
+        public string Descripcion { get; set; }
     }
 }
