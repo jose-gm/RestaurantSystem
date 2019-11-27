@@ -1,0 +1,81 @@
+﻿@model Monografico.Models.Producto
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="form-editar" method="post" asp-antiforgery="false" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label hidden asp-for="IdProducto" class="control-label"></label>
+                <input hidden asp-for="IdProducto" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label hidden asp-for="IdCategoria" class="control-label"></label>
+                <input hidden asp-for="IdCategoria" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Precio" class="control-label"></label>
+                <input asp-for="Precio" class="form-control" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImagenURL" class="control-label"></label>
+                <input asp-for="ImagenURL" class="form-control" />
+                <span asp-validation-for="ImagenURL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <input type="hidden" id="RequestVerificationToken"
+                   name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+        </form>
+    </div>
+</div>
+
+<script>
+    var formulario = document.getElementById("form-editar");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (formulario.checkValidity()) {
+            var model = {
+                "IdProducto": document.getElementById("IdProducto").value,
+                "IdCategoria": document.getElementById("IdCategoria").value,
+                "Descripcion": document.getElementById("Descripcion").value,
+                "Precio": document.getElementById("Precio").value,
+                "ImagenURL": document.getElementById("ImagenURL").value
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Edit","Producto")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                    $('#myModal').modal('hide');
+                    toastr.error("Error al editar el producto");
+                },
+                success: function (data) {
+                    $('#producto-datatable').DataTable().ajax.reload();
+                    $('#myModal').modal('hide');
+                    toastr.success("Se a editado con exito");
+                }
+            });
+        }
+    });
+</script>

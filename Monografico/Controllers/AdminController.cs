@@ -38,5 +38,10 @@ namespace Monografico.Controllers
         {
             return View();
         }
+
+        public IActionResult Producto()
+        {
+            return View();
+        }
     }
 }

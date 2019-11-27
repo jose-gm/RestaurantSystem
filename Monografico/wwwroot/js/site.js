@@ -42,7 +42,7 @@ function eliminar(_url) {
         data: { id: temp },
         error: function (response) { alert(response); },
         success: function () {
-            $('#inventario-datatable').DataTable().ajax.reload();
+            $('#producto-datatable').DataTable().ajax.reload();
             $('#borrarModal').modal('hide');
             toastr.success("Eliminado");
         }

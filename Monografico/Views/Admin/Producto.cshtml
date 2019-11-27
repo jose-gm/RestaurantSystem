@@ -4,55 +4,110 @@
     ViewData["Title"] = "Producto";
 }
 
-<h1>Details</h1>
+@section link {
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+}
 
 <div class="card">
     <div class="card-body">
-        <p>
-            <a asp-action="Create">Crear producto</a>
-        </p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.IdCategoria)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Descripcion)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Precio)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.ImagenURL)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.IdCategoria)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Descripcion)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Precio)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ImagenURL)
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.IdProducto">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.IdProducto">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.IdProducto">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" onclick="abrirModal(-1);">
+                    Agregar Producto
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="producto-datatable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IdProducto)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IdCategoria)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Descripcion)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Precio)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ImagenURL)
+                                </th>           
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Modal -->
+<partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
+
+<!-- Modal de confirmacion de eliminacion-->
+<partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
+
+@section script {
+
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+    <script src="~/js/site.js"></script>
+
+    <script>
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {
+            $('#producto-datatable').DataTable({
+                ajax: {
+                    url: "@Url.Action("List","Producto")",
+                    dataSrc: ''
+                },
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }
+                ],
+                columns: [
+                    { data: 'idProducto' },
+                    { data: 'idCategoria' },
+                    { data: 'descripcion' },
+                    { data: 'precio' },
+                    { data: 'imagenURL' },
+                    {
+                        data: 'idProducto',
+                        render: function (data, type, row, meta) {
+                            return '<input onclick="abrirModal(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                            '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                        }
+                    }
+                ]
+            });
+        });
+
+        //Abre el modal con con un formulario dependiendo del valor del parametro:
+        //-1: agrega el formulario de crear al modal
+        //>0: agrega el formulario de editar al modal
+        function abrirModal(id) {
+            if (id == -1)
+                agregarCrear("@Url.Action("Create","Producto")");
+            else
+                agregarEditar(id, "@Url.Action("Edit","Producto")");
+        }
+
+        document.getElementById("botonEliminar").addEventListener('click', () => {
+            eliminar("@Url.Action("Delete","Producto")");
+        });
+    </script>
+}
