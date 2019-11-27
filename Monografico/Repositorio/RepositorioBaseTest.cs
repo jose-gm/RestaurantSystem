@@ -18,7 +18,7 @@ namespace Monografico.Repositorio
 
         public virtual T Buscar(int id)
         {
-            return lista.Find(x => (int)x.GetType().GetProperty("Id").GetValue(x) == id);
+            return lista.Find(x => (int)x.GetType().GetProperty("Id" + x.GetType().Name).GetValue(x) == id);
         }
 
         public virtual bool Editar(T entity)
@@ -26,8 +26,8 @@ namespace Monografico.Repositorio
             bool flag = false;
             try
             {
-                int id = (int)entity.GetType().GetProperty("Id").GetValue(entity);
-                var c = lista.Find(x => (int)x.GetType().GetProperty("Id").GetValue(x) == id);
+                int id = (int)entity.GetType().GetProperty("Id" + entity.GetType().Name).GetValue(entity);
+                var c = lista.Find(x => (int)x.GetType().GetProperty("Id" + x.GetType().Name).GetValue(x) == id);
                 int index = lista.IndexOf(c);
                 lista[index] = entity;
                 flag = true;
@@ -44,7 +44,7 @@ namespace Monografico.Repositorio
             bool flag = false;
             try
             {
-                var c = lista.Find(x => (int)x.GetType().GetProperty("Id").GetValue(x) == id);
+                var c = lista.Find(x => (int)x.GetType().GetProperty("Id" + x.GetType().Name).GetValue(x) == id);
                 int index = lista.IndexOf(c);
                 lista.RemoveAt(index);
                 flag = true;

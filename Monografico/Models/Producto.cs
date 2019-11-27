@@ -12,8 +12,8 @@ namespace Monografico.Models
     public class Producto
     {
         [Key]
-        public int Id { get; set; }
-        public int IdProductosCategorias { get; set; }
+        public int IdProducto { get; set; }
+        public int IdCategoria { get; set; }
         [StringLength(60)]
         public string Descripcion { get; set; }
         public Decimal Precio { get; set; }

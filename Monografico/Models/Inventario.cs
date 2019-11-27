@@ -13,7 +13,7 @@ namespace Monografico.Models
     public class Inventario
     {
         [Key]
-        public int Id { get; set; }
+        public int IdInventario { get; set; }
         [StringLength(100)]
         [Required]
         public string? Descripcion { get; set; }
