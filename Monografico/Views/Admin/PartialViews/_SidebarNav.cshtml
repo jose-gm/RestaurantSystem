@@ -57,10 +57,22 @@
             </li>
 
             <!-- Mesas -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="nav-icon cui-speedometer"></i> Mesas
+            <li class="nav-item nav-dropdown">
+                <a class="nav-link nav-dropdown-toggle">
+                    <i class="nav-icon cui-puzzle"></i> Mesas
                 </a>
+                <ul class="nav-dropdown-items">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Admin" asp-action="Zona">
+                            Zona
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Admin" asp-action="Mesa">
+                            Mesa
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             <!-- Menu -->

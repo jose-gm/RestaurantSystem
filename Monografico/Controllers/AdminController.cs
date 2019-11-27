@@ -29,5 +29,14 @@ namespace Monografico.Controllers
         {
             return View();
         }
+        public IActionResult Zona()
+        {
+            return View();
+        }
+
+        public IActionResult Mesa()
+        {
+            return View();
+        }
     }
 }
