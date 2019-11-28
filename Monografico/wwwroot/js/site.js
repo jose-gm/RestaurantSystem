@@ -35,14 +35,14 @@ function abrirModalBorrar(id) {
 }
 
 //Elimina un inventario usando ajax
-function eliminar(_url) {
+function eliminar(_url, table) {
     var url = _url;
     $.ajax({
         url: url,
         data: { id: temp },
         error: function (response) { alert(response); },
         success: function () {
-            $('#producto-datatable').DataTable().ajax.reload();
+            $('#' + table).DataTable().ajax.reload();
             $('#borrarModal').modal('hide');
             toastr.success("Eliminado");
         }
