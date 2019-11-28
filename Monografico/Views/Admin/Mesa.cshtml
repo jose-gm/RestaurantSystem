@@ -1,7 +1,7 @@
-﻿@model IEnumerable<Monografico.Models.Inventario>
+﻿@model IEnumerable<Monografico.Models.Mesa>
 
 @{
-    ViewData["Title"] = "Inventario";
+    ViewData["Title"] = "Mesa";
 }
 
 @section link {
@@ -15,40 +15,29 @@
             <div class="col-md-3">
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-primary" onclick="abrirModal(-1);">
-                    Agregar Inventario
+                    Agregar Mesa
                 </button>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table id="inventario-datatable" class="table table-bordered">
+                    <table id="mesa-datatable" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.IdInventario)
+                                    @Html.DisplayNameFor(model => model.IdMesa)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Descripcion)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Cantidad)
+                                    @Html.DisplayNameFor(model => model.IdZona)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Precio)
+                                    @Html.DisplayNameFor(model => model.Asientos)
                                 </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.EsContabilizable)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.FechaEntrada)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Minimo)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Unidad)
-                                </th>
+
                                 <th>
                                     Acciones
                                 </th>
@@ -62,13 +51,13 @@
 </div>
 
 <!-- Modal -->
-<partial name="~/Views/Admin/PartialViews/_Modal.cshtml"/>
+<partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
 
 <!-- Modal de confirmacion de eliminacion-->
 <partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
 
 @section script {
-   
+
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/toastr.js/toastr.min.js"></script>
@@ -77,9 +66,9 @@
     <script>
         //Carga la tabla cuando el documento html esta cargado
         $(document).ready(() => {
-            $('#inventario-datatable').DataTable({
+            $('#mesa-datatable').DataTable({
                 ajax: {
-                    url: "@Url.Action("List","Inventario")",
+                    url: "@Url.Action("List","Mesa")",
                     dataSrc: ''
                 },
                 columnDefs: [
@@ -89,16 +78,13 @@
                     }
                 ],
                 columns: [
-                    { data: 'idInventario' },
+                    { data: 'idMesa' },
                     { data: 'descripcion' },
-                    { data: 'cantidad' },
-                    { data: 'precio' },
-                    { data: 'esContabilizable' },
-                    { data: 'fechaEntrada' },
-                    { data: 'minimo' },
-                    { data: 'unidad' },
+                    { data: 'idZona' },
+                    { data: 'asientos' },
+
                     {
-                        data: 'idInventario',
+                        data: 'idMesa',
                         render: function (data, type, row, meta) {
                             return '<input onclick="abrirModal(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
                             '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
@@ -111,15 +97,15 @@
         //Abre el modal con con un formulario dependiendo del valor del parametro:
         //-1: agrega el formulario de crear al modal
         //>0: agrega el formulario de editar al modal
-        function abrirModal(id) {           
-            if (id == -1) 
-                agregarCrear("@Url.Action("Create","Inventario")");
-            else 
-                agregarEditar(id, "@Url.Action("Edit","Inventario")");           
+        function abrirModal(id) {
+            if (id == -1)
+                agregarCrear("@Url.Action("Create","Mesa")");
+            else
+                agregarEditar(id, "@Url.Action("Edit","Mesa")");
         }
 
         document.getElementById("botonEliminar").addEventListener('click', () => {
-            eliminar("@Url.Action("Delete","Inventario")", "inventario-datatable");
+            eliminar("@Url.Action("Delete","Mesa")", "mesa-datatable");
         });
     </script>
 }

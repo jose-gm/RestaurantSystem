@@ -1,7 +1,8 @@
-﻿@model IEnumerable<Monografico.Models.Inventario>
+﻿@model IEnumerable<Monografico.ViewModels.UsuarioViewModel>
 
 @{
-    ViewData["Title"] = "Inventario";
+    ViewData["Title"] = "Empleado";
+    ViewData["Controller"] = "Empleado";
 }
 
 @section link {
@@ -15,39 +16,36 @@
             <div class="col-md-3">
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-primary" onclick="abrirModal(-1);">
-                    Agregar Inventario
+                    Agregar Empleado
                 </button>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table id="inventario-datatable" class="table table-bordered">
+                    <table id="empleado-datatable" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.IdInventario)
+                                    @Html.DisplayNameFor(model => model.IdUsuarioViewModel)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Descripcion)
+                                    @Html.DisplayNameFor(model => model.Nombre)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Cantidad)
+                                    @Html.DisplayNameFor(model => model.Apellido)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Precio)
+                                    @Html.DisplayNameFor(model => model.Sexo)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.EsContabilizable)
+                                    @Html.DisplayNameFor(model => model.Cedula)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.FechaEntrada)
+                                    @Html.DisplayNameFor(model => model.NombreUsuario)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Minimo)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Unidad)
+                                    @Html.DisplayNameFor(model => model.Email)
                                 </th>
                                 <th>
                                     Acciones
@@ -62,13 +60,13 @@
 </div>
 
 <!-- Modal -->
-<partial name="~/Views/Admin/PartialViews/_Modal.cshtml"/>
+<partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
 
 <!-- Modal de confirmacion de eliminacion-->
 <partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
 
 @section script {
-   
+
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/toastr.js/toastr.min.js"></script>
@@ -77,9 +75,9 @@
     <script>
         //Carga la tabla cuando el documento html esta cargado
         $(document).ready(() => {
-            $('#inventario-datatable').DataTable({
+            $('#empleado-datatable').DataTable({
                 ajax: {
-                    url: "@Url.Action("List","Inventario")",
+                    url: "@Url.Action("List", "Usuario")",
                     dataSrc: ''
                 },
                 columnDefs: [
@@ -89,16 +87,15 @@
                     }
                 ],
                 columns: [
-                    { data: 'idInventario' },
-                    { data: 'descripcion' },
-                    { data: 'cantidad' },
-                    { data: 'precio' },
-                    { data: 'esContabilizable' },
-                    { data: 'fechaEntrada' },
-                    { data: 'minimo' },
-                    { data: 'unidad' },
+                    { data: 'idUsuarioViewModel' },
+                    { data: 'nombre' },
+                    { data: 'apellido' },
+                    { data: 'sexo' },
+                    { data: 'cedula' },
+                    { data: 'nombreUsuario' },
+                    { data: 'email' },
                     {
-                        data: 'idInventario',
+                        data: 'idUsuarioViewModel',
                         render: function (data, type, row, meta) {
                             return '<input onclick="abrirModal(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
                             '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
@@ -111,15 +108,16 @@
         //Abre el modal con con un formulario dependiendo del valor del parametro:
         //-1: agrega el formulario de crear al modal
         //>0: agrega el formulario de editar al modal
-        function abrirModal(id) {           
-            if (id == -1) 
-                agregarCrear("@Url.Action("Create","Inventario")");
-            else 
-                agregarEditar(id, "@Url.Action("Edit","Inventario")");           
+        function abrirModal(id) {
+            if (id == -1)
+                agregarCrear("@Url.Action("Create","Usuario")");
+            else
+                agregarEditar(id, "@Url.Action("Edit","Usuario")");
         }
 
         document.getElementById("botonEliminar").addEventListener('click', () => {
-            eliminar("@Url.Action("Delete","Inventario")", "inventario-datatable");
+            eliminar("@Url.Action("Delete","Usuario")", "empleado-datatable");
         });
     </script>
 }
+

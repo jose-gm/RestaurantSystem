@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace Monografico.Models
 {
-    [Table("Cuenta", Schema = "dbo")]
-    public class Cuenta
+    [Table("Orden", Schema = "dbo")]
+    public class Orden
     {
+        public int IdOrden { get; set; }
         public int IdCuenta { get; set; }
-        public int IdMesa { get; set; } 
-        public Orden orden { get; set; } 
+        public DateTime Fecha { get; set; }
+        public List<OrdenDetalle> Detalle { get; set; }
     }
 }

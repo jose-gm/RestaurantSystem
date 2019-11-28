@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Monografico.Models
+namespace Monografico.Repositorio
 {
-    public class OredenesDetalles
+    public class RepositoryWrapper
     {
         
     }

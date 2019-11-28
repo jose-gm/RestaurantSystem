@@ -1,4 +1,4 @@
-﻿@model Monografico.Models.Inventarios
+﻿@model Monografico.Models.Inventario
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
 @functions {
@@ -13,8 +13,8 @@
         <form id="form-editar" method="post" asp-antiforgery="false" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label hidden asp-for="Id" class="control-label"></label>
-                <input hidden id="IdInput" asp-for="Id" class="form-control" />
+                <label hidden asp-for="IdInventario" class="control-label"></label>
+                <input hidden id="IdInput" asp-for="IdInventario" class="form-control" />
             </div>
             <div class="form-group">
                 <label hidden asp-for="FechaEntrada" class="control-label"></label>
@@ -66,7 +66,7 @@
 
         if (formulario.checkValidity()) {
             var model = {
-                "Id": document.getElementById("IdInput").value,
+                "IdInventario": document.getElementById("IdInput").value,
                 "Descripcion": document.getElementById("DescripcionInput").value,
                 "Cantidad": document.getElementById("CantidadInput").value,
                 "Precio": document.getElementById("PrecioInput").value,
@@ -85,6 +85,7 @@
                 },
                 data: JSON.stringify(model),
                 error: function () {
+                    $('#myModal').modal('hide');
                     toastr.error("Error al editar el inventario");
                 },
                 success: function (data) {

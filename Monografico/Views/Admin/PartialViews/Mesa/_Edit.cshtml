@@ -1,0 +1,77 @@
+﻿@model Monografico.Models.Mesa
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="form-editar" method="post" asp-antiforgery="false" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" required />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdZona" class="control-label" hidden></label>
+                <input asp-for="IdZona" class="form-control" hidden />
+                <span asp-validation-for="IdZona" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asientos" class="control-label"></label>
+                <input asp-for="Asientos" class="form-control" />
+                <span asp-validation-for="Asientos" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="IdMesa" hidden class="control-label"></label>
+                <input asp-for="IdMesa" hidden class="form-control" />
+                <span asp-validation-for="IdMesa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <input type="hidden" id="RequestVerificationToken"
+                   name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+        </form>
+    </div>
+</div>
+
+<script>
+    var formulario = document.getElementById("form-editar");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (formulario.checkValidity()) {
+            var model = {
+               "Descripcion": document.getElementById("Descripcion").value,
+                "IdZona": document.getElementById("IdZona").value,
+                "Asientos": document.getElementById("Asientos").value,
+                "IdMesa": document.getElementById("IdMesa").value
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Edit","Mesa")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                    toastr.error("Error al editar el inventario");
+                },
+                success: function (data) {
+                    $('#mesa-datatable').DataTable().ajax.reload();
+                    $('#myModal').modal('hide');
+                    toastr.success("Se a editado con exito");
+                }
+            });
+        }
+    });
+</script>

@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace Monografico.Models
 {
-    [Table("Cuenta", Schema = "dbo")]
-    public class Cuenta
+    [Table("Factura", Schema = "dbo")]
+    public class Factura
     {
+        public int IdFactura { get; set; }
         public int IdCuenta { get; set; }
-        public int IdMesa { get; set; } 
-        public Orden orden { get; set; } 
+        public DateTime Fecha { get; set; }
+        public decimal Monto { get; set; }
+        public decimal Descuento { get; set; }
     }
 }

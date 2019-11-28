@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Monografico.Models
 {
-    public class Usuario : IdentityUser
+    public class Usuario : IdentityUser<int>
     {
         public string Nombre { get; set; }
         public string Apellido { get; set; }

@@ -37,7 +37,7 @@ namespace Monografico
 
             services.AddDbContext<Contexto>(options => options.UseSqlServer(Configuration.GetConnectionString("ConStr")));
 
-            services.AddIdentity<Usuario, IdentityRole>()
+            services.AddIdentity<Usuario, Rol>()
                 .AddEntityFrameworkStores<Contexto>()
                 .AddDefaultTokenProviders();
 
@@ -77,6 +77,7 @@ namespace Monografico
             });
 
             services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

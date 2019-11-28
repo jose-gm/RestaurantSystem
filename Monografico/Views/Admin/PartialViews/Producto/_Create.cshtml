@@ -1,4 +1,4 @@
-﻿@model Monografico.Models.Inventarios
+﻿@model Monografico.Models.Producto
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
 @functions {
@@ -18,30 +18,15 @@
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Cantidad" class="control-label"></label>
-                <input asp-for="Cantidad" class="form-control" />
-                <span asp-validation-for="Cantidad" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Precio" class="control-label"></label>
                 <input asp-for="Precio" class="form-control" />
                 <span asp-validation-for="Precio" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="EsContabilizable" /> @Html.DisplayNameFor(model => model.EsContabilizable)
-                </label>
-            </div>
             <div class="form-group">
-                <label asp-for="Minimo" class="control-label"></label>
-                <input asp-for="Minimo" class="form-control" />
-                <span asp-validation-for="Minimo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Unidad" class="control-label"></label>
-                <input asp-for="Unidad" class="form-control" />
-                <span asp-validation-for="Unidad" class="text-danger"></span>
-            </div>
+                <label asp-for="ImagenURL" class="control-label"></label>
+                <input asp-for="ImagenURL" class="form-control" />
+                <span asp-validation-for="ImagenURL" class="text-danger"></span>
+            </div> 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -61,29 +46,26 @@
         if (formulario.checkValidity()) {
             var model = {
                 "Descripcion": document.getElementById("Descripcion").value,
-                "Cantidad": document.getElementById("Cantidad").value,
                 "Precio": document.getElementById("Precio").value,
-                "EsContabilizable": document.getElementById("EsContabilizable").checked,
-                "FechaEntrada": new Date().toJSON().slice(0,10),
-                "Minimo": document.getElementById("Minimo").value,
-                "Unidad": document.getElementById("Unidad").value
+                "ImagenURL": document.getElementById("ImagenURL").value
             };
 
             //alert(model.Descripcion + model.Cantidad + model.Precio + model.FechaEntrada + model.EsContabilizable);
 
             $.ajax({
                 method: "POST",
-                url: "@Url.Action("Create","Inventario")",
+                url: "@Url.Action("Create","Producto")",
                 headers: {
                     "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
                     "Content-type": "application/json"
                 },
                 data: JSON.stringify(model),
                 error: function () {
+                    $('#myModal').modal('hide');
                     toastr.error("Error al guardar");
                 },
                 success: function () {
-                    $('#inventario-datatable').DataTable().ajax.reload();
+                    $('#producto-datatable').DataTable().ajax.reload();
                     $('#myModal').modal('hide');
                     toastr.success("Guardado con exito");
                 }

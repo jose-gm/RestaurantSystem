@@ -9,56 +9,77 @@
                     <span class="badge badge-primary">NEW</span>
                 </a>
             </li>
+
+            <!-- Empleado -->
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#">
+                <a class="nav-link nav-dropdown-toggle">
                     <i class="nav-icon cui-puzzle"></i> Empleado
                 </a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                             Roles
+                        <a class="nav-link" asp-action="Rol" asp-controller="Admin">
+                            Roles
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                             Empleados
+                        <a class="nav-link" asp-action="Empleado" asp-controller="Admin">
+                            Empleados
                         </a>
                     </li>
                 </ul>
             </li>
+
+            <!-- Inventario -->
             <li class="nav-item">
                 <a class="nav-link" asp-controller="Admin" asp-action="Inventario">
                     <i class="nav-icon cui-speedometer"></i> Inventario
                     <span class="badge badge-primary">NEW</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="nav-icon cui-speedometer"></i> Mesas
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="nav-icon cui-speedometer"></i> Menu
-                </a>
-            </li>
 
+            <!-- Producto -->
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#">
+                <a class="nav-link nav-dropdown-toggle">
                     <i class="nav-icon cui-puzzle"></i> Producto
                 </a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Admin" asp-action="Producto">
-                                Productos
+                            Productos
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Admin" asp-action="CategoriaProductos">
-                                Categoria de productos
+                            Categoria de productos
                         </a>
                     </li>
                 </ul>
+            </li>
+
+            <!-- Mesas -->
+            <li class="nav-item nav-dropdown">
+                <a class="nav-link nav-dropdown-toggle">
+                    <i class="nav-icon cui-puzzle"></i> Mesas
+                </a>
+                <ul class="nav-dropdown-items">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Admin" asp-action="Zona">
+                            Zona
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Admin" asp-action="Mesa">
+                            Mesa
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Menu -->
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="nav-icon cui-speedometer"></i> Menu
+                </a>
             </li>
         </ul>
     </nav>

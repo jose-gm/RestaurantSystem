@@ -4,76 +4,97 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Monografico.Models;
+using Monografico.Repositorio;
 
 namespace Monografico.Controllers
 {
     public class ProductoController : Controller
     {
-        // GET: Productos
+        RepositorioBaseTest<Producto> repo;
+
+        public ProductoController()
+        {
+            repo = new RepositorioBaseTest<Producto>();
+        }
+
+        // GET: Producto
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: Productos/Details/5
+        // GET: Producto/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: Productos/Create
+        // GET: Producto/Create
         public ActionResult Create()
         {
-            return View();
+            return PartialView("~/Views/Admin/PartialViews/Producto/_Create.cshtml", new Producto());
         }
 
-        // POST: Productos/Create
+        // POST: Producto/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create([FromBody] Producto prod)
         {
             try
             {
                 // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    repo.Guardar(prod);
+                }
+                return Ok();
             }
             catch
             {
-                return View();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
-        // GET: Productos/Edit/5
+        // GET: Producto/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            return PartialView("~/Views/Admin/PartialViews/Producto/_Edit.cshtml", repo.Buscar(id));
         }
 
-        // POST: Productos/Edit/5
+        // POST: Producto/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit([FromBody] Producto prod)
         {
             try
             {
                 // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                repo.Editar(prod);
+                return Ok();
             }
             catch
             {
-                return View();
+                return BadRequest();
             }
         }
 
-        // GET: Productos/Delete/5
+        // GET: Producto/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            try
+            {
+                // TODO: Add delete logic here
+                repo.Eliminar(id);
+                return Ok();
+            }
+            catch
+            {
+                return NotFound();
+            }
         }
 
-        // POST: Productos/Delete/5
+        // POST: Producto/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
@@ -88,6 +109,12 @@ namespace Monografico.Controllers
             {
                 return View();
             }
+        }
+
+        //GET:
+        public JsonResult List()
+        {
+            return Json(repo.GetList(x => true));
         }
     }
 }

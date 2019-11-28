@@ -4,50 +4,47 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Monografico.Models;
 using Monografico.Repositorio;
-using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
-    public class UsuarioController : Controller
+    public class ZonaController : Controller
     {
-
-        RepositorioBaseTest<UsuarioViewModel> repo;
-
-        public UsuarioController()
+        RepositorioBaseTest<Zona> repo;
+        public ZonaController()
         {
-            repo = new RepositorioBaseTest<UsuarioViewModel>();
+            repo = new RepositorioBaseTest<Zona>();
         }
-
-        // GET: Usuario
+        // GET: Zona
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: Usuario/Details/5
+        // GET: Zona/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: Usuario/Create
+        // GET: Zona/Create
         public ActionResult Create()
         {
-            return PartialView("~/Views/Admin/PartialViews/Empleado/_Create.cshtml", new UsuarioViewModel());
+            return PartialView("~/Views/Admin/PartialViews/Zona/_Create.cshtml", new Zona());
         }
 
-        // POST: Usuario/Create
+        // POST: Zona/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]UsuarioViewModel usuario)
+        public ActionResult Create([FromBody]Zona zona)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    repo.Guardar(usuario);
+                    repo.Guardar(zona);
                 }
                 return Ok();
             }
@@ -57,21 +54,21 @@ namespace Monografico.Controllers
             }
         }
 
-        // GET: Usuario/Edit/5
+        // GET: Zona/Edit/5
         public ActionResult Edit(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Empleado/_Edit.cshtml", repo.Buscar(id));
+            return PartialView("~/Views/Admin/PartialViews/Zona/_Edit.cshtml", repo.Buscar(id));
         }
 
-        // POST: Usuario/Edit/5
+        // POST: Zona/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([FromBody]UsuarioViewModel usuario)
+        public ActionResult Edit([FromBody]Zona zona)
         {
             try
             {
                 // TODO: Add update logic here
-                repo.Editar(usuario);
+                repo.Editar(zona);
                 return Ok();
             }
             catch
@@ -80,7 +77,7 @@ namespace Monografico.Controllers
             }
         }
 
-        // GET: Usuario/Delete/5
+        // GET: Zona/Delete/5
         public ActionResult Delete(int id)
         {
             try
@@ -95,7 +92,7 @@ namespace Monografico.Controllers
             }
         }
 
-        // POST: Usuario/Delete/5
+        // POST: Zona/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
@@ -112,7 +109,6 @@ namespace Monografico.Controllers
             }
         }
 
-        //GET:
         public JsonResult List()
         {
             return Json(repo.GetList(x => true));

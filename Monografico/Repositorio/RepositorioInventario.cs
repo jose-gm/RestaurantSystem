@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Monografico.Repositorio
 {
-    public class RepositorioInventario : RepositorioBase2
+    public class RepositorioInventario : RepositorioBaseTest<Inventario>
     {
         public RepositorioInventario(Contexto contexto) : base()
         {
         }
 
-        public override Inventarios Buscar(int id)
+        public override Inventario Buscar(int id)
         {
             return base.Buscar(id);
         }
@@ -34,12 +34,12 @@ namespace Monografico.Repositorio
             return base.GetHashCode();
         }
 
-        public override bool Guardar(Inventarios entity)
+        public override bool Guardar(Inventario entity)
         {
             return base.Guardar(entity);
         }
 
-        public override bool Editar(Inventarios entity)
+        public override bool Editar(Inventario entity)
         {
             return base.Editar(entity);
         }
@@ -49,7 +49,7 @@ namespace Monografico.Repositorio
             return base.ToString();
         }
 
-        public override List<Inventarios> GetList(Expression<Func<Inventarios, bool>> expression)
+        public override List<Inventario> GetList(Expression<Func<Inventario, bool>> expression)
         {
             return base.GetList(expression);
         }

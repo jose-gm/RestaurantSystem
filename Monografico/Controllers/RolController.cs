@@ -9,45 +9,44 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
-    public class UsuarioController : Controller
+    public class RolController : Controller
     {
+        RepositorioBaseTest<RolesViewModel> repo;
 
-        RepositorioBaseTest<UsuarioViewModel> repo;
-
-        public UsuarioController()
+        public RolController()
         {
-            repo = new RepositorioBaseTest<UsuarioViewModel>();
+            repo = new RepositorioBaseTest<RolesViewModel>();
         }
 
-        // GET: Usuario
+        // GET: Rol
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: Usuario/Details/5
+        // GET: Rol/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: Usuario/Create
+        // GET: Rol/Create
         public ActionResult Create()
         {
-            return PartialView("~/Views/Admin/PartialViews/Empleado/_Create.cshtml", new UsuarioViewModel());
+            return PartialView("~/Views/Admin/PartialViews/Rol/_Create.cshtml", new RolesViewModel());
         }
 
-        // POST: Usuario/Create
+        // POST: Rol/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]UsuarioViewModel usuario)
+        public ActionResult Create([FromBody]RolesViewModel rol)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    repo.Guardar(usuario);
+                    repo.Guardar(rol);
                 }
                 return Ok();
             }
@@ -57,21 +56,21 @@ namespace Monografico.Controllers
             }
         }
 
-        // GET: Usuario/Edit/5
+        // GET: Rol/Edit/5
         public ActionResult Edit(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Empleado/_Edit.cshtml", repo.Buscar(id));
+            return PartialView("~/Views/Admin/PartialViews/Rol/_Edit.cshtml", repo.Buscar(id));
         }
 
-        // POST: Usuario/Edit/5
+        // POST: Rol/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([FromBody]UsuarioViewModel usuario)
+        public ActionResult Edit([FromBody]RolesViewModel rol)
         {
             try
             {
                 // TODO: Add update logic here
-                repo.Editar(usuario);
+                repo.Editar(rol);
                 return Ok();
             }
             catch
@@ -80,7 +79,7 @@ namespace Monografico.Controllers
             }
         }
 
-        // GET: Usuario/Delete/5
+        // GET: Rol/Delete/5
         public ActionResult Delete(int id)
         {
             try
@@ -91,11 +90,11 @@ namespace Monografico.Controllers
             }
             catch
             {
-                return NotFound();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
-        // POST: Usuario/Delete/5
+        // POST: Rol/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

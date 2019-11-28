@@ -33,13 +33,13 @@ namespace Monografico.Controllers
         // GET: Inventario/Create
         public ActionResult Create()
         {
-            return PartialView("~/Views/Admin/PartialViews/Inventario/_Crear.cshtml", new Inventarios());
+            return PartialView("~/Views/Admin/PartialViews/Inventario/_Create.cshtml", new Inventario());
         }
 
         // POST: Inventario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]Inventarios inventario)
+        public ActionResult Create([FromBody]Inventario inventario)
         {
             try
             {
@@ -59,13 +59,13 @@ namespace Monografico.Controllers
         // GET: Inventario/Edit/5
         public ActionResult Edit(int id)
         {  
-            return PartialView("~/Views/Admin/PartialViews/Inventario/_Editar.cshtml",repo.Buscar(id));
+            return PartialView("~/Views/Admin/PartialViews/Inventario/_Edit.cshtml",repo.Buscar(id));
         }
 
         // POST: Inventario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromBody]Inventarios inventario)
+        public IActionResult Edit([FromBody]Inventario inventario)
         {
             try
             {
@@ -82,8 +82,17 @@ namespace Monografico.Controllers
         // GET: Inventario/Delete/5
         public ActionResult Delete(int id)
         {
-            repo.Eliminar(id);
-            return Ok();
+            try
+            {
+                // TODO: Add delete logic here
+                repo.Eliminar(id);
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            
         }
 
         // POST: Inventario/Delete/5
@@ -99,7 +108,7 @@ namespace Monografico.Controllers
             }
             catch
             {
-                return View();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
