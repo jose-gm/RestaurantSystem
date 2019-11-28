@@ -1,41 +1,101 @@
 ﻿@model IEnumerable<Monografico.Models.Categoria>
 
-@{
+    @{
     ViewData["Title"] = "Categoria";
-}
+    }
 
-<h1>Details</h1>
+    @section link {
+        <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+        <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+    }
 
-<p>
-    <a asp-action="Create">Create categoria de producto</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagenURL)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descripcion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImagenURL)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdCategoria">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdCategoria">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdCategoria">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="card">
+        <div class="card-body">
+            <div class="row mb-2">
+                <div class="col-md-3">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" onclick="abrirModal(-1);">
+                        Agregar Categoria
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table id="categoria-datatable" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.IdCategoria)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Descripcion)
+                                    </th>
+                                    <th>
+                                        Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
+
+    <!-- Modal de confirmacion de eliminacion-->
+    <partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
+
+    @section script {
+
+        <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+        <script src="~/lib/toastr.js/toastr.min.js"></script>
+        <script src="~/js/site.js"></script>
+
+        <script>
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {
+            $('#categoria-datatable').DataTable({
+                ajax: {
+                    url: "@Url.Action("List","Categoria")",
+                    dataSrc: ''
+                },
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }
+                ],
+                columns: [
+                    { data: 'idCategoria' },
+                    { data: 'descripcion' },
+                    {
+                        data: 'idCategoria',
+                        render: function (data, type, row, meta) {
+                            return '<input onclick="abrirModal(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                            '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                        }
+                    }
+                ]
+            });
+        });
+
+        //Abre el modal con con un formulario dependiendo del valor del parametro:
+        //-1: agrega el formulario de crear al modal
+        //>0: agrega el formulario de editar al modal
+        function abrirModal(id) {
+            if (id == -1)
+                agregarCrear("@Url.Action("Create","Categoria")");
+            else
+                agregarEditar(id, "@Url.Action("Edit","Categoria")");
+        }
+
+        document.getElementById("botonEliminar").addEventListener('click', () => {
+            eliminar("@Url.Action("Delete","Categoria")", "categoria-datatable");
+        });
+        </script>
+    }

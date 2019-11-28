@@ -4,11 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Monografico.Models;
+using Monografico.Repositorio;
 
 namespace Monografico.Controllers
 {
     public class CategoriaController : Controller
     {
+        RepositorioBaseTest<Categoria> repo;
+        public CategoriaController()
+        {
+            repo = new RepositorioBaseTest<Categoria>();
+        }
         // GET: Productos
         public ActionResult Index()
         {
@@ -24,53 +31,65 @@ namespace Monografico.Controllers
         // GET: Productos/Create
         public ActionResult Create()
         {
-            return View();
+            return PartialView("~/Views/Admin/PartialViews/Categoria/_Create.cshtml", new Categoria());
         }
 
         // POST: Productos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create([FromBody]Categoria categoria)
         {
             try
             {
                 // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    repo.Guardar(categoria);
+                }
+                return Ok();
             }
             catch
             {
-                return View();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
         // GET: Productos/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            return PartialView("~/Views/Admin/PartialViews/Categoria/_Edit.cshtml", repo.Buscar(id));
         }
 
         // POST: Productos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit([FromBody]Categoria categoria)
         {
             try
             {
                 // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                repo.Editar(categoria);
+                return Ok();
             }
             catch
             {
-                return View();
+                return BadRequest();
             }
         }
 
         // GET: Productos/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            try
+            {
+                // TODO: Add delete logic here
+                repo.Eliminar(id);
+                return Ok();
+            }
+            catch
+            {
+                return NotFound();
+            }
         }
 
         // POST: Productos/Delete/5
@@ -88,6 +107,10 @@ namespace Monografico.Controllers
             {
                 return View();
             }
+        }
+        public JsonResult List()
+        {
+            return Json(repo.GetList(x => true));
         }
     }
 }
