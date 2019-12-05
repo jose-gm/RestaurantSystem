@@ -11,26 +11,26 @@ namespace Monografico.Controllers
 {
     public class MesaController : Controller
     {
-        RepositorioBaseTest<Mesa> repo;
+        RepositoryWrapper repo;
 
-        public MesaController()
+        public MesaController(RepositoryWrapper _repo)
         {
-            repo = new RepositorioBaseTest<Mesa>();
+            repo = _repo;
         }
         // GET: Mesa
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
         // GET: Mesa/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
             return View();
         }
 
         // GET: Mesa/Create
-        public ActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return PartialView("~/Views/Admin/PartialViews/Mesa/_Create.cshtml", new Mesa());
         }
@@ -38,14 +38,14 @@ namespace Monografico.Controllers
         // POST: Mesa/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]Mesa mesita)
+        public async Task<IActionResult> Create([FromBody]Mesa mesita)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    repo.Guardar(mesita);
+                    await repo.Mesa.Add(mesita);
                 }
                 return Ok();
             }
@@ -56,20 +56,20 @@ namespace Monografico.Controllers
         }
 
         // GET: Mesa/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Mesa/_Edit.cshtml", repo.Buscar(id));
+            return PartialView("~/Views/Admin/PartialViews/Mesa/_Edit.cshtml", await repo.Mesa.Find(id));
         }
 
         // POST: Mesa/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([FromBody]Mesa mesa)
+        public async Task<IActionResult> Edit([FromBody]Mesa mesa)
         {
             try
             {
                 // TODO: Add update logic here
-                repo.Editar(mesa);
+                await repo.Mesa.Update(mesa);
                 return Ok();
             }
             catch
@@ -79,12 +79,12 @@ namespace Monografico.Controllers
         }
 
         // GET: Mesa/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-                repo.Eliminar(id);
+                await repo.Mesa.Remove(id);
                 return Ok();
             }
             catch
@@ -96,7 +96,7 @@ namespace Monografico.Controllers
         // POST: Mesa/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
@@ -110,9 +110,9 @@ namespace Monografico.Controllers
             }
         }
 
-        public JsonResult List()
+        public async Task<JsonResult> List()
         {
-            return Json(repo.GetList(x => true));
+            return Json(await repo.Mesa.GetList(x => true));
         }
     }
 }

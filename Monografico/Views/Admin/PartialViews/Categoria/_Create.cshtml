@@ -1,4 +1,4 @@
-﻿@model Monografico.Models.Categoria
+﻿@model Monografico.ViewModels.CategoriaViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
 @functions {
@@ -18,6 +18,12 @@
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <div class="custom-file">
+                    <input asp-for="Imagen" class="custom-file-input">
+                    <label class="custom-file-label">Choose file</label>
+                </div>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
             <input type="hidden" id="RequestVerificationToken"
@@ -29,14 +35,25 @@
 
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
+    $(document).ready(() => {
+        $('.custom-file-input').on("change", function() {
+            var nombreAchivo = $(this).val().split("\\").pop();
+            $(this).next('.custom-file-label').html(nombreAchivo);
+        });
+    });
+
     var formulario = document.getElementById("form-crear");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
-        alert(formulario.checkValidity());
+        //alert(formulario.checkValidity());
         if (formulario.checkValidity()) {
-            var model = {
-                "Descripcion": document.getElementById("Descripcion").value
-            };
+            var archivos = document.getElementById("Imagen").files;
+            var formData = new FormData();
+            for (var i = 0; i != archivos.length; i++) {
+                console.log(archivos[i]);
+                formData.append("Imagen",archivos[i]);
+            }
+            formData.append("Descripcion",document.getElementById("Descripcion").value);
 
             //alert(model.Descripcion + model.Cantidad + model.Precio + model.FechaEntrada + model.EsContabilizable);
 
@@ -45,9 +62,10 @@
                 url: "@Url.Action("Create","Categoria")",
                 headers: {
                     "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
-                    "Content-type": "application/json"
                 },
-                data: JSON.stringify(model),
+                data: formData,
+                contentType: false,
+                processData: false,
                 error: function () {
                     $('#myModal').modal('hide');
                     toastr.error("Error al guardar");

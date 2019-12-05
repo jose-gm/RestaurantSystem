@@ -12,26 +12,26 @@ namespace Monografico.Controllers
 {
     public class InventarioController : Controller
     {
-        RepositorioInventario repo;
-        public InventarioController(Contexto contexto)
+        RepositoryWrapper repo;
+        public InventarioController(RepositoryWrapper _repo)
         {
-            repo = new RepositorioInventario(contexto);
+            repo = _repo;
         }
 
         // GET: Inventario
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
         // GET: Inventario/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
             return View();
         }
 
         // GET: Inventario/Create
-        public ActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return PartialView("~/Views/Admin/PartialViews/Inventario/_Create.cshtml", new Inventario());
         }
@@ -39,14 +39,14 @@ namespace Monografico.Controllers
         // POST: Inventario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]Inventario inventario)
+        public async Task<IActionResult> Create([FromBody]Inventario inventario)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    repo.Guardar(inventario);
+                    await repo.Inventario.Add(inventario);
                 }
                 return Ok();
             }
@@ -57,20 +57,20 @@ namespace Monografico.Controllers
         }
 
         // GET: Inventario/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {  
-            return PartialView("~/Views/Admin/PartialViews/Inventario/_Edit.cshtml",repo.Buscar(id));
+            return PartialView("~/Views/Admin/PartialViews/Inventario/_Edit.cshtml", await repo.Inventario.Find(id));
         }
 
         // POST: Inventario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromBody]Inventario inventario)
+        public async Task<IActionResult> Edit([FromBody]Inventario inventario)
         {
             try
             {
                 // TODO: Add update logic here
-                repo.Editar(inventario);
+                await repo.Inventario.Update(inventario);
                 return Ok();
             }
             catch
@@ -80,12 +80,12 @@ namespace Monografico.Controllers
         }
 
         // GET: Inventario/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-                repo.Eliminar(id);
+                await repo.Inventario.Remove(id);
                 return Ok();
             }
             catch
@@ -98,7 +98,7 @@ namespace Monografico.Controllers
         // POST: Inventario/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, bool notData)
+        public async Task<IActionResult> Delete(int id, bool notData)
         {
             try
             {
@@ -113,9 +113,9 @@ namespace Monografico.Controllers
         }
 
         //GET:
-        public JsonResult List()
+        public async Task<JsonResult> List()
         {
-            return Json(repo.GetList(x => true));
+            return Json(await repo.Inventario.GetList(x => true));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Monografico.Models.Producto
+﻿@model Monografico.ViewModels.ProductoViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
 @functions {
@@ -10,7 +10,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form id="form-crear" method="post" asp-antiforgery="false" novalidate>
+        <form enctype="multipart/form-data" id="form-crear" method="post" asp-antiforgery="false" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Descripcion" class="control-label"></label>
@@ -19,14 +19,43 @@
             </div>
             <div class="form-group">
                 <label asp-for="Precio" class="control-label"></label>
-                <input asp-for="Precio" class="form-control" />
+                <input asp-for="Precio" type="number" class="form-control" min="0"/>
                 <span asp-validation-for="Precio" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImagenURL" class="control-label"></label>
-                <input asp-for="ImagenURL" class="form-control" />
-                <span asp-validation-for="ImagenURL" class="text-danger"></span>
-            </div> 
+                <label asp-for="IdCategoria" class="control-label"></label>
+                <select asp-for="IdCategoria" class="custom-select" asp-items="@ViewBag.Categorias"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Imagen</label>
+                <div class="custom-file">
+                    <input asp-for="Imagen" class="custom-file-input">
+                    <label class="custom-file-label">Selecciona una imagen...</label>
+                </div>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="LlevaIngredientes" />    @Html.DisplayNameFor(model => model.LlevaIngredientes)
+                </label>
+            </div>
+            @*<div class="form-group">
+                <label asp-for="Ingredientes" class="control-label">Ingredientes</label>
+                <select asp-for="Ingredientes" class="select2-multiple form-control" multiple="multiple" disabled></select>
+            </div>*@
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="LlevaInventario" />    @Html.DisplayNameFor(model => model.LlevaInventario)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Unidad" class="control-label"></label>
+                <input asp-for="Unidad" class="form-control" disabled required />
+                <span asp-validation-for="Unidad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cantidad" class="control-label"></label>
+                <input asp-for="Cantidad" type="number" class="form-control" min="0" disabled />
+            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -39,27 +68,82 @@
 
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
+    document.getElementById("LlevaInventario").addEventListener('click', function () {
+        console.log(this.checked);
+        if (this.checked) {
+            document.getElementById("Unidad").removeAttribute("disabled");
+            document.getElementById("Cantidad").removeAttribute("disabled");
+        }
+        else {
+            document.getElementById("Unidad").setAttribute("disabled","");
+            document.getElementById("Cantidad").setAttribute("disabled","");
+        }
+    });
+
+    $(document).ready(() => {
+        $('.custom-file-input').on("change", function() {
+            var nombreAchivo = $(this).val().split("\\").pop();
+            $(this).next('.custom-file-label').html(nombreAchivo);
+        });
+
+        /*$('.select2-multiple').select2({
+            theme: 'bootstrap4',
+            width: 'style',
+            ajax: {
+                url: "",
+                dataType: 'json',
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.idCategoria,
+                                text: item.descripcion
+                            };
+                        }),
+                        pagination: {
+                            more: 20
+                        }
+                    };
+                }
+            },
+            placeholder: 'Selecciona los ingredientes'
+        });*/
+    });
+
     var formulario = document.getElementById("form-crear");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
-        alert(formulario.checkValidity());
+        //alert(formulario.checkValidity());
         if (formulario.checkValidity()) {
-            var model = {
-                "Descripcion": document.getElementById("Descripcion").value,
-                "Precio": document.getElementById("Precio").value,
-                "ImagenURL": document.getElementById("ImagenURL").value
-            };
-
-            //alert(model.Descripcion + model.Cantidad + model.Precio + model.FechaEntrada + model.EsContabilizable);
+            var archivos = document.getElementById("Imagen").files;
+            var formData = new FormData();
+            for (var i = 0; i != archivos.length; i++) {
+                console.log(archivos[i]);
+                formData.append("Imagen",archivos[i]);
+            }
+            formData.append("Descripcion",document.getElementById("Descripcion").value);
+            formData.append("Precio",document.getElementById("Precio").value);
+            formData.append("IdCategoria", document.getElementById("IdCategoria").value);
+            formData.append("LlevaIngredientes", document.getElementById("LlevaIngredientes").checked);
+            formData.append("LlevaInventario",document.getElementById("LlevaInventario").checked);
+            formData.append("Unidad",document.getElementById("Unidad").value);
+            formData.append("Cantidad", document.getElementById("Cantidad").value);
+            formData.append("FechaEntrada", getActualDateUTC());
+            /*var select = document.getElementById("Ingredientes");
+            for (var i = 0; i < select.length; i++) {
+                if(select.options[i].selected)
+                    formData.append("Ingredientes",select.options[i].value);
+            }*/
 
             $.ajax({
                 method: "POST",
                 url: "@Url.Action("Create","Producto")",
                 headers: {
                     "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
-                    "Content-type": "application/json"
                 },
-                data: JSON.stringify(model),
+                data: formData,
+                contentType: false,
+                processData: false,               
                 error: function () {
                     $('#myModal').modal('hide');
                     toastr.error("Error al guardar");

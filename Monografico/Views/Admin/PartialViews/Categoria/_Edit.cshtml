@@ -1,4 +1,4 @@
-﻿@model Monografico.Models.Categoria
+﻿@model Monografico.ViewModels.CategoriaViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
 @functions {
@@ -17,9 +17,19 @@
                 <input hidden asp-for="IdCategoria" class="form-control" />
             </div>
             <div class="form-group">
+                <label hidden asp-for="ImagenEncoded" class="control-label"></label>
+                <input hidden asp-for="ImagenEncoded" class="form-control" />
+            </div>
+            <div class="form-group">
                 <label asp-for="Descripcion" class="control-label"></label>
                 <input asp-for="Descripcion" class="form-control" />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="custom-file">
+                    <input asp-for="Imagen" class="custom-file-input">
+                    <label class="custom-file-label">Choose file</label>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -31,24 +41,37 @@
 </div>
 
 <script>
+    $(document).ready(() => {
+        $('.custom-file-input').on("change", function() {
+            var nombreAchivo = $(this).val().split("\\").pop();
+            $(this).next('.custom-file-label').html(nombreAchivo);
+        });
+    });
+
     var formulario = document.getElementById("form-editar");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
 
         if (formulario.checkValidity()) {
-            var model = {
-                "IdCategoria": document.getElementById("IdCategoria").value,
-                "Descripcion": document.getElementById("Descripcion").value,
-            };
+            var archivos = document.getElementById("Imagen").files;
+            var formData = new FormData();
+            for (var i = 0; i != archivos.length; i++) {
+                console.log(archivos[i]);
+                formData.append("Imagen",archivos[i]);
+            }
+            formData.append("IdCategoria",document.getElementById("IdCategoria").value);
+            formData.append("Descripcion",document.getElementById("Descripcion").value);
+            formData.append("ImagenEncoded",document.getElementById("ImagenEncoded").value);
             
             $.ajax({
                 method: "POST",
                 url: "@Url.Action("Edit","Categoria")",
                 headers: {
                     "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
-                    "Content-type": "application/json"
                 },
-                data: JSON.stringify(model),
+                data: formData,
+                contentType: false,
+                processData: false, 
                 error: function () {
                     $('#myModal').modal('hide');
                     toastr.error("Error al editar el inventario");

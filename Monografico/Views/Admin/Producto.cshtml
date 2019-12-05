@@ -7,6 +7,15 @@
 @section link {
     <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <environment include="Development">
+        <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    </environment>
 }
 
 <div class="card">
@@ -32,14 +41,14 @@
                                     @Html.DisplayNameFor(model => model.IdCategoria)
                                 </th>
                                 <th>
+                                    Imagen
+                                </th>
+                                <th>
                                     @Html.DisplayNameFor(model => model.Descripcion)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Precio)
                                 </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.ImagenURL)
-                                </th>           
                                 <th>
                                     Acciones
                                 </th>
@@ -52,6 +61,7 @@
     </div>
 </div>
 
+
 <!-- Modal -->
 <partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
 
@@ -59,13 +69,22 @@
 <partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
 
 @section script {
-
-    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    
+    <environment include="Development">
+        <script src="~/lib/select2/js/select2.min.js"></script>
+        <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+        <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    </environment>
     <script src="~/lib/toastr.js/toastr.min.js"></script>
     <script src="~/js/site.js"></script>
 
     <script>
+
         //Carga la tabla cuando el documento html esta cargado
         $(document).ready(() => {
             $('#producto-datatable').DataTable({
@@ -82,14 +101,35 @@
                 columns: [
                     { data: 'idProducto' },
                     { data: 'idCategoria' },
+                    {
+                        data: 'imagen',
+                        render: function (data, type, row, meta) {
+                            var src;
+                            if (data == null)
+                                src = "/img/tomioka.jpg";
+                            else
+                                src = 'data:image/jpeg;base64,' + data;
+                            return '<img class="rounded mx-auto d-block" src="' + src + '" width="60px" height="60px" />';
+                        }
+                    },
                     { data: 'descripcion' },
                     { data: 'precio' },
-                    { data: 'imagenURL' },
                     {
-                        data: 'idProducto',
+                        data: {
+                        },
                         render: function (data, type, row, meta) {
-                            return '<input onclick="abrirModal(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
-                            '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                            console.log(data);
+                            var template;
+                            if (data.llevaIngredientes) {
+                                template = '<input onclick="abrirModal(' + data.idProducto + ')" class="btn btn-primary" type="button" value="Ingredientes" /> ' +
+                                    '<input onclick="abrirModal(' + data.idProducto + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                                    '<input onclick="abrirModalBorrar(' + data.idProducto + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                            }
+                            else {
+                                template = '<input onclick="abrirModal(' + data.idProducto + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                                            '<input onclick="abrirModalBorrar(' + data.idProducto + ')" class="btn btn-danger" type="button" value="Borrar" />';                                  
+                            }
+                            return template;
                         }
                     }
                 ]

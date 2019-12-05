@@ -8,11 +8,10 @@ namespace Monografico.Repositorio
 {
     public interface IRepository<T> where T : class
     {
-        List<T> GetList(Expression<Func<T, bool>> expression);
-        T Buscar(int id);
-        bool Guardar(T entity);
-        bool Editar(T entity);
-        bool Eliminar(int id);
-
+        Task<List<T>> GetList(Expression<Func<T, bool>> expression);
+        Task<T> Find(int id);
+        Task<bool> Add(T entity);
+        Task<bool> Update(T entity);
+        Task<bool> Remove(int id);
     }
 }

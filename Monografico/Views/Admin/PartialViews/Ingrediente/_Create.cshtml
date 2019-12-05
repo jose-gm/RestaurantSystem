@@ -1,0 +1,97 @@
+﻿@model Monografico.ViewModels.IngredienteViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form enctype="multipart/form-data" id="form-crear" method="post" asp-antiforgery="false" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" required />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Costo" class="control-label"></label>
+                <input asp-for="Costo" class="form-control" />
+                <span asp-validation-for="Costo" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="LlevaInventario" />    @Html.DisplayNameFor(model => model.LlevaInventario)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Unidad" class="control-label"></label>
+                <input asp-for="Unidad" class="form-control" disabled required />
+                <span asp-validation-for="Unidad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cantidad" class="control-label"></label>
+                <input asp-for="Cantidad" type="number" class="form-control" min="0" disabled/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+            <input type="hidden" id="RequestVerificationToken"
+                   name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+        </form>
+    </div>
+</div>
+
+
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    document.getElementById("LlevaInventario").addEventListener('click', function () {
+        console.log(this.checked);
+        if (this.checked) {
+            document.getElementById("Unidad").removeAttribute("disabled");
+            document.getElementById("Cantidad").removeAttribute("disabled");
+        }
+        else {
+            document.getElementById("Unidad").setAttribute("disabled","");
+            document.getElementById("Cantidad").setAttribute("disabled","");
+        }
+    });
+ 
+    var formulario = document.getElementById("form-crear");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+        //alert(formulario.checkValidity());
+        if (formulario.checkValidity()) {
+            var model = {
+                "Descripcion": document.getElementById("Descripcion").value,
+                "Costo": document.getElementById("Costo").value,
+                "LlevaInventario": document.getElementById("LlevaInventario").checked,
+                "FechaEntrada": getActualDateUTC(),
+                "Unidad": document.getElementById("Unidad").value,
+                "Cantidad": document.getElementById("Cantidad").value
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Create","Ingrediente")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                    $('#myModal').modal('hide');
+                    toastr.error("Error al guardar");
+                },
+                success: function () {
+                    $('#ingrediente-datatable').DataTable().ajax.reload();
+                    $('#myModal').modal('hide');
+                    toastr.success("Guardado con exito");
+                }
+            });
+        }
+    });
+</script>

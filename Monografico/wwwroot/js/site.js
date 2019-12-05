@@ -40,11 +40,38 @@ function eliminar(_url, table) {
     $.ajax({
         url: url,
         data: { id: temp },
-        error: function (response) { alert(response); },
+        error: function (response) {
+            $('#borrarModal').modal('hide');
+            toastr.error("Error al borrar");
+            //alert(response);
+        },
         success: function () {
             $('#' + table).DataTable().ajax.reload();
             $('#borrarModal').modal('hide');
             toastr.success("Eliminado");
         }
     });
+}
+
+
+function getActualDateUTC() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = mm + '/' + dd + '/' + yyyy;
+
+    return new Date(today).toUTCString();
+}
+
+function getActualDateISO() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = mm + '/' + dd + '/' + yyyy;
+
+    return new Date(today).toISOString();
 }

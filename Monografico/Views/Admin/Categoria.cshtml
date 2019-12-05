@@ -29,6 +29,9 @@
                                         @Html.DisplayNameFor(model => model.IdCategoria)
                                     </th>
                                     <th>
+                                        Imagen
+                                    </th>
+                                    <th>
                                         @Html.DisplayNameFor(model => model.Descripcion)
                                     </th>
                                     <th>
@@ -72,6 +75,17 @@
                 ],
                 columns: [
                     { data: 'idCategoria' },
+                    {
+                        data: 'imagen',
+                        render: function (data, type, row, meta) {
+                            var src;
+                            if (data == null)
+                                src = "/img/tomioka.jpg";
+                            else
+                                src = 'data:image/jpeg;base64,' + data;
+                            return '<img class="rounded mx-auto d-block" src="' + src + '" width="60px" height="60px" />';
+                        }
+                    },
                     { data: 'descripcion' },
                     {
                         data: 'idCategoria',

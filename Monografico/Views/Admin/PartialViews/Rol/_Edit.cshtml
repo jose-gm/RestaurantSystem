@@ -49,6 +49,7 @@
                 },
                 data: JSON.stringify(model),
                 error: function () {
+                    $('#myModal').modal('hide');
                     toastr.error("Error al editar el inventario");
                 },
                 success: function (data) {

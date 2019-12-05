@@ -11,25 +11,26 @@ namespace Monografico.Controllers
 {
     public class ZonaController : Controller
     {
-        RepositorioBaseTest<Zona> repo;
-        public ZonaController()
+        RepositoryWrapper repo;
+
+        public ZonaController(RepositoryWrapper _repo)
         {
-            repo = new RepositorioBaseTest<Zona>();
+            repo = _repo;
         }
         // GET: Zona
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
         // GET: Zona/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
             return View();
         }
 
         // GET: Zona/Create
-        public ActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return PartialView("~/Views/Admin/PartialViews/Zona/_Create.cshtml", new Zona());
         }
@@ -37,14 +38,14 @@ namespace Monografico.Controllers
         // POST: Zona/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]Zona zona)
+        public async Task<IActionResult> Create([FromBody]Zona zona)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    repo.Guardar(zona);
+                    await repo.Zona.Add(zona);
                 }
                 return Ok();
             }
@@ -55,20 +56,20 @@ namespace Monografico.Controllers
         }
 
         // GET: Zona/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Zona/_Edit.cshtml", repo.Buscar(id));
+            return PartialView("~/Views/Admin/PartialViews/Zona/_Edit.cshtml", await repo.Zona.Find(id));
         }
 
         // POST: Zona/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([FromBody]Zona zona)
+        public async Task<IActionResult> Edit([FromBody]Zona zona)
         {
             try
             {
                 // TODO: Add update logic here
-                repo.Editar(zona);
+                await repo.Zona.Update(zona);
                 return Ok();
             }
             catch
@@ -78,12 +79,12 @@ namespace Monografico.Controllers
         }
 
         // GET: Zona/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-                repo.Eliminar(id);
+                await repo.Zona.Remove(id);
                 return Ok();
             }
             catch
@@ -95,7 +96,7 @@ namespace Monografico.Controllers
         // POST: Zona/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
@@ -109,9 +110,9 @@ namespace Monografico.Controllers
             }
         }
 
-        public JsonResult List()
+        public async Task<JsonResult> List()
         {
-            return Json(repo.GetList(x => true));
+            return Json(await repo.Zona.GetList(x => true));
         }
     }
 }

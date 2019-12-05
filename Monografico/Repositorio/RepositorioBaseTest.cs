@@ -8,7 +8,7 @@ namespace Monografico.Repositorio
 {
     public class RepositorioBaseTest<T> : IRepository<T> where T : class
     {
-        static List<T> lista;
+        protected static List<T> lista;
 
         public RepositorioBaseTest()
         {
@@ -16,12 +16,12 @@ namespace Monografico.Repositorio
                 lista = new List<T>();
         }
 
-        public virtual T Buscar(int id)
+        public async virtual Task<T> Find(int id)
         {
             return lista.Find(x => (int)x.GetType().GetProperty("Id" + x.GetType().Name).GetValue(x) == id);
         }
 
-        public virtual bool Editar(T entity)
+        public async virtual Task<bool> Update(T entity)
         {
             bool flag = false;
             try
@@ -39,7 +39,7 @@ namespace Monografico.Repositorio
             return flag;
         }
 
-        public virtual bool Eliminar(int id)
+        public async virtual Task<bool> Remove(int id)
         {
             bool flag = false;
             try
@@ -56,12 +56,12 @@ namespace Monografico.Repositorio
             return flag;
         }
 
-        public virtual List<T> GetList(System.Linq.Expressions.Expression<Func<T, bool>> expression)
+        public async virtual Task<List<T>> GetList(System.Linq.Expressions.Expression<Func<T, bool>> expression)
         {
             return lista;
         }
 
-        public virtual bool Guardar(T entity)
+        public async virtual Task<bool> Add(T entity)
         {
             bool flag = false;
             try

@@ -11,27 +11,27 @@ namespace Monografico.Controllers
 {
     public class RolController : Controller
     {
-        RepositorioBaseTest<RolesViewModel> repo;
+        RepositoryWrapper repo;
 
-        public RolController()
+        public RolController(RepositoryWrapper _repo)
         {
-            repo = new RepositorioBaseTest<RolesViewModel>();
+            repo = _repo;
         }
 
         // GET: Rol
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
         // GET: Rol/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
             return View();
         }
 
         // GET: Rol/Create
-        public ActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return PartialView("~/Views/Admin/PartialViews/Rol/_Create.cshtml", new RolesViewModel());
         }
@@ -39,14 +39,14 @@ namespace Monografico.Controllers
         // POST: Rol/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]RolesViewModel rol)
+        public async Task<IActionResult> Create([FromBody]RolesViewModel rol)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    repo.Guardar(rol);
+                    //repo.Rol.Guardar(rol);
                 }
                 return Ok();
             }
@@ -57,20 +57,20 @@ namespace Monografico.Controllers
         }
 
         // GET: Rol/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Rol/_Edit.cshtml", repo.Buscar(id));
+            return PartialView("~/Views/Admin/PartialViews/Rol/_Edit.cshtml", await repo.Rol.Find(id));
         }
 
         // POST: Rol/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([FromBody]RolesViewModel rol)
+        public async Task<IActionResult> Edit([FromBody]RolesViewModel rol)
         {
             try
             {
                 // TODO: Add update logic here
-                repo.Editar(rol);
+                //repo.Rol.Editar(rol);
                 return Ok();
             }
             catch
@@ -80,12 +80,12 @@ namespace Monografico.Controllers
         }
 
         // GET: Rol/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-                repo.Eliminar(id);
+                await repo.Rol.Remove(id);
                 return Ok();
             }
             catch
@@ -97,7 +97,7 @@ namespace Monografico.Controllers
         // POST: Rol/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
@@ -112,9 +112,9 @@ namespace Monografico.Controllers
         }
 
         //GET:
-        public JsonResult List()
+        public async Task<JsonResult> List()
         {
-            return Json(repo.GetList(x => true));
+            return Json(await repo.Rol.GetList(x => true));
         }
     }
 }

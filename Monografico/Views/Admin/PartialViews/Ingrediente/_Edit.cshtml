@@ -1,0 +1,114 @@
+﻿@model Monografico.ViewModels.IngredienteViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="form-editar" method="post" asp-antiforgery="false" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label hidden asp-for="IdIngrediente" class="control-label"></label>
+                <input hidden asp-for="IdIngrediente" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label hidden asp-for="TieneInventario" class="control-label"></label>
+                <input hidden asp-for="TieneInventario" id="TieneInventarioH" value="@Model.TieneInventario" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" required />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Costo" class="control-label"></label>
+                <input asp-for="Costo" class="form-control"/>
+                <span asp-validation-for="Costo" class="text-danger"></span>
+            </div>
+            @if (!Model.TieneInventario)
+            {
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="LlevaInventario" />    @Html.DisplayNameFor(model => model.LlevaInventario)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Unidad" class="control-label"></label>
+                    <input asp-for="Unidad" class="form-control" disabled required />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Cantidad" class="control-label"></label>
+                    <input asp-for="Cantidad" type="number" class="form-control" min="0" disabled />
+                </div>
+            }
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <input type="hidden" id="RequestVerificationToken"
+                   name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+        </form>
+    </div>
+</div>
+
+<script>
+    var checkInventario = document.getElementById("LlevaInventario");
+    if (checkInventario != null) {
+        checkInventario.addEventListener('click', function () {
+            console.log(this.checked);
+            if (this.checked) {
+                document.getElementById("Unidad").removeAttribute("disabled");
+                document.getElementById("Cantidad").removeAttribute("disabled");
+            }
+            else {
+                document.getElementById("Unidad").setAttribute("disabled","");
+                document.getElementById("Cantidad").setAttribute("disabled","");
+            }
+        });
+    }
+
+    var formulario = document.getElementById("form-editar");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (formulario.checkValidity()) {
+            var model = {
+                "IdIngrediente": document.getElementById("IdIngrediente").value,
+                "Descripcion": document.getElementById("Descripcion").value,
+                "Costo": document.getElementById("Costo").value
+            };
+
+            if (document.getElementById("TieneInventarioH").value == "True")
+                model.TieneInventario = document.getElementById("TieneInventarioH").value;
+            else {
+                model.LlevaInventario = document.getElementById("LlevaInventario").checked;
+                model.Unidad = document.getElementById("Unidad").value;
+                model.Cantidad = document.getElementById("Cantidad").value;
+                model.FechaEntrada = getActualDateUTC();
+            }
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Edit","Ingrediente")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                    toastr.error("Error al editar el inventario");
+                },
+                success: function (data) {
+                    $('#ingrediente-datatable').DataTable().ajax.reload();
+                    $('#myModal').modal('hide');
+                    toastr.success("Se a editado con exito");
+                }
+            });
+        }
+    });
+</script>

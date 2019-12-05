@@ -3,28 +3,26 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Monografico.Models
 {
-    [BindProperties(SupportsGet = true)]
+    [Table("Inventario")]
     public class Inventario
     {
         [Key]
         public int IdInventario { get; set; }
-        [StringLength(100)]
-        [Required]
-        public string? Descripcion { get; set; }
-        public int? Cantidad { get; set; }
-        public Decimal? Precio { get; set; }
-        [Display(Name = "Es Contabilizable?")]
-        public bool EsContabilizable { get; set; }
+        public int? IdProducto { get; set; }
+        public int? IdIngrediente { get; set; }
         [DataType(DataType.Date)]
         public DateTime? FechaEntrada { get; set; }
-        public int? Minimo { get; set; }
+        public int Cantidad { get; set; }
         [StringLength(10)]
-        public string? Unidad { get; set; }
+        public string Unidad { get; set; }
+        public Producto Producto { get; set; }
+        public Ingrediente Ingrediente { get; set; }
     }
 }

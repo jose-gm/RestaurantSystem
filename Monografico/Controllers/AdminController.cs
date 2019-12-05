@@ -43,7 +43,13 @@ namespace Monografico.Controllers
         {
             return View();
         }
+       
         public IActionResult Categoria()
+        {
+            return View();
+        }
+        
+        public IActionResult Ingrediente()
         {
             return View();
         }

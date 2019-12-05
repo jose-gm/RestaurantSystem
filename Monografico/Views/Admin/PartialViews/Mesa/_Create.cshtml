@@ -68,6 +68,7 @@
                 },
                 data: JSON.stringify(model),
                 error: function () {
+                    $('#myModal').modal('hide');
                     toastr.error("Error al guardar");
                 },
                 success: function () {

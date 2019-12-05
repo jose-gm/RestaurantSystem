@@ -1,91 +1,149 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Monografico.Models;
 using Monografico.Repositorio;
+using Monografico.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Monografico.Controllers
 {
     public class ProductoController : Controller
     {
-        RepositorioBaseTest<Producto> repo;
+        RepositoryWrapper repo;
 
-        public ProductoController()
+        public ProductoController(RepositoryWrapper _repo)
         {
-            repo = new RepositorioBaseTest<Producto>();
+            repo = _repo;
         }
 
         // GET: Producto
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
         // GET: Producto/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
             return View();
         }
 
-        // GET: Producto/Create
-        public ActionResult Create()
+        private Producto ToModel(ProductoViewModel model)
         {
-            return PartialView("~/Views/Admin/PartialViews/Producto/_Create.cshtml", new Producto());
+            byte[] image = new byte[0];
+            Inventario inventario = new Inventario();
+            if(model.Imagen != null)
+            {
+                using (var bytes = new MemoryStream())
+                {
+                    model.Imagen.CopyTo(bytes);
+                    image = bytes.ToArray();
+                }
+            }
+
+            if (model.LlevaInventario)
+            {
+                inventario = new Inventario()
+                {
+                    FechaEntrada = Convert.ToDateTime(Request.Form["FechaEntrada"]).Date,
+                    Cantidad = model.Cantidad,
+                    Unidad = model.Unidad,
+                    IdProducto = model.IdProducto
+                };
+            }
+           
+            return new Producto()
+            {
+                IdProducto = model.IdProducto,
+                IdCategoria = model.IdCategoria,
+                Descripcion = model.Descripcion,
+                Precio = model.Precio,
+                Imagen = (model.Imagen != null) ? Convert.ToBase64String(image) : model.ImagenEncoded,
+                LlevaIngredientes = model.LlevaIngredientes,
+                LlevaInventario = (model.LlevaInventario) ? model.LlevaInventario : model.TieneInventario,
+                Inventario = (model.LlevaInventario) ? inventario : null
+            };
+        }
+
+        private ProductoViewModel ToViewModel(Producto model)
+        {
+            return new ProductoViewModel()
+            {
+                IdProducto = model.IdProducto,
+                IdCategoria = model.IdCategoria,
+                Descripcion = model.Descripcion,
+                Precio = model.Precio,
+                ImagenEncoded = model.Imagen
+            };
+        }
+
+        // GET: Producto/Create
+        public async Task<IActionResult> Create()
+        {
+            ViewBag.Categorias = await repo.Categoria.GetSelectList();
+            return PartialView("~/Views/Admin/PartialViews/Producto/_Create.cshtml", new ProductoViewModel());
         }
 
         // POST: Producto/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody] Producto prod)
+        public async Task<IActionResult> Create(ProductoViewModel model)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    repo.Guardar(prod);
+                    await repo.Producto.Add(ToModel(model));
+                    return Ok();
                 }
-                return Ok();
+
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+            return NotFound();
         }
 
         // GET: Producto/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Producto/_Edit.cshtml", repo.Buscar(id));
+            ViewBag.Categorias = await repo.Categoria.GetSelectList();
+            return PartialView("~/Views/Admin/PartialViews/Producto/_Edit.cshtml", await repo.Producto.BuscarProductoViewModel(id));
         }
 
         // POST: Producto/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([FromBody] Producto prod)
+        public async Task<IActionResult> Edit(ProductoViewModel model)
         {
             try
             {
-                // TODO: Add update logic here
-                repo.Editar(prod);
-                return Ok();
+                if (ModelState.IsValid)
+                {
+                    // TODO: Add update logic here
+                    await repo.Producto.Update(ToModel(model));
+                    return Ok();
+                }
             }
             catch
             {
                 return BadRequest();
             }
+            return NotFound();
         }
 
         // GET: Producto/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-                repo.Eliminar(id);
+                await repo.Producto.EliminarConInventario(id);
                 return Ok();
             }
             catch
@@ -97,7 +155,7 @@ namespace Monografico.Controllers
         // POST: Producto/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
@@ -112,9 +170,9 @@ namespace Monografico.Controllers
         }
 
         //GET:
-        public JsonResult List()
+        public async Task<JsonResult> List()
         {
-            return Json(repo.GetList(x => true));
+            return Json(await repo.Producto.GetList(x => true));
         }
     }
 }

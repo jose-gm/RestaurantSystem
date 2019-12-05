@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace Monografico.Models
 {
-    [Table("Categoria", Schema = "dbo")]
+    [Table("Categoria")]
     public class Categoria
     {
         [Key]
         public int IdCategoria { get; set; }
         public string Descripcion { get; set; }
-        public string ImagenURL { get; set; }
+        public string Imagen { get; set; }
+        public List<Producto> Productos { get; set; }
     }
 }

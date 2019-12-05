@@ -12,17 +12,17 @@
     <div class="col-md-12">
         <form id="form-crear" method="post" asp-antiforgery="false" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="Descripcion" class="control-label"></label>
                 <input asp-for="Descripcion" class="form-control" required />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <label asp-for="Cantidad" class="control-label"></label>
                 <input asp-for="Cantidad" class="form-control" />
                 <span asp-validation-for="Cantidad" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="Precio" class="control-label"></label>
                 <input asp-for="Precio" class="form-control" />
                 <span asp-validation-for="Precio" class="text-danger"></span>
@@ -36,7 +36,7 @@
                 <label asp-for="Minimo" class="control-label"></label>
                 <input asp-for="Minimo" class="form-control" />
                 <span asp-validation-for="Minimo" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <label asp-for="Unidad" class="control-label"></label>
                 <input asp-for="Unidad" class="form-control" />
@@ -60,12 +60,8 @@
         alert(formulario.checkValidity());
         if (formulario.checkValidity()) {
             var model = {
-                "Descripcion": document.getElementById("Descripcion").value,
                 "Cantidad": document.getElementById("Cantidad").value,
-                "Precio": document.getElementById("Precio").value,
-                "EsContabilizable": document.getElementById("EsContabilizable").checked,
                 "FechaEntrada": new Date().toJSON().slice(0,10),
-                "Minimo": document.getElementById("Minimo").value,
                 "Unidad": document.getElementById("Unidad").value
             };
 

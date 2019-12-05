@@ -12,27 +12,27 @@ namespace Monografico.Controllers
     public class UsuarioController : Controller
     {
 
-        RepositorioBaseTest<UsuarioViewModel> repo;
+        RepositoryWrapper repo;
 
-        public UsuarioController()
+        public UsuarioController(RepositoryWrapper _repo)
         {
-            repo = new RepositorioBaseTest<UsuarioViewModel>();
+            repo = _repo;
         }
 
         // GET: Usuario
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
         // GET: Usuario/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
             return View();
         }
 
         // GET: Usuario/Create
-        public ActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return PartialView("~/Views/Admin/PartialViews/Empleado/_Create.cshtml", new UsuarioViewModel());
         }
@@ -40,14 +40,14 @@ namespace Monografico.Controllers
         // POST: Usuario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]UsuarioViewModel usuario)
+        public async Task<IActionResult> Create([FromBody]UsuarioViewModel usuario)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    repo.Guardar(usuario);
+                    //repo.Usuario.Guardar(usuario);
                 }
                 return Ok();
             }
@@ -58,20 +58,20 @@ namespace Monografico.Controllers
         }
 
         // GET: Usuario/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Empleado/_Edit.cshtml", repo.Buscar(id));
+            return PartialView("~/Views/Admin/PartialViews/Empleado/_Edit.cshtml", await repo.Usuario.Find(id));
         }
 
         // POST: Usuario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([FromBody]UsuarioViewModel usuario)
+        public async Task<IActionResult> Edit([FromBody]UsuarioViewModel usuario)
         {
             try
             {
                 // TODO: Add update logic here
-                repo.Editar(usuario);
+                //repo.Usuario.Editar(usuario);
                 return Ok();
             }
             catch
@@ -81,12 +81,12 @@ namespace Monografico.Controllers
         }
 
         // GET: Usuario/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-                repo.Eliminar(id);
+                await repo.Usuario.Remove(id);
                 return Ok();
             }
             catch
@@ -98,7 +98,7 @@ namespace Monografico.Controllers
         // POST: Usuario/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
@@ -113,9 +113,9 @@ namespace Monografico.Controllers
         }
 
         //GET:
-        public JsonResult List()
+        public async Task<JsonResult> List()
         {
-            return Json(repo.GetList(x => true));
+            return Json(await repo.Usuario.GetList(x => true));
         }
     }
 }

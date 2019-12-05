@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Monografico.Data;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Monografico.Repositorio
 {
-    public class RepositorioBase<T> : IDisposable, IRepository<T> where T : class
+    public class RepositoryBase<T> : IDisposable, IRepository<T> where T : class
     {
         internal Contexto _contexto;
 
-        public RepositorioBase(Contexto contexto)
+        public RepositoryBase(Contexto contexto)
         {
             _contexto = contexto;
         }
@@ -22,16 +23,15 @@ namespace Monografico.Repositorio
         /// </summary>
         /// <param name="entity">Una instancia de la entidad a guardar</param>
         /// <returns>Retorna True si guardo o Falso si falló </returns>
-        public virtual bool Guardar(T entity)
+        public async virtual Task<bool> Add(T entity)
         {
             bool paso = false;
             try
             {
-                if (_contexto.Set<T>().Add(entity) != null)
-                {
-                    _contexto.SaveChanges(); //Guardar los cambios
-                    paso = true;
-                }
+                await _contexto.Set<T>().AddAsync(entity);
+                await _contexto.SaveChangesAsync();
+                paso = true;
+                
             }
             catch (Exception)
             {
@@ -45,16 +45,16 @@ namespace Monografico.Repositorio
         /// </summary>
         /// <param name="entity">Una instancia de la entidad a guardar</param>
         /// <returns>Retorna True si Modifico o Falso si falló </returns>
-        public virtual bool Editar(T entity)
+        public async virtual Task<bool> Update(T entity)
         {
             bool paso = false;
             try
             {
+                _contexto.Set<T>().Attach(entity);
                 _contexto.Entry(entity).State = EntityState.Modified;
-                if (_contexto.SaveChanges() > 0)
-                {
-                    paso = true;
-                }
+                await _contexto.SaveChangesAsync();             
+                paso = true;
+                
             }
             catch (Exception)
             {
@@ -68,7 +68,7 @@ namespace Monografico.Repositorio
         /// </summary>
         ///<param name="id">El Id de la entidad que se desea eliminar </param>
         /// <returns>Retorna True si Eliminó o Falso si falló </returns>
-        public virtual bool Eliminar(int id)
+        public async virtual Task<bool> Remove(int id)
         {
             bool paso = false;
             try
@@ -76,8 +76,8 @@ namespace Monografico.Repositorio
                 T entity = _contexto.Set<T>().Find(id);
                 _contexto.Set<T>().Remove(entity);
 
-                if (_contexto.SaveChanges() > 0)
-                    paso = true;
+                await _contexto.SaveChangesAsync();
+                paso = true;
 
                 _contexto.Dispose();
             }
@@ -91,12 +91,12 @@ namespace Monografico.Repositorio
         /// </summary>
         ///<param name="id">El Id de la entidad que se desea encontrar </param>
         /// <returns>Retorna la persona encontrada </returns>
-        public virtual T Buscar(int id)
+        public async virtual Task<T> Find(int id)
         {
             T entity;
             try
             {
-                entity = _contexto.Set<T>().Find(id);
+                entity = await _contexto.Set<T>().FindAsync(id);
             }
             catch (Exception)
             {
@@ -110,19 +110,22 @@ namespace Monografico.Repositorio
         /// </summary> 
         ///<param name="expression">Expression Lambda conteniendo los filtros de busqueda </param>
         ///// <returns>Retorna una lista de entidades</returns>
-        public List<T> GetList(Expression<Func<T, bool>> expression)
+        public async Task<List<T>> GetList(Expression<Func<T, bool>> expression)
         {
-            List<T> Lista = new List<T>();
+            List<T> lista = new List<T>();
             try
             {
-                Lista = _contexto.Set<T>().Where(expression).ToList();
+                lista = await _contexto.Set<T>().Where(expression).ToListAsync();
             }
             catch (Exception)
             {
                 throw;
             }
-            return Lista;
+            return lista;
         }
+
+        
+       
 
         public void Dispose()
         {

@@ -14,11 +14,37 @@
       <EmbeddedResource Remove="Views\Inventario\**" />
       <None Remove="Views\Inventario\**" />
     </ItemGroup>
+  
+    <ItemGroup>
+      <Compile Remove="Migrations\20191118051047_Inicial.cs" />
+      <Compile Remove="Migrations\20191118051047_Inicial.Designer.cs" />
+      <Compile Remove="Migrations\20191121002408_AgregandoDB.cs" />
+      <Compile Remove="Migrations\20191121002408_AgregandoDB.Designer.cs" />
+      <Compile Remove="Migrations\20191129014147_InicialCreate.cs" />
+      <Compile Remove="Migrations\20191129014147_InicialCreate.Designer.cs" />
+      <Compile Remove="Migrations\20191129014614_InicialCreate2.cs" />
+      <Compile Remove="Migrations\20191129014614_InicialCreate2.Designer.cs" />
+      <Compile Remove="Migrations\20191204030707_InicialDB.cs" />
+      <Compile Remove="Migrations\20191204030707_InicialDB.Designer.cs" />
+      <Compile Remove="Migrations\20191204031935_InicialCreate.cs" />
+      <Compile Remove="Migrations\20191204031935_InicialCreate.Designer.cs" />
+      <Compile Remove="Migrations\20191204032332_Change.cs" />
+      <Compile Remove="Migrations\20191204032332_Change.Designer.cs" />
+      <Compile Remove="Migrations\20191204032615_InicialCreate.cs" />
+      <Compile Remove="Migrations\20191204032615_InicialCreate.Designer.cs" />
+      <Compile Remove="Migrations\20191204060952_Change.cs" />
+      <Compile Remove="Migrations\20191204060952_Change.Designer.cs" />
+      <Compile Remove="Migrations\20191204071548_Change2.cs" />
+      <Compile Remove="Migrations\20191204071548_Change2.Designer.cs" />
+      <Compile Remove="Migrations\20191205011819_Change.cs" />
+      <Compile Remove="Migrations\20191205011819_Change.Designer.cs" />
+    </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.6" />
   </ItemGroup>
 
 </Project>

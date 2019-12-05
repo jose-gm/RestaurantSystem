@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Monografico.Data;
 using Monografico.Models;
+using Monografico.Repositorio;
 
 namespace Monografico
 {
@@ -77,6 +78,8 @@ namespace Monografico
             });
 
             services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
+
+            services.AddScoped<RepositoryWrapper>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

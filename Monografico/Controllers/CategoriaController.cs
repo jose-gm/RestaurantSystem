@@ -1,50 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Monografico.Models;
 using Monografico.Repositorio;
+using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
     public class CategoriaController : Controller
     {
-        RepositorioBaseTest<Categoria> repo;
-        public CategoriaController()
+        RepositoryWrapper repo;
+
+        public CategoriaController(RepositoryWrapper _repo)
         {
-            repo = new RepositorioBaseTest<Categoria>();
+            repo = _repo;
         }
         // GET: Productos
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
         // GET: Productos/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
             return View();
         }
 
-        // GET: Productos/Create
-        public ActionResult Create()
+        private Categoria ToModel(CategoriaViewModel model)
         {
-            return PartialView("~/Views/Admin/PartialViews/Categoria/_Create.cshtml", new Categoria());
+            byte[] image = new byte[0];
+            if (model.Imagen != null)
+            {
+                using (var bytes = new MemoryStream())
+                {
+                    model.Imagen.CopyTo(bytes);
+                    image = bytes.ToArray();
+                }
+
+            }
+
+            return new Categoria()
+            {
+                IdCategoria = model.IdCategoria,
+                Descripcion = model.Descripcion,
+                Imagen = (model.Imagen != null) ? Convert.ToBase64String(image) : model.ImagenEncoded
+            };
+        }
+
+        private CategoriaViewModel ToViewModel(Categoria model)
+        {
+            return new CategoriaViewModel()
+            {
+                IdCategoria = model.IdCategoria,
+                Descripcion = model.Descripcion,
+                ImagenEncoded = model.Imagen
+            };
+        }
+
+        // GET: Productos/Create
+        public async Task<IActionResult> Create()
+        {
+            return PartialView("~/Views/Admin/PartialViews/Categoria/_Create.cshtml", new CategoriaViewModel());
         }
 
         // POST: Productos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody]Categoria categoria)
+        public async Task<IActionResult> Create(CategoriaViewModel model)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    repo.Guardar(categoria);
+                    await repo.Categoria.Add(ToModel(model));
                 }
                 return Ok();
             }
@@ -55,35 +89,40 @@ namespace Monografico.Controllers
         }
 
         // GET: Productos/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Categoria/_Edit.cshtml", repo.Buscar(id));
+            return PartialView("~/Views/Admin/PartialViews/Categoria/_Edit.cshtml", await repo.Categoria.BuscarCategoriaViewModel(id));
         }
 
         // POST: Productos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([FromBody]Categoria categoria)
+        public async Task<IActionResult> Edit(CategoriaViewModel model)
         {
             try
             {
-                // TODO: Add update logic here
-                repo.Editar(categoria);
-                return Ok();
+                if (ModelState.IsValid)
+                {
+                    // TODO: Add update logic here
+                    await repo.Categoria.Update(ToModel(model));
+                    return Ok();
+
+                }               
             }
             catch
             {
                 return BadRequest();
             }
+            return NotFound();
         }
 
         // GET: Productos/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-                repo.Eliminar(id);
+                await repo.Categoria.Remove(id);
                 return Ok();
             }
             catch
@@ -95,7 +134,7 @@ namespace Monografico.Controllers
         // POST: Productos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
@@ -108,9 +147,9 @@ namespace Monografico.Controllers
                 return View();
             }
         }
-        public JsonResult List()
+        public async Task<JsonResult> List()
         {
-            return Json(repo.GetList(x => true));
+            return Json(await repo.Categoria.GetList(x => true));
         }
     }
 }

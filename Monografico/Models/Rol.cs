@@ -9,6 +9,6 @@ namespace Monografico.Models
 {
     public class Rol : IdentityRole<int>
     {
-        
+        public List<ApplicationUserRole> UsuarioRoles { get; set; }
     }
 }
