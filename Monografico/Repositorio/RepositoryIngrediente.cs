@@ -5,6 +5,7 @@ using Monografico.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,6 +16,18 @@ namespace Monografico.Repositorio
 
         public RepositoryIngrediente(Contexto contexto) : base(contexto)
         {
+        }
+
+        public async Task<Ingrediente> FindWithInventarioAsync(int id)
+        {
+            Ingrediente ingrediente = null;
+            try
+            {
+                ingrediente = _contexto.Ingrediente.Include(x => x.Inventario).SingleOrDefault(c => c.IdIngrediente == id);
+            }
+            catch (Exception)
+            { throw; }
+            return ingrediente;
         }
 
         public async Task<IngredienteViewModel> BuscarIngredienteViewModel(int id)
@@ -45,6 +58,20 @@ namespace Monografico.Repositorio
             catch (Exception)
             { throw; }
             return paso;
+        }
+
+        public async Task<List<Ingrediente>> GetAllWithInventory(Expression<Func<Ingrediente, bool>> expression)
+        {
+            List<Ingrediente> lista = new List<Ingrediente>();
+            try
+            {
+                lista = await _contexto.Ingrediente.Include(i => i.Inventario).Where(expression).ToListAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return lista;
         }
     }
 }

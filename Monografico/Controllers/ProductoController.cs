@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Monografico.Models;
 using Monografico.Repositorio;
 using Monografico.ViewModels;
@@ -82,7 +83,7 @@ namespace Monografico.Controllers
 
         // GET: Producto/Create
         public async Task<IActionResult> Create()
-        {
+        {            
             ViewBag.Categorias = await repo.Categoria.GetSelectList();
             return PartialView("~/Views/Admin/PartialViews/Producto/_Create.cshtml", new ProductoViewModel());
         }
@@ -109,11 +110,82 @@ namespace Monografico.Controllers
             return NotFound();
         }
 
+        private async Task<Producto> ToProductoWithIngrediente(ProductoDetalleViewModel model)
+        {
+            var producto = await repo.Producto.Find(model.IdProducto);
+            producto.Detalle = new List<ProductoDetalle>();
+            producto.Detalle.Add(new ProductoDetalle() { 
+                IdProducto = model.IdProducto ,
+                IdIngrediente = model.IdIngrediente,
+                Cantidad = model.Cantidad
+            });
+            return producto;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> AddIngrediente([FromBody]ProductoDetalleViewModel model)
+        {
+            try
+            {
+                // TODO: Add insert logic here
+                if (ModelState.IsValid)
+                {
+                    if (!(await repo.Producto.IsIngredienteAdded(model.IdProducto, model.IdIngrediente)))
+                        await repo.Producto.Update(await ToProductoWithIngrediente(model));
+                    else
+                        return Json(new { code = 666});
+                    return Json(Ok());
+                }
+
+            }
+            catch
+            {
+                return Json(StatusCode(StatusCodes.Status500InternalServerError));
+            }
+            return Json(NotFound());
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> UpdateIngrediente([FromBody]ProductoDetalleViewModel model)
+        {
+            try
+            {
+                // TODO: Add insert logic here
+                if (ModelState.IsValid)
+                {
+                    await repo.Producto.UpdateCantidadIngrediente(model.IdProducto, model.IdDetalle, model.Cantidad);
+                    return Ok();
+                }
+
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteIngrediente([FromBody]ProductoDetalleViewModel model)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+                await repo.Producto.RemoveIngrediente(model.IdProducto, model.IdDetalle);
+                return Ok();
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
         // GET: Producto/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             ViewBag.Categorias = await repo.Categoria.GetSelectList();
-            return PartialView("~/Views/Admin/PartialViews/Producto/_Edit.cshtml", await repo.Producto.BuscarProductoViewModel(id));
+            return PartialView("~/Views/Admin/PartialViews/Producto/_Edit.cshtml", await repo.Producto.FindProductoViewModel(id));
         }
 
         // POST: Producto/Edit/5
@@ -143,14 +215,14 @@ namespace Monografico.Controllers
             try
             {
                 // TODO: Add delete logic here
-                await repo.Producto.EliminarConInventario(id);
+                await repo.Producto.RemoveWithInventario(id);
                 return Ok();
             }
             catch
             {
                 return NotFound();
             }
-        }
+        }       
 
         // POST: Producto/Delete/5
         [HttpPost]
@@ -169,10 +241,22 @@ namespace Monografico.Controllers
             }
         }
 
+        //GET
+        public async Task<IActionResult> Ingredientes(int id)
+        {
+            return PartialView("~/Views/Admin/PartialViews/Producto/_Ingredientes.cshtml", await repo.Producto.FindProductoDetalleViewModel(id));
+        }
+
         //GET:
         public async Task<JsonResult> List()
         {
             return Json(await repo.Producto.GetList(x => true));
+        }
+        
+        //GET:
+        public async Task<JsonResult> ListOfIngredientes(int id)
+        {
+            return Json(await repo.Producto.GetProductoIngredientes(id));
         }
     }
 }

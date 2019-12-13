@@ -14,6 +14,7 @@ namespace Monografico.Models
         [Key]
         public int IdCuenta { get; set; }
         public int IdMesa { get; set; } 
-        public List<Orden> ordenes { get; set; } 
+        public bool Activa { get; set; } 
+        public List<Orden> Ordenes { get; set; } 
     }
 }

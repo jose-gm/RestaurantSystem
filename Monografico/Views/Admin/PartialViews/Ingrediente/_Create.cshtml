@@ -1,6 +1,10 @@
 ﻿@model Monografico.ViewModels.IngredienteViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
+@{
+    var modalTitle = "Formulario de ingrediente";
+}
+
 @functions {
     public string GetAntiXsrfRequestToken()
     {
@@ -34,7 +38,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Cantidad" class="control-label"></label>
-                <input asp-for="Cantidad" type="number" class="form-control" min="0" disabled/>
+                <input asp-for="Cantidad" type="number" class="form-control" min="0" disabled />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -48,6 +52,8 @@
 
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
+    $('#myModalLabel').html("@modalTitle");
+
     document.getElementById("LlevaInventario").addEventListener('click', function () {
         console.log(this.checked);
         if (this.checked) {
@@ -59,7 +65,7 @@
             document.getElementById("Cantidad").setAttribute("disabled","");
         }
     });
- 
+
     var formulario = document.getElementById("form-crear");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();

@@ -1,6 +1,10 @@
 ﻿@model Monografico.ViewModels.CategoriaViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
+@{
+    var modalTitle = "Editar";
+}
+
 @functions {
     public string GetAntiXsrfRequestToken()
     {
@@ -46,6 +50,8 @@
             var nombreAchivo = $(this).val().split("\\").pop();
             $(this).next('.custom-file-label').html(nombreAchivo);
         });
+
+        $('#myModalLabel').html("@modalTitle");
     });
 
     var formulario = document.getElementById("form-editar");
@@ -62,7 +68,7 @@
             formData.append("IdCategoria",document.getElementById("IdCategoria").value);
             formData.append("Descripcion",document.getElementById("Descripcion").value);
             formData.append("ImagenEncoded",document.getElementById("ImagenEncoded").value);
-            
+
             $.ajax({
                 method: "POST",
                 url: "@Url.Action("Edit","Categoria")",
@@ -71,7 +77,7 @@
                 },
                 data: formData,
                 contentType: false,
-                processData: false, 
+                processData: false,
                 error: function () {
                     $('#myModal').modal('hide');
                     toastr.error("Error al editar el inventario");

@@ -22,8 +22,9 @@
     <div class="card-body">
         <div class="row mb-2">
             <div class="col-md-3">
+                <a asp-action="ListWitInventory" asp-controller="Ingrediente">Link</a>
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" onclick="abrirModal(-1);">
+                <button type="button" class="btn btn-primary" onclick="abrirModal();">
                     Agregar Producto
                 </button>
             </div>
@@ -64,12 +65,16 @@
 
 <!-- Modal -->
 <partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
+    
+<!-- Modal-lg -->
+<partial name="~/Views/Admin/PartialViews/_ModalLarge.cshtml" />
 
 <!-- Modal de confirmacion de eliminacion-->
 <partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
 
 @section script {
     
+    <script src="~/js/site.js"></script>
     <environment include="Development">
         <script src="~/lib/select2/js/select2.min.js"></script>
         <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
@@ -81,7 +86,6 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
     </environment>
     <script src="~/lib/toastr.js/toastr.min.js"></script>
-    <script src="~/js/site.js"></script>
 
     <script>
 
@@ -118,15 +122,15 @@
                         data: {
                         },
                         render: function (data, type, row, meta) {
-                            console.log(data);
                             var template;
+                            var url = "@Url.Action("Ingredientes,Producto")";
                             if (data.llevaIngredientes) {
-                                template = '<input onclick="abrirModal(' + data.idProducto + ')" class="btn btn-primary" type="button" value="Ingredientes" /> ' +
-                                    '<input onclick="abrirModal(' + data.idProducto + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                                template = '<input onclick="abrirModalIngrediente('+ data.idProducto +')" class="btn btn-primary" type="button" value="Ingredientes" /> ' +
+                                    '<input onclick="abrirModalEditar(' + data.idProducto + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
                                     '<input onclick="abrirModalBorrar(' + data.idProducto + ')" class="btn btn-danger" type="button" value="Borrar" />';
                             }
                             else {
-                                template = '<input onclick="abrirModal(' + data.idProducto + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                                template = '<input onclick="abrirModalEditar(' + data.idProducto + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
                                             '<input onclick="abrirModalBorrar(' + data.idProducto + ')" class="btn btn-danger" type="button" value="Borrar" />';                                  
                             }
                             return template;
@@ -136,15 +140,18 @@
             });
         });
 
-        //Abre el modal con con un formulario dependiendo del valor del parametro:
-        //-1: agrega el formulario de crear al modal
-        //>0: agrega el formulario de editar al modal
-        function abrirModal(id) {
-            if (id == -1)
-                agregarCrear("@Url.Action("Create","Producto")");
-            else
-                agregarEditar(id, "@Url.Action("Edit","Producto")");
+        function abrirModal() {
+            agregarCrear("@Url.Action("Create","Producto")");                         
         }
+
+        function abrirModalEditar(id) {
+            agregarEditar(id, "@Url.Action("Edit","Producto")");
+        }
+
+        function abrirModalIngrediente(id) {
+            agregarIngredientes(id, "@Url.Action("Ingredientes","Producto")");
+        }
+
 
         document.getElementById("botonEliminar").addEventListener('click', () => {
             eliminar("@Url.Action("Delete","Producto")", "producto-datatable");

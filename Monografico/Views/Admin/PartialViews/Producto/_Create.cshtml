@@ -1,6 +1,10 @@
 ﻿@model Monografico.ViewModels.ProductoViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
+@{ 
+    var modalTitle = "Formulario de producto";
+}
+
 @functions {
     public string GetAntiXsrfRequestToken()
     {
@@ -85,6 +89,8 @@
             var nombreAchivo = $(this).val().split("\\").pop();
             $(this).next('.custom-file-label').html(nombreAchivo);
         });
+
+        $('#myModalLabel').html("@modalTitle");
 
         /*$('.select2-multiple').select2({
             theme: 'bootstrap4',

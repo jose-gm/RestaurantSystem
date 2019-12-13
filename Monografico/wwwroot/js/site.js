@@ -34,6 +34,15 @@ function abrirModalBorrar(id) {
     });
 }
 
+function agregarIngredientes(id,_url) {
+    $('#modalBody-lg').load(_url + "/" + id, () => {
+        $('#myModal-lg').modal({
+            keyboard: true,
+            backdrop: 'static'
+        });
+    });
+}
+
 //Elimina un inventario usando ajax
 function eliminar(_url, table) {
     var url = _url;

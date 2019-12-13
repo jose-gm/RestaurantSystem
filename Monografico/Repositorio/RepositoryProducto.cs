@@ -19,7 +19,7 @@ namespace Monografico.Repositorio
             _contexto = contexto;
         }
 
-        public async Task<ProductoViewModel> BuscarProductoViewModel(int id)
+        public async Task<ProductoViewModel> FindProductoViewModel(int id)
         {
             var producto = await _contexto.Producto.FindAsync(id);
             return new ProductoViewModel() { 
@@ -32,8 +32,24 @@ namespace Monografico.Repositorio
                 Precio = producto.Precio
             };
         }
+        
+        public async Task<ProductoDetalleViewModel> FindProductoDetalleViewModel(int id)
+        {
+            var producto =  _contexto.Producto.Include(w => w.Detalle).SingleOrDefault(q => q.IdProducto == id);
+            var model = new ProductoDetalleViewModel();
+    /*        if(producto.Detalle != null)
+            {
+                foreach (var item in producto.Detalle)
+                {
+                    model.Ingredientes.Add(_contexto.Ingrediente.Include(x => x.Inventario).SingleOrDefault(c => c.IdIngrediente == item.IdIngrediente));
+                }
+            }*/
+            model.IdProducto = producto.IdProducto;
 
-        public async Task<bool> EliminarConInventario(int id)
+            return model;
+        }
+
+        public async Task<bool> RemoveWithInventario(int id)
         {
             bool paso = false;
             try
@@ -48,6 +64,95 @@ namespace Monografico.Repositorio
             }
             catch (Exception)
             { throw; }
+            return paso;
+        }
+        
+        public async Task<bool> RemoveIngrediente(int id, int idDetalle)
+        {
+            bool paso = false;
+            try
+            {
+                var producto = _contexto.Producto.Include(x => x.Detalle).AsNoTracking().SingleOrDefault(c => c.IdProducto == id);
+                var detalle = producto.Detalle.Find(w => w.IdDetalle == idDetalle);
+                producto.Detalle.Clear();
+                producto.Detalle.Add(detalle);
+                _contexto.Producto.Attach(producto);
+                _contexto.Entry(producto.Detalle[0]).State = EntityState.Deleted;
+                _contexto.Producto.Update(producto);
+
+                await _contexto.SaveChangesAsync();
+                paso = true;
+            }
+            catch (Exception)
+            { throw; }
+            return paso;
+        }
+
+        public async Task<bool> UpdateCantidadIngrediente(int id, int idDetalle, int cantidad)
+        {
+            bool paso = false;
+            try
+            {
+                var producto = _contexto.Producto.Include(x => x.Detalle).AsNoTracking().SingleOrDefault(c => c.IdProducto == id);
+                var detalle = producto.Detalle.Find(w => w.IdDetalle == idDetalle);
+                detalle.Cantidad = cantidad;
+                producto.Detalle.Clear();
+                producto.Detalle.Add(detalle);
+                _contexto.Producto.Attach(producto);
+                _contexto.Entry(producto.Detalle[0]).State = EntityState.Modified;
+                _contexto.Producto.Update(producto);
+
+                await _contexto.SaveChangesAsync();
+                paso = true;
+            }
+            catch (Exception)
+            { throw; }
+            return paso;
+        }
+
+        public async Task<List<ProductoDetalleViewModel>> GetProductoIngredientes(int id)
+        {
+            List<ProductoDetalleViewModel> lista = new List<ProductoDetalleViewModel>();
+            try
+            {
+                var producto = _contexto.Producto.Include(w => w.Detalle).SingleOrDefault(q => q.IdProducto == id);
+               
+                foreach (var item in producto.Detalle)
+                {
+                    var ingrediente = _contexto.Ingrediente.Include(x => x.Inventario).SingleOrDefault(c => c.IdIngrediente == item.IdIngrediente);
+                    lista.Add(new ProductoDetalleViewModel()
+                    {
+                        IdProducto = producto.IdProducto,
+                        IdDetalle = item.IdDetalle,
+                        IdIngrediente = item.IdIngrediente,
+                        Cantidad = item.Cantidad,
+                        Costo = ingrediente.Costo,
+                        Descripcion = ingrediente.Descripcion,
+                        Unidad = (ingrediente.Inventario != null) ? ingrediente.Inventario.Unidad : string.Empty
+                    });
+                }
+                    
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return lista;
+        }
+
+        public async Task<bool> IsIngredienteAdded(int id, int idIngrediente)
+        {
+            bool paso = false;
+            try
+            {
+                var producto = _contexto.Producto.Include(w => w.Detalle).AsNoTracking().SingleOrDefault(q => q.IdProducto == id);
+                if (producto.Detalle.Find(x => x.IdIngrediente == idIngrediente) != null)
+                    paso = true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
             return paso;
         }
     }

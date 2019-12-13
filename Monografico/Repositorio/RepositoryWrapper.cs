@@ -24,7 +24,7 @@ namespace Monografico.Repositorio
 
         public RepositoryWrapper(Contexto contexto)
         {
-            _contexto = contexto;
+            _contexto = contexto;       
         }
 
         public RepositoryIngrediente Ingrediente 
@@ -134,6 +134,11 @@ namespace Monografico.Repositorio
                     _mesa = new RepositoryMesa(_contexto);
                 return _mesa;
             }
+        }
+
+        public async Task<bool> CheckConnectionAsync()
+        {
+            return await _contexto.Database.CanConnectAsync();
         }
     }
 }

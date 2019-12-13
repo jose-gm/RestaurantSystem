@@ -1,6 +1,10 @@
 ﻿@model Monografico.ViewModels.UsuarioViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
+@{
+    var modalTitle = "Formulario de usuario";
+}
+
 @functions {
     public string GetAntiXsrfRequestToken()
     {
@@ -19,7 +23,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Apellido" class="control-label"></label>
-                <input asp-for="Apellido" class="form-control" required/>
+                <input asp-for="Apellido" class="form-control" required />
                 <span asp-validation-for="Apellido" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -35,7 +39,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Cedula" class="control-label"></label>
-                <input asp-for="Cedula" class="form-control" required/>
+                <input asp-for="Cedula" class="form-control" required />
                 <span asp-validation-for="Cedula" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -50,7 +54,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" required/>
+                <input asp-for="Email" class="form-control" required />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -70,6 +74,8 @@
 
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
+    $('#myModalLabel').html("@modalTitle");
+
     var formulario = document.getElementById("form-crear");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();

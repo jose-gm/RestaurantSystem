@@ -159,5 +159,14 @@ namespace Monografico.Controllers
         {
             return Json(await repo.Ingrediente.GetList(x => true));
         }
+        
+        //GET:
+        public async Task<JsonResult> ListWitInventory(string search)
+        {
+            if(!string.IsNullOrEmpty(search))
+                return Json(await repo.Ingrediente.GetAllWithInventory(x => x.Descripcion.Contains(search)));
+            else
+                return Json(await repo.Ingrediente.GetAllWithInventory(x => true));
+        }
     }
 }

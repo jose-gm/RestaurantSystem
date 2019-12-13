@@ -4,11 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Monografico.Models;
+using Monografico.Repositorio;
 
 namespace Monografico.Controllers
 {
     public class AdminController : Controller
     {
+        RepositoryWrapper repo;
+
+        public AdminController(RepositoryWrapper _repo)
+        {
+            repo = _repo;
+        }
 
         public IActionResult Index()
         {
@@ -52,6 +59,11 @@ namespace Monografico.Controllers
         public IActionResult Ingrediente()
         {
             return View();
+        }
+        
+        public async Task<IActionResult> SeleccionMesa()
+        {
+            return View(await repo.Zona.GetAllWithMesa());
         }
     }
 }

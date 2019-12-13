@@ -1,6 +1,10 @@
 ﻿@model Monografico.ViewModels.ProductoViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
+@{
+    var modalTitle = "Editar";
+}
+
 @functions {
     public string GetAntiXsrfRequestToken()
     {
@@ -104,12 +108,14 @@
             }
         });
     }
-        
+
     $(document).ready(() => {
         $('.custom-file-input').on("change", function() {
             var nombreAchivo = $(this).val().split("\\").pop();
             $(this).next('.custom-file-label').html(nombreAchivo);
         });
+
+        $('#myModalLabel').html("@modalTitle");
     });
 
     var formulario = document.getElementById("form-editar");
@@ -151,7 +157,7 @@
                 },
                 data: formData,
                 contentType: false,
-                processData: false, 
+                processData: false,
                 error: function () {
                     $('#myModal').modal('hide');
                     toastr.error("Error al editar el producto");

@@ -1,0 +1,249 @@
+﻿@model Monografico.ViewModels.ProductoDetalleViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="form-ingrediente" method="post" asp-antiforgery="false" novalidate>
+            <div class="form-row justify-content-center">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input asp-for="IdProducto" type="hidden" />
+                        <label class="control-label">Ingredientes</label>
+                        <select asp-for="IdIngrediente" class="select2-multiple form-control"></select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Cantidad</label>
+                    <input asp-for="Cantidad" class="form-control"/>
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label"></label>
+                    <input type="submit" value="Agregar" class="btn btn-primary mt-4" />
+                </div>
+            </div>
+            <input type="hidden" id="RequestVerificationToken"
+                   name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+        </form>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-11">
+        <div class="table-responsive">
+            <table id="datatable" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.IdProducto)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.IdDetalle)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.IdIngrediente)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Descripcion)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Cantidad)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Unidad)
+                        </th>
+                        <th>
+                            Accion
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('.select2-multiple').select2({
+            dropdownParent: $('#myModal-lg'),
+            theme: 'bootstrap4',
+            ajax: {
+                url: "@Url.Action("ListWitInventory","Ingrediente")",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    var query = {
+                        search: params.term
+                    };
+                    return query;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.idIngrediente,
+                                text: item.descripcion
+                            };
+                        }),
+                    };
+                }
+            },
+            placeholder: 'Selecciona los ingredientes',
+        });
+
+        var table = $('#datatable').DataTable({
+            searching: false,
+            paging: false,
+            scrollY: 300,
+            ajax: {
+                url: "@Url.Action("ListOfIngredientes","Producto", new { id = Model.IdProducto})",
+                dataSrc: ''
+            },
+            columnDefs: [
+                {
+                    targets: [0,1,2],
+                    visible: false
+                },
+            ],
+            columns: [
+                { data: 'idProducto' },
+                { data: 'idDetalle' },
+                { data: 'idIngrediente' },
+                { data: 'descripcion' },
+                {
+                    data: 'cantidad',
+                    className: 'cantidad-td',
+                    render: function (data, type, row, meta) {
+                        return '<input class="cantidadInput" type="number" value="' + data + '"/>';
+                    }
+                },
+                { data: 'unidad' },
+                {
+                    data: {
+                    },
+                    render: function (data, type, row, meta) {
+                        return  '<input class="btn btn-primary updatebtn" type="button" value="Update" />' +
+                                '<input onclick="eliminarIngrediente(' + data.idProducto + ',' + data.idDetalle + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                    }
+                }
+            ]
+        });
+
+        /*$('#datatable .cantidad-td').on('change', 'input', function () {
+            var data = $(this).val();
+            console.log("mg");
+        });*/
+
+        //Actualiza la cantidad del detalle del producto
+        $('#datatable tbody').on('click', '.updatebtn', function () {
+            var data = table.row($(this).parents('tr')).data();
+            var cellIndex = table.cell($(this).parents('td')).index();
+            var d = table.cell(cellIndex.row, 4).nodes().to$().find('input').val();
+            //console.log(data);
+
+            var model = {
+                "IdProducto": data.idProducto,
+                "IdDetalle": data.idDetalle,
+                "IdIngrediente": data.idIngrediente,
+                "Descripcion": data.descripcion,
+                "Cantidad": d,
+                "Unidad": data.unidad
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("UpdateIngrediente","Producto")",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                    //$('#myModal').modal('hide');
+                    toastr.error("Error al actualizar");
+                },
+                success: function () {
+                    $('#datatable').DataTable().ajax.reload();
+                    toastr.success("Actualizado");
+                }
+            });
+        });
+    });
+
+    //Formulario sumit
+    var formulario = document.getElementById("form-ingrediente");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (formulario.checkValidity()) {
+            var selectlist = $('.select2-multiple').select2('data');
+
+            var model = {
+                "IdProducto": document.getElementById("IdProducto").value,
+                "IdIngrediente": selectlist[0].id,
+                "Cantidad": document.getElementById("Cantidad").value
+            };
+        
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("AddIngrediente","Producto")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                    //$('#myModal').modal('hide');
+                    //toastr.error("Error al guardar");
+                },
+                success: function (result) {
+                    if (result.code === 666) {
+                        toastr.warning("El Ingrediente ya esta agregado");
+                    }
+                    else {
+                        $('#datatable').DataTable().ajax.reload();
+
+                        $('.select2-multiple').val(null).trigger('change');
+                        document.getElementById("Cantidad").value = 0;
+                        toastr.success("Ingrediente agregado");
+                    }
+                }
+            });
+        }
+    });
+
+    
+
+    //Elimina el ingrediente
+    function eliminarIngrediente(idProducto, idDetalle) {
+        console.log(idProducto + " " + idDetalle);
+        var model = {
+            "IdProducto": new String(idProducto),
+            "IdDetalle": new String(idDetalle)
+        };
+
+        $.ajax({
+            method: "POST",
+            url: "@Url.Action("DeleteIngrediente","Producto")",
+            headers: {
+                "Content-type": "application/json"
+            },
+            data: JSON.stringify(model),
+            error: function () {
+                //$('#myModal').modal('hide');
+                toastr.error("Error al eliminar");
+            },
+            success: function () {
+                $('#datatable').DataTable().ajax.reload();
+                toastr.success("Eliminado con exito");
+            }
+        });
+    }
+
+</script>

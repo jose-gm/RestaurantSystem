@@ -1,6 +1,10 @@
 ﻿@model Monografico.Models.Zona
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
+@{
+    var modalTitle = "Formulario de zona";
+}
+
 @functions {
     public string GetAntiXsrfRequestToken()
     {
@@ -29,6 +33,8 @@
 
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
+    $('#myModalLabel').html("@modalTitle");
+
     var formulario = document.getElementById("form-crear");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -36,7 +42,7 @@
         if (formulario.checkValidity()) {
             var model = {
                 "Descripcion": document.getElementById("Descripcion").value
-               
+
             };
 
             //alert(model.Descripcion + model.Cantidad + model.Precio + model.FechaEntrada + model.EsContabilizable);

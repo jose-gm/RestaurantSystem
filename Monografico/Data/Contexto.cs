@@ -64,7 +64,16 @@ namespace Monografico.Data
             {
                 entity.ToTable("UsuarioRoles");
             });
-            
+
+            builder.Entity<Categoria>(entity =>
+            {
+                entity.HasKey(c => c.IdCategoria);
+                entity.HasMany(x => x.Productos)
+                    .WithOne(p => p.Categoria)
+                    .HasForeignKey(pp => pp.IdCategoria)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
             builder.Entity<Producto>(entity =>
             {
                 entity.HasKey(p => p.IdProducto);
@@ -73,7 +82,7 @@ namespace Monografico.Data
                 .HasForeignKey<Inventario>(s => s.IdProducto)
                 .OnDelete(DeleteBehavior.Cascade);
             });
-            
+                       
             builder.Entity<Ingrediente>(entity =>
             {
                 entity.HasKey(p => p.IdIngrediente);
@@ -81,6 +90,15 @@ namespace Monografico.Data
                 .WithOne(c => c.Ingrediente)
                 .HasForeignKey<Inventario>(s => s.IdIngrediente)
                 .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<Cuenta>(entity =>
+            {
+                entity.HasKey(c => c.IdCuenta);
+                entity.HasMany(x => x.Ordenes)
+                    .WithOne(p => p.Cuenta)
+                    .HasForeignKey(pp => pp.IdCuenta)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
         }

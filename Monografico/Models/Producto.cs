@@ -13,7 +13,7 @@ namespace Monografico.Models
     {
         [Key]
         public int IdProducto { get; set; }
-        public int IdCategoria { get; set; }
+        public int? IdCategoria { get; set; }
         [StringLength(60)]
         public string Descripcion { get; set; }
         public Decimal Precio { get; set; }
@@ -21,6 +21,7 @@ namespace Monografico.Models
         public bool LlevaIngredientes { get; set; }
         public bool LlevaInventario { get; set; }
         public virtual Inventario Inventario { get; set; }
+        public virtual Categoria Categoria { get; set; }
         public List<ProductoDetalle> Detalle { get; set; }
     }
 }
