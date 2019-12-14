@@ -18,133 +18,176 @@
     </environment>
 }
 
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-3">
-                        <label class="control-label">Mesero</label>
-                        <select class="select2-mesero form-control"></select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label">Mesa:</label>
-                        <span>@Model.Mesa</span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        <label class="control-label">Cuenta #:</label>
-                        <span>1</span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="table-responsive">
-                        <table id="datatable" class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        IdCuenta
-                                    </th>
-                                    <th>
-                                        IdOrden
-                                    </th>
-                                    <th>
-                                        IdDetalle
-                                    </th>
-                                    <th>
-                                        IdProducto
-                                    </th>
-                                    <th>
-                                        Producto
-                                    </th>
-                                    <th>
-                                        Precio
-                                    </th>
-                                    <th>
-                                        Cantidad
-                                    </th>
-                                    <th>
-                                        Total
-                                    </th>
-                                    <th>
-                                    </th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
 
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="bg-secondary">
-                            <label>Total:</label>
-                            <span id="total-span" class="ml-auto">0</span>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="control-label">Mesero</label>
+                                <select class="select2-mesero form-control"></select>
+                            </div>  
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="control-label">Mesa:</label>
+                                <span>@Model.Mesa</span>
+                            </div>
+                        </div>
+
+                        <!-- Ordenes -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table id="datatable" class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    IdCuenta
+                                                </th>
+                                                <th>
+                                                    IdOrden
+                                                </th>
+                                                <th>
+                                                    IdDetalle
+                                                </th>
+                                                <th>
+                                                    IdProducto
+                                                </th>
+                                                <th>
+                                                    Producto
+                                                </th>
+                                                <th>
+                                                    Precio
+                                                </th>
+                                                <th>
+                                                    Cantidad
+                                                </th>
+                                                <th>
+                                                    Total
+                                                </th>
+                                                <th>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>                           
+                        </div>
+
+                        <!--Total-->
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <div class="bg-secondary">
+                                    <label>Total:</label>
+                                    <span id="total-span" class="ml-auto">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Acciones-->
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4">
+                                <button id="cancelarbtn" class="btn btn-secondary btn-block">Cancelar</button>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <button id="ordenarbtn" class="btn btn-secondary btn-block">Ordenar</button>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <button id="cuentabtn" class="btn btn-secondary btn-block">Cuenta</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="col-md-6">
-                <div class="row" style="overflow-x:scroll;">
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                        <li class="nav-item mr-1">
-                            <a class="nav-link active" id="pills-todo-tab" data-toggle="pill" href="#pills-todo" role="tab" aria-controls="pills-todo" aria-selected="true">Todo</a>
-                        </li>
-                        @foreach (var item in Model.Categorias)
-                        {
-                            <li class="nav-item mr-1">
-                                <a class="nav-link" id="pills-@item.Descripcion-tab" data-toggle="pill" href="#pills-@item.Descripcion" role="tab" aria-controls="pills-@item.Descripcion" aria-selected="false">@item.Descripcion</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-md-12 col-sm-12">
-                        <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade show active" id="pills-todo" role="tabpanel" aria-labelledby="pills-todo-tab">
-                                @foreach (var categ in Model.Categorias)
+                    <!--Seleccion de productos-->
+                    <div class="col-md-12">
+                        <div class="row" style="overflow-x:scroll;">
+                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item mr-1">
+                                    <a class="nav-link active" id="pills-todo-tab" data-toggle="pill" href="#pills-todo" role="tab" aria-controls="pills-todo" aria-selected="true">Todo</a>
+                                </li>
+                                @foreach (var item in Model.Categorias)
                                 {
-                                    @foreach (var producto in categ.Productos)
-                                    {
-                                        <div class="row">
-                                            <div class="col-sm-5 col-md-3">
-                                                <div class="card">
-                                                    <div class="card-body p-0">
-                                                        <span class="ml-auto text-white" style="position:absolute; font-weight:bold">@producto.Precio</span>
-                                                        <a href="#" class="productolink" data-idproducto="@producto.IdProducto" data-idcuenta="@Model.IdCuenta">
-                                                            <img class="rounded mx-auto d-block" src="data:image/jpeg;base64,@producto.Imagen" width="100%" height="100%" />
-                                                        </a>
-                                                        <span>@producto.Descripcion</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
+                                    <li class="nav-item mr-1">
+                                        <a class="nav-link" id="pills-@item.Descripcion-tab" data-toggle="pill" href="#pills-@item.Descripcion" role="tab" aria-controls="pills-@item.Descripcion" aria-selected="false">@item.Descripcion</a>
+                                    </li>
                                 }
-                            </div>
-                            @foreach (var categ in Model.Categorias)
-                            {
-                                <div class="tab-pane fade" id="pills-@categ.Descripcion" role="tabpanel" aria-labelledby="pills-@categ.Descripcion-tab">
-                                    @foreach (var producto in categ.Productos)
-                                    {
+                            </ul>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="tab-content" id="pills-tabContent" style="border:0px;">
+                                    <div class="tab-pane fade show active" id="pills-todo" role="tabpanel" aria-labelledby="pills-todo-tab">
                                         <div class="row">
-                                            <div class="col-sm-5 col-md-3">
-                                                <div class="card">
-                                                    <div class="card-body p-0">
-                                                        <span class="ml-auto text-white" style="position:absolute; font-weight:bold">@producto.Precio</span>
-                                                        <a href="#" class="productolink" data-idproducto="@producto.IdProducto" data-idcuenta="@Model.IdCuenta">
-                                                            <img class="rounded mx-auto d-block" src="data:image/jpeg;base64,@producto.Imagen" width="100%" height="100%" />
-                                                        </a>
-                                                        <span>@producto.Descripcion</span>
+                                            @foreach (var categ in Model.Categorias)
+                                            {
+                                                @foreach (var producto in categ.Productos)
+                                                {
+                                                    <div class="col-sm-4 col-md-3">
+                                                        <div class="card">
+                                                            <div class="card-body p-0">
+                                                                <span class="ml-auto text-white" style="position:absolute; font-weight:bold">@producto.Precio</span>
+                                                                <a href="#" class="productolink" data-idproducto="@producto.IdProducto" data-idcuenta="@Model.IdCuenta">
+                                                                    @if (!string.IsNullOrEmpty(producto.Imagen))
+                                                                    {
+                                                                        <img class="rounded mx-auto d-block" src="data:image/jpeg;base64,@producto.Imagen" width="100%" height="100%" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img class="rounded mx-auto d-block" src="~/img/tomioka.jpg" width="100%" height="100%" />
+                                                                    }
+                                                                </a>
+                                                                <span>@producto.Descripcion</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
+                                                }
+                                            }                                            
+                                        </div>
+                                    </div>
+                                    @foreach (var categ in Model.Categorias)
+                                    {
+                                        <div class="tab-pane fade" id="pills-@categ.Descripcion" role="tabpanel" aria-labelledby="pills-@categ.Descripcion-tab">
+                                            <div class="row">
+                                                @foreach (var producto in categ.Productos)
+                                                {
+                                                    <div class="col-sm-5 col-md-3">
+                                                        <div class="card">
+                                                            <div class="card-body p-0">
+                                                                <span class="ml-auto text-white" style="position:absolute; font-weight:bold">@producto.Precio</span>
+                                                                <a href="#" class="productolink" data-idproducto="@producto.IdProducto" data-idcuenta="@Model.IdCuenta">
+                                                                    @if (!string.IsNullOrEmpty(producto.Imagen))
+                                                                    {
+                                                                        <img class="rounded mx-auto d-block" src="data:image/jpeg;base64,@producto.Imagen" width="100%" height="100%" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img class="rounded mx-auto d-block" src="~/img/tomioka.jpg" width="100%" height="100%" />
+                                                                    }
+                                                                </a>
+                                                                <span>@producto.Descripcion</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>                                            
                                         </div>
                                     }
                                 </div>
-                            }
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -152,6 +195,9 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de confirmacion de eliminacion-->
+<partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
 
 @section script {
     <environment include="Development">
@@ -196,8 +242,8 @@
                 placeholder: 'Selecciona una mesa',
             });*/
 
-            var _url = "@Url.Action("ListOfOrden","Cuenta")" + "/" +"@Model.IdCuenta"; 
             //Datatable
+            var _url = "@Url.Action("ListOfOrden","Cuenta")" + "/" +"@Model.IdCuenta";
             table = $('#datatable').DataTable({
                 language: {
                     emptyTable: "No hay productos en la lista"
@@ -228,7 +274,7 @@
                     { data: 'precio' },
                     {
                         data: 'cantidad',
-                        render: function (data, type, row, meta) {                        
+                        render: function (data, type, row, meta) {
                             return '<input class="cantidadInput" type="number" value="' + data + '"/>';
                         }
                     },
@@ -292,10 +338,7 @@
             });
         });
 
-        function actualizar() {
-            document.getElementById("total-span").innerHTML = $('#datatable').DataTable().column(7).data().sum();
-        }
-
+        //borra una orden de la lista
         function borrar(idorden, iddetalle) {
             $.ajax({
                 url: "@Url.Action("DeleteOrden","Cuenta")",
@@ -303,9 +346,30 @@
                 error: function () {
                 },
                 success: function () {
-                    $('#datatable').DataTable().ajax.reload();
+                    $('#datatable').DataTable().ajax.reload(actualizar);                    
                 }
             });
         }
+
+        function actualizar() {
+            document.getElementById("total-span").innerHTML = $('#datatable').DataTable().column(7).data().sum();
+        }
+
+        document.getElementById("cancelarbtn").addEventListener('click', function(e) {
+            abrirModalBorrar("Seguro que desea cancelar la orden?", "/img/warning.png");
+        });
+
+        document.getElementById("botonEliminar").addEventListener('click', function (e) {
+            /*$.ajax({
+                url: "*//*",
+                data: { idOrden: idorden, idDetalle: iddetalle },
+                error: function () {
+                },
+                success: function () {
+                    $('#datatable').DataTable().ajax.reload();
+                }
+            });*/
+            eliminar("@Url.Action("CancelarOrden","Cuenta")", "datatable", @Model.IdCuenta);
+        });
     </script>
 }

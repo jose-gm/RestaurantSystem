@@ -128,6 +128,29 @@ namespace Monografico.Repositorio
             return model;
         }
 
+        public async Task<bool> RemoveAllOrdenes(int id)
+        {
+            var paso = false;
+            try
+            {
+                var cuenta = _contexto.Cuenta.Include(x => x.Ordenes).ThenInclude(y => y.Detalle).AsNoTracking().SingleOrDefault(z => z.IdCuenta == id);
+
+                foreach (var item in cuenta.Ordenes)
+                    _contexto.Entry(item).State = EntityState.Deleted;
+
+                _contexto.Cuenta.Update(cuenta);
+                await _contexto.SaveChangesAsync();
+
+                paso = true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
+        }
+
         /// <summary>
         /// Devuelve una lista con todas las ordenes de la cuenta pasada por parametro
         /// </summary>

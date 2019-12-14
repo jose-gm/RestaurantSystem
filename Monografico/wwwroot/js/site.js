@@ -24,10 +24,27 @@ function agregarEditar(id, _url) {
     });
 }
 
-//Abre el modal de mensaje de confirmacion para eliminar un inventario
+//Abre el modal de mensaje de confirmacion para eliminar
 var temp;
 function abrirModalBorrar(id) {
     temp = id;
+    $('#borrarModal').modal({
+        keyboard: false,
+        backdrop: 'static'
+    });
+}
+
+//Abre el modal de mensaje de confirmacion para eliminar
+function abrirModalBorrar() {
+    $('#borrarModal').modal({
+        keyboard: false,
+        backdrop: 'static'
+    });
+}
+
+function abrirModalBorrar(titulo, imgSrc) {
+    document.getElementById("modal-delete-titulo").innerHTML = titulo;
+    document.getElementById("modal-delete-imagen").src = imgSrc;
     $('#borrarModal').modal({
         keyboard: false,
         backdrop: 'static'
@@ -43,12 +60,31 @@ function agregarIngredientes(id,_url) {
     });
 }
 
-//Elimina un inventario usando ajax
+//Elimina un modelo usando ajax
 function eliminar(_url, table) {
     var url = _url;
     $.ajax({
         url: url,
         data: { id: temp },
+        error: function (response) {
+            $('#borrarModal').modal('hide');
+            toastr.error("Error al borrar");
+            //alert(response);
+        },
+        success: function () {
+            $('#' + table).DataTable().ajax.reload();
+            $('#borrarModal').modal('hide');
+            toastr.success("Eliminado");
+        }
+    });
+}
+
+//Elimina un modelo usando ajax
+function eliminar(_url, table, id) {
+    var url = _url;
+    $.ajax({
+        url: url,
+        data: { id: id },
         error: function (response) {
             $('#borrarModal').modal('hide');
             toastr.error("Error al borrar");

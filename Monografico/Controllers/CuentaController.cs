@@ -142,6 +142,21 @@ namespace Monografico.Controllers
                 return Json("Error");
             }
         }
+        
+        // GET:
+        public async Task<ActionResult> CancelarOrden(int id)
+        {
+            try
+            {
+                await repo.Cuenta.RemoveAllOrdenes(id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+
+                return Json("Error");
+            }
+        }
 
         // POST: Orden/Delete/5
         [HttpPost]
