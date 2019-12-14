@@ -10,8 +10,8 @@ using Monografico.Data;
 namespace Monografico.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20191205002035_InicialCreate")]
-    partial class InicialCreate
+    [Migration("20191213142818_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -476,13 +476,15 @@ namespace Monografico.Migrations
 
             modelBuilder.Entity("Monografico.Models.Inventario", b =>
                 {
-                    b.HasOne("Monografico.Models.Ingrediente")
+                    b.HasOne("Monografico.Models.Ingrediente", "Ingrediente")
                         .WithOne("Inventario")
-                        .HasForeignKey("Monografico.Models.Inventario", "IdIngrediente");
+                        .HasForeignKey("Monografico.Models.Inventario", "IdIngrediente")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Monografico.Models.Producto")
+                    b.HasOne("Monografico.Models.Producto", "Producto")
                         .WithOne("Inventario")
-                        .HasForeignKey("Monografico.Models.Inventario", "IdProducto");
+                        .HasForeignKey("Monografico.Models.Inventario", "IdProducto")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Monografico.Models.Mesa", b =>

@@ -474,13 +474,15 @@ namespace Monografico.Migrations
 
             modelBuilder.Entity("Monografico.Models.Inventario", b =>
                 {
-                    b.HasOne("Monografico.Models.Ingrediente")
+                    b.HasOne("Monografico.Models.Ingrediente", "Ingrediente")
                         .WithOne("Inventario")
-                        .HasForeignKey("Monografico.Models.Inventario", "IdIngrediente");
+                        .HasForeignKey("Monografico.Models.Inventario", "IdIngrediente")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Monografico.Models.Producto")
+                    b.HasOne("Monografico.Models.Producto", "Producto")
                         .WithOne("Inventario")
-                        .HasForeignKey("Monografico.Models.Inventario", "IdProducto");
+                        .HasForeignKey("Monografico.Models.Inventario", "IdProducto")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Monografico.Models.Mesa", b =>
