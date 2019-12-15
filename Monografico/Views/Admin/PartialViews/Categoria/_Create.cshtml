@@ -1,6 +1,10 @@
 ﻿@model Monografico.ViewModels.CategoriaViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
+@{
+    var modalTitle = "Formulario de categoria";
+}
+
 @functions {
     public string GetAntiXsrfRequestToken()
     {
@@ -40,6 +44,8 @@
             var nombreAchivo = $(this).val().split("\\").pop();
             $(this).next('.custom-file-label').html(nombreAchivo);
         });
+
+        $('#myModalLabel').html("@modalTitle");
     });
 
     var formulario = document.getElementById("form-crear");

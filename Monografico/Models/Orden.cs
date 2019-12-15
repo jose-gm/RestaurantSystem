@@ -14,7 +14,9 @@ namespace Monografico.Models
         [Key]
         public int IdOrden { get; set; }
         public int IdCuenta { get; set; }
+        public bool Enviado { get; set; }
         public DateTime Fecha { get; set; }
-        public List<OrdenDetalle> Detalle { get; set; }
+        public virtual Cuenta Cuenta { get; set; }
+        public virtual List<OrdenDetalle> Detalle { get; set; }
     }
 }

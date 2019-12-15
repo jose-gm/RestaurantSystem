@@ -32,27 +32,29 @@ namespace Monografico.Controllers
         // GET: Mesa/Create
         public async Task<IActionResult> Create()
         {
+            ViewBag.Zonas = await repo.Zona.GetSelectList();
             return PartialView("~/Views/Admin/PartialViews/Mesa/_Create.cshtml", new Mesa());
         }
 
         // POST: Mesa/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromBody]Mesa mesita)
+        public async Task<IActionResult> Create([FromBody]Mesa mesa)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    await repo.Mesa.Add(mesita);
+                    await repo.Mesa.Add(mesa);
+                    return Ok();
                 }
-                return Ok();
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+            return NotFound();
         }
 
         // GET: Mesa/Edit/5

@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Monografico.Models.Zona>
+
+@{
+    ViewData["Title"] = "Seleccion de Mesa";
+}
+
+
+<div class="card">
+    <div class="card-body">
+        @foreach (var item in Model)
+        {
+            <div class="row">
+                <h2>@item.Descripcion</h2>
+            </div>
+            <div class="row">
+                @foreach (var mesa in item.Mesas)
+                {
+                    <div class="col-md-4">
+                        <a asp-action="Index" asp-controller="Cuenta" asp-route-id="@mesa.IdMesa">
+                            <img src="~/img/mesa.png" alt="icono de una mesa" style="width:30%; height:70%" />
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

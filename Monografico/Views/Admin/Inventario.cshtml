@@ -14,7 +14,7 @@
         <div class="row mb-2">
             <div class="col-md-3">
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" onclick="abrirModal(-1);">
+                <button type="button" class="btn btn-primary" onclick="abrirModalCrear();">
                     Agregar Inventario
                 </button>
             </div>
@@ -85,7 +85,7 @@
                     {
                         data: 'idInventario',
                         render: function (data, type, row, meta) {
-                            return '<input onclick="abrirModal(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                            return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
                             '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
                         }
                     }
@@ -93,14 +93,12 @@
             });
         });
 
-        //Abre el modal con con un formulario dependiendo del valor del parametro:
-        //-1: agrega el formulario de crear al modal
-        //>0: agrega el formulario de editar al modal
-        function abrirModal(id) {           
-            if (id == -1) 
-                agregarCrear("@Url.Action("Create","Inventario")");
-            else 
-                agregarEditar(id, "@Url.Action("Edit","Inventario")");           
+        function abrirModalCrear() {
+            agregarCrear("@Url.Action("Create","Inventario")");               
+        }
+
+        function abrirModalEditar(id) {
+            agregarEditar(id, "@Url.Action("Edit","Inventario")");
         }
 
         document.getElementById("botonEliminar").addEventListener('click', () => {

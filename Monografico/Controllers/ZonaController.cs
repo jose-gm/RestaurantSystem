@@ -112,7 +112,7 @@ namespace Monografico.Controllers
 
         public async Task<JsonResult> List()
         {
-            return Json(await repo.Zona.GetList(x => true));
+            return Json(await repo.Zona.GetAllWithMesa());
         }
     }
 }

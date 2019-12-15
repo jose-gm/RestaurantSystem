@@ -1,0 +1,375 @@
+﻿@model Monografico.ViewModels.CuentaViewModel
+
+@{
+    ViewData["Title"] = "Lista de mesas";
+}
+
+@section link {
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <environment include="Development">
+        <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+        <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+}
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="control-label">Mesero</label>
+                                <select class="select2-mesero form-control"></select>
+                            </div>  
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="control-label">Mesa:</label>
+                                <span>@Model.Mesa</span>
+                            </div>
+                        </div>
+
+                        <!-- Ordenes -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table id="datatable" class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    IdCuenta
+                                                </th>
+                                                <th>
+                                                    IdOrden
+                                                </th>
+                                                <th>
+                                                    IdDetalle
+                                                </th>
+                                                <th>
+                                                    IdProducto
+                                                </th>
+                                                <th>
+                                                    Producto
+                                                </th>
+                                                <th>
+                                                    Precio
+                                                </th>
+                                                <th>
+                                                    Cantidad
+                                                </th>
+                                                <th>
+                                                    Total
+                                                </th>
+                                                <th>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>                           
+                        </div>
+
+                        <!--Total-->
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <div class="bg-secondary">
+                                    <label>Total:</label>
+                                    <span id="total-span" class="ml-auto">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Acciones-->
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4">
+                                <button id="cancelarbtn" class="btn btn-secondary btn-block">Cancelar</button>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <button id="ordenarbtn" class="btn btn-secondary btn-block">Ordenar</button>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <button id="cuentabtn" class="btn btn-secondary btn-block">Cuenta</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <!--Seleccion de productos-->
+                    <div class="col-md-12">
+                        <div class="row" style="overflow-x:scroll;">
+                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item mr-1">
+                                    <a class="nav-link active" id="pills-todo-tab" data-toggle="pill" href="#pills-todo" role="tab" aria-controls="pills-todo" aria-selected="true">Todo</a>
+                                </li>
+                                @foreach (var item in Model.Categorias)
+                                {
+                                    <li class="nav-item mr-1">
+                                        <a class="nav-link" id="pills-@item.Descripcion-tab" data-toggle="pill" href="#pills-@item.Descripcion" role="tab" aria-controls="pills-@item.Descripcion" aria-selected="false">@item.Descripcion</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="tab-content" id="pills-tabContent" style="border:0px;">
+                                    <div class="tab-pane fade show active" id="pills-todo" role="tabpanel" aria-labelledby="pills-todo-tab">
+                                        <div class="row">
+                                            @foreach (var categ in Model.Categorias)
+                                            {
+                                                @foreach (var producto in categ.Productos)
+                                                {
+                                                    <div class="col-sm-4 col-md-3">
+                                                        <div class="card">
+                                                            <div class="card-body p-0">
+                                                                <span class="ml-auto text-white" style="position:absolute; font-weight:bold">@producto.Precio</span>
+                                                                <a href="#" class="productolink" data-idproducto="@producto.IdProducto" data-idcuenta="@Model.IdCuenta">
+                                                                    @if (!string.IsNullOrEmpty(producto.Imagen))
+                                                                    {
+                                                                        <img class="rounded mx-auto d-block" src="data:image/jpeg;base64,@producto.Imagen" width="100%" height="100%" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img class="rounded mx-auto d-block" src="~/img/tomioka.jpg" width="100%" height="100%" />
+                                                                    }
+                                                                </a>
+                                                                <span>@producto.Descripcion</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }                                            
+                                        </div>
+                                    </div>
+                                    @foreach (var categ in Model.Categorias)
+                                    {
+                                        <div class="tab-pane fade" id="pills-@categ.Descripcion" role="tabpanel" aria-labelledby="pills-@categ.Descripcion-tab">
+                                            <div class="row">
+                                                @foreach (var producto in categ.Productos)
+                                                {
+                                                    <div class="col-sm-5 col-md-3">
+                                                        <div class="card">
+                                                            <div class="card-body p-0">
+                                                                <span class="ml-auto text-white" style="position:absolute; font-weight:bold">@producto.Precio</span>
+                                                                <a href="#" class="productolink" data-idproducto="@producto.IdProducto" data-idcuenta="@Model.IdCuenta">
+                                                                    @if (!string.IsNullOrEmpty(producto.Imagen))
+                                                                    {
+                                                                        <img class="rounded mx-auto d-block" src="data:image/jpeg;base64,@producto.Imagen" width="100%" height="100%" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img class="rounded mx-auto d-block" src="~/img/tomioka.jpg" width="100%" height="100%" />
+                                                                    }
+                                                                </a>
+                                                                <span>@producto.Descripcion</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>                                            
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmacion de eliminacion-->
+<partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
+
+@section script {
+    <environment include="Development">
+        <script src="~/lib/toastr.js/toastr.min.js"></script>
+        <script src="~/js/site.js"></script>
+        <script src="~/lib/select2/js/select2.min.js"></script>
+        <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="~/lib/datables-plugins/sum.js"></script>
+        <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <script src="~/js/site.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/plug-ins/1.10.20/api/sum().js"></script>
+        <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    </environment>
+
+    <script>
+        var table;
+
+        $(document).ready(function () {
+            //Mesa select
+            /*$('.select2-mesero').select2({
+                minuminminimumResultsForSearch: Infinity,
+                theme: 'bootstrap4',
+                ajax: {
+                    url: "",
+                    dataType: 'json',
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.idMesa,
+                                    text: item.descripcion
+                                };
+                            }),
+                        };
+                    }
+                },
+                placeholder: 'Selecciona una mesa',
+            });*/
+
+            //Datatable
+            var _url = "@Url.Action("ListOfOrden","Cuenta")" + "/" +"@Model.IdCuenta";
+            table = $('#datatable').DataTable({
+                language: {
+                    emptyTable: "No hay productos en la lista"
+                },
+                ordering: false,
+                searching: false,
+                paging: false,
+                scrollY: 260,
+                ajax: {
+                    url: _url,
+                    dataSrc: ''
+                },
+                initComplete: function (settings, json) {
+                    actualizar();
+                },
+                columnDefs: [
+                    {
+                        targets: [0,1,2,3],
+                        visible: false
+                    },
+                ],
+                columns: [
+                    { data: 'idCuenta' },
+                    { data: 'idOrden' },
+                    { data: 'idDetalle' },
+                    { data: 'idProducto' },
+                    { data: 'descripcion' },
+                    { data: 'precio' },
+                    {
+                        data: 'cantidad',
+                        render: function (data, type, row, meta) {
+                            return '<input class="cantidadInput" type="number" value="' + data + '"/>';
+                        }
+                    },
+                    { data: 'total' },
+                    {
+                        data: {},
+                        render: function (data, type, row, meta) {
+                            return '<input class="btn btn-danger" type="button" value="X" onclick="borrar(' + data.idOrden + ',' + data.idDetalle + ')" />';
+                        }
+                    }
+                ]
+            });
+
+            //Actualiza la columna de total de la tabla
+            $('#datatable tbody').on('change', '.cantidadInput', function () {
+                var data = table.row($(this).parents('tr')).data();
+                var cellIndex = table.cell($(this).parents('td')).index();
+
+                var idorden = table.cell(cellIndex.row, 1).data();
+                var iddetalle = table.cell(cellIndex.row, 2).data();
+
+                var cantidadCell = table.cell(cellIndex.row, 6).nodes().to$().find('input').val();
+                var precio = table.cell(cellIndex.row, 5).data();
+                table.cell(cellIndex.row, 7).data(cantidadCell * precio).draw();
+                actualizar();
+
+                 $.ajax({
+                    url: "@Url.Action("UpdateOrden","Cuenta")",
+                    data: { idOrden: idorden, idDetalle: iddetalle, cantidad: cantidadCell },
+                    error: function () {
+                    },
+                    success: function () {
+                        $('#datatable').DataTable().ajax.reload();
+                    }
+                });
+            });
+        });
+
+        //Evento de seleccion de producto y lo agrega a la lista
+        $('.productolink').click(function (e) {
+            e.preventDefault();
+
+            var model = {
+                "IdCuenta": $(this).data('idcuenta'),
+                "IdProducto": $(this).data('idproducto'),
+                "Cantidad": 1
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("AddOrden","Cuenta")",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                },
+                success: function () {
+                    $('#datatable').DataTable().ajax.reload(actualizar);
+                }
+            });
+        });
+
+        //borra una orden de la lista
+        function borrar(idorden, iddetalle) {
+            $.ajax({
+                url: "@Url.Action("DeleteOrden","Cuenta")",
+                data: { idOrden: idorden, idDetalle: iddetalle },
+                error: function () {
+                },
+                success: function () {
+                    $('#datatable').DataTable().ajax.reload(actualizar);                    
+                }
+            });
+        }
+
+        function actualizar() {
+            document.getElementById("total-span").innerHTML = $('#datatable').DataTable().column(7).data().sum();
+        }
+
+        document.getElementById("cancelarbtn").addEventListener('click', function(e) {
+            abrirModalBorrar("Seguro que desea cancelar la orden?", "/img/warning.png");
+        });
+
+        document.getElementById("botonEliminar").addEventListener('click', function (e) {
+            /*$.ajax({
+                url: "*//*",
+                data: { idOrden: idorden, idDetalle: iddetalle },
+                error: function () {
+                },
+                success: function () {
+                    $('#datatable').DataTable().ajax.reload();
+                }
+            });*/
+            eliminar("@Url.Action("CancelarOrden","Cuenta")", "datatable", @Model.IdCuenta);
+        });
+    </script>
+}

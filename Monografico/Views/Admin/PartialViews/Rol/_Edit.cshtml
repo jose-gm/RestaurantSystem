@@ -1,6 +1,10 @@
 ﻿@model Monografico.ViewModels.RolesViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
+@{
+    var modalTitle = "Editar";
+}
+
 @functions {
     public string GetAntiXsrfRequestToken()
     {
@@ -30,6 +34,8 @@
 </div>
 
 <script>
+    $('#myModalLabel').html("@modalTitle");
+
     var formulario = document.getElementById("form-editar");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();

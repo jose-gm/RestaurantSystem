@@ -26,7 +26,7 @@ namespace Monografico.ViewModels
     {
         public int IdProducto { get; set; }
         [Display(Name = "Categoria")]
-        public int IdCategoria { get; set; }
+        public int? IdCategoria { get; set; }
         [Required]
         [StringLength(60)]
         public string Descripcion { get; set; }

@@ -1,6 +1,10 @@
 ﻿@model Monografico.ViewModels.RolesViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
 
+@{
+    var modalTitle = "Formulario de roles";
+}
+
 @functions {
     public string GetAntiXsrfRequestToken()
     {
@@ -29,6 +33,8 @@
 
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
+    $('#myModalLabel').html("@modalTitle");
+
     var formulario = document.getElementById("form-crear");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
