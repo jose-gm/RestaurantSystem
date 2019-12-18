@@ -1,15 +1,20 @@
-﻿<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">Home</a></li>
-        <li class="breadcrumb-item active">Library</li>
+﻿@*<nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Library</li>
 
-        <!-- Breadcrumb Menu-->
-        <li class="breadcrumb-menu">
-            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                <a class="btn" href="#"><i class="cui-speech"></i></a>
-                <a class="btn" href="#"><i class="cui-graph"></i> Dashboard</a>
-                <a class="btn" href="#"><i class="cui-settings"></i> Settings</a>
-            </div>
-        </li>
-    </ol>
-</nav>
+            <!-- Breadcrumb Menu-->
+            <li class="breadcrumb-menu">
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <a class="btn" href="#"><i class="cui-speech"></i></a>
+                    <a class="btn" href="#"><i class="cui-graph"></i> Dashboard</a>
+                    <a class="btn" href="#"><i class="cui-settings"></i> Settings</a>
+                </div>
+            </li>
+        </ol>
+    </nav>*@
+
+<breadcrumb asp-homepage-title="Home" asp-homepage-url="@Url.Action("Index","Admin")" asp-bootstrap-version="V3" asp-homepage-glyphicon="glyphicon glyphicon-home">
+
+</breadcrumb>
+

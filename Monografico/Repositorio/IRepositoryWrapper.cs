@@ -8,6 +8,5 @@ namespace Monografico.Repositorio
 {
     public interface IRepositoryWrapper
     {
-
     }
 }

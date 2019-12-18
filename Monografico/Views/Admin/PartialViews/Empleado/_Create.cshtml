@@ -58,6 +58,14 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label>Roles</label>
+                <select asp-for="Roles"
+                        asp-items="@(new SelectList(ViewBag.Roles, "ID", "Descripcion"))"
+                        class="form-control"
+                        data-placeholder="Seleccione un rol para el usuario"></select>
+                <span asp-validation-for="Roles" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Clave" class="control-label"></label>
                 <input asp-for="Clave" class="form-control" />
                 <span asp-validation-for="Clave" class="text-danger"></span>
@@ -84,8 +92,8 @@
             var model = {
                 "Nombre": document.getElementById("Nombre").value,
                 "Apellido": document.getElementById("Apellido").value,
-                "Sexo": document.getElementById("Sexo").value,
                 "Cedula": document.getElementById("Cedula").value,
+                "Sexo": document.getElementById("Sexo").value,
                 "Direccion" : document.getElementById("Direccion").value,
                 "NombreUsuario": document.getElementById("NombreUsuario").value,
                 "Email": document.getElementById("Email").value,

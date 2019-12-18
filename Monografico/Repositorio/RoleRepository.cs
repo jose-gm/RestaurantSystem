@@ -1,22 +1,24 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Monografico.Data;
 using Monografico.Models;
 using Monografico.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Monografico.Repositorio
 {
-    public class RepositoryRol : RepositoryBase<Rol>
+    public class RoleRepository 
     {
+        private readonly Contexto _contexto;
         private readonly RoleManager<Rol> _roleManager;
-        public RepositoryRol(Contexto context, RoleManager<Rol> roleManager) : base(context)
+
+        public RoleRepository(Contexto context, RoleManager<Rol> roleManager)
         {
+            _contexto = context;
             _roleManager = roleManager;
         }
         public async Task<IdentityResult> CreateAsync(Rol rol)
@@ -48,7 +50,7 @@ namespace Monografico.Repositorio
             return modelo;
         }
 
-        public async Task<IEnumerable<Rol>> GetRoleListAsync(string filtro = "1=1")
+        public async Task<IEnumerable<Rol>> GetRoleListAsync(string filtro = "")
         {
             var roles = await _roleManager.Roles
                 .AsNoTracking()
@@ -59,31 +61,17 @@ namespace Monografico.Repositorio
             return roles;
         }
 
-        public async Task<List<Generic>> GetGenericRoleListAsync()
-        {
-            var lista = await (from m in _contexto.Rol
-                                 .AsQueryable()
-                                 .AsNoTracking()
-                               select new Generic
-                               {
-                                   ID = m.Id.ToString(),
-                                   Descripcion = m.Name,
-                               }).ToListAsync();
-            return lista;
-        }
-
-
         public async Task<IEnumerable<RolesViewModel>> GetRoleViewModelListAsync(string filtro = "")
         {
-            var lista = await (from m in _contexto.Rol
-                                .Where(filtro)
-                                .AsQueryable()
-                                .AsNoTracking()
-                               select new RolesViewModel
-                               {
-                                   Id = m.Id,
-                                   Nombre = m.Name
-                               }).ToListAsync();
+            var lista = await(from m in _contexto.Rol
+                               .Where(filtro)
+                               .AsQueryable()
+                               .AsNoTracking()
+                              select new RolesViewModel
+                              {
+                                  Id = m.Id,
+                                  Nombre = m.Name
+                              }).ToListAsync();
             return lista;
         }
 

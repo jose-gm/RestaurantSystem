@@ -46,7 +46,7 @@ namespace Monografico.Controllers
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    //repo.Rol.Guardar(rol);
+                  await  repo.Rol.CreateWithRoleViewModelAsync(rol);
                 }
                 return Ok();
             }
@@ -59,7 +59,7 @@ namespace Monografico.Controllers
         // GET: Rol/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Rol/_Edit.cshtml", await repo.Rol.Find(id));
+            return PartialView("~/Views/Admin/PartialViews/Rol/_Edit.cshtml", await repo.Rol.GetByIDAsync(id));
         }
 
         // POST: Rol/Edit/5
@@ -85,7 +85,7 @@ namespace Monografico.Controllers
             try
             {
                 // TODO: Add delete logic here
-                await repo.Rol.Remove(id);
+                await repo.Rol.DeleteByIdAsync(id);
                 return Ok();
             }
             catch
@@ -114,7 +114,7 @@ namespace Monografico.Controllers
         //GET:
         public async Task<JsonResult> List()
         {
-            return Json(await repo.Rol.GetList(x => true));
+            return Json(await repo.Rol.GetRoleListAsync("x => true"));
         }
     }
 }

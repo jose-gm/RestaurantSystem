@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Monografico.ViewModels
 {
+    [Bind("Nombre,Apellido,Sexo,Cedula,Direccion,NombreUsuario,Email,Roles,Clave,Telefono")]
     public class UsuarioViewModel
     {
         public int IdUsuarioViewModel { get; set; }
@@ -29,5 +32,16 @@ namespace Monografico.ViewModels
         [Required]
         [DataType(DataType.Password)]
         public string Clave { get; set; }
+     
+        [DataType(DataType.PhoneNumber)]
+        public string Telefono { get; set; }
+        [Display(Name = "Roles")]
+        public string RoleName { get; set; }
+        public int Roles { get; set; }
+        public UsuarioViewModel()
+        {
+            IdUsuarioViewModel = 0;
+            Roles = 0;
+        }
     }
 }

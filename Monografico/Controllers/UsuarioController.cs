@@ -2,13 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DNTBreadCrumb.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Monografico.Models;
 using Monografico.Repositorio;
 using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
+    [Authorize]
     public class UsuarioController : Controller
     {
 
@@ -34,6 +39,7 @@ namespace Monografico.Controllers
         // GET: Usuario/Create
         public async Task<IActionResult> Create()
         {
+            ViewBag.Roles = await repo.Rol.GetGenericRoleListAsync();
             return PartialView("~/Views/Admin/PartialViews/Empleado/_Create.cshtml", new UsuarioViewModel());
         }
 
@@ -47,9 +53,13 @@ namespace Monografico.Controllers
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    //repo.Usuario.Guardar(usuario);
+                    Usuario User = new Usuario()
+                    { Nombre = usuario.Nombre, Apellido = usuario.Apellido, Sexo = usuario.Sexo, Cedula = usuario.Cedula, Direccion = usuario.Direccion, Email = usuario.Email, UserName = usuario.NombreUsuario };
+
+                    await repo.Usuario.Create(User, usuario.Clave,  usuario.Roles);
+                    return Ok();
                 }
-                return Ok();
+                return BadRequest();
             }
             catch
             {
@@ -57,10 +67,11 @@ namespace Monografico.Controllers
             }
         }
 
+
         // GET: Usuario/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Empleado/_Edit.cshtml", await repo.Usuario.Find(id));
+            return PartialView("~/Views/Admin/PartialViews/Empleado/_Edit.cshtml", await repo.Usuario.GetByIDAsync(id));
         }
 
         // POST: Usuario/Edit/5
@@ -86,7 +97,7 @@ namespace Monografico.Controllers
             try
             {
                 // TODO: Add delete logic here
-                await repo.Usuario.Remove(id);
+                //await repo.Usuario.Remove(id);
                 return Ok();
             }
             catch
@@ -115,7 +126,7 @@ namespace Monografico.Controllers
         //GET:
         public async Task<JsonResult> List()
         {
-            return Json(await repo.Usuario.GetList(x => true));
+            return Json(await repo.Usuario.GetUsuarioViewModelListAsync("x => true"));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,5 +15,7 @@ namespace Monografico.Models
         public string Cedula { get; set; }
         public string Direccion { get; set; }
         public List<ApplicationUserRole> UsuarioRoles { get; set; }
+
+       
     }
 }

@@ -38,14 +38,20 @@
     </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DNTBreadCrumb.Core" Version="1.9.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.6" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.19" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\lib\datables-plugins\sum.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Autorizacion\" />
   </ItemGroup>
 
 </Project>

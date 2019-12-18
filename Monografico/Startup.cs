@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -37,10 +40,12 @@ namespace Monografico
             });
 
             services.AddDbContext<Contexto>(options => options.UseSqlServer(Configuration.GetConnectionString("ConStr")));
-
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddIdentity<Usuario, Rol>()
                 .AddEntityFrameworkStores<Contexto>()
                 .AddDefaultTokenProviders();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -67,21 +72,34 @@ namespace Monografico
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.Cookie.Expiration = TimeSpan.FromDays(150);
+              //  options.Cookie.Expiration = TimeSpan.FromDays(150);
                 // If the LoginPath isn't set, ASP.NET Core defaults 
                 // the path to /Account/Login.
-                options.LoginPath = "/Account/Login";
+              //  options.LoginPath = "/Account/Login";
                 // If the AccessDeniedPath isn't set, ASP.NET Core defaults 
                 // the path to /Account/AccessDenied.
-                options.AccessDeniedPath = "/Account/AccessDenied";
-                options.SlidingExpiration = true;
+             //   options.AccessDeniedPath = "/Account/AccessDenied";
+              //  options.SlidingExpiration = true;
+
+
+                options.LoginPath = "/Home/Login";  //Cuando alguien no tenga permiso a una pagina, lo enviara aqui.
+                options.AccessDeniedPath = "/Home/AccesoDenegado";
+                options.Cookie.Name = ".applicationname";
+                options.Cookie.HttpOnly = true; // This must be true to prevent XSS
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             });
 
             services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
 
             services.AddScoped<RepositoryWrapper>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2).AddRazorPagesOptions(options =>
+            {
+                options.AllowAreas = true;
+                options.Conventions.AuthorizeAreaFolder("Controller", "/Account/Manage");
+                options.Conventions.AuthorizeAreaPage("Controller", "/Account/Logout");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -101,7 +119,6 @@ namespace Monografico
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
             app.UseAuthentication();
 
             app.UseMvc(routes =>
@@ -110,6 +127,14 @@ namespace Monografico
                     name: "default",
                     template: "{controller=Admin}/{action=Index}/{id?}");
             });
+
         }
+
+        static Func<RedirectContext<CookieAuthenticationOptions>, Task> ReplaceRedirectorWithStatusCode(HttpStatusCode statusCode) => context =>
+        {
+            // Adapted from https://stackoverflow.com/questions/42030137/suppress-redirect-on-api-urls-in-asp-net-core
+            context.Response.StatusCode = (int)statusCode;
+            return Task.CompletedTask;
+        };
     }
 }

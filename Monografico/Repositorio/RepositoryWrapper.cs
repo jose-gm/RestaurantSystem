@@ -1,4 +1,6 @@
-﻿using Monografico.Data;
+﻿using Microsoft.AspNetCore.Identity;
+using Monografico.Data;
+using Monografico.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,24 +12,28 @@ namespace Monografico.Repositorio
     public class RepositoryWrapper
     {
         private readonly Contexto _contexto;
-        private  RepositoryIngrediente _ingrediente;
-        private  RepositoryCategoria _categoria;
-        private  RepositoryInventario _inventario;
-        private  RepositoryCuenta _cuenta;
-        private  RepositoryOrden _orden;
-        private  RepositoryFactura _factura;
-        private  RepositoryProducto _producto;
-        private  RepositoryZona _zona;
-        private  RepositoryMesa _mesa;
-        private  RepositoryUsuario _usuario;
-        private  RepositoryRol _rol;
+        private RepositoryIngrediente _ingrediente;
+        private RepositoryCategoria _categoria;
+        private RepositoryInventario _inventario;
+        private RepositoryCuenta _cuenta;
+        private RepositoryOrden _orden;
+        private RepositoryFactura _factura;
+        private RepositoryProducto _producto;
+        private RepositoryZona _zona;
+        private RepositoryMesa _mesa;
+        private RepositoryUsuario _usuario;
+        private RepositoryRol _rol;
+        private readonly UserManager<Usuario> _userManager;
+        private readonly RoleManager<Rol> _roleManager;
 
-        public RepositoryWrapper(Contexto contexto)
+        public RepositoryWrapper(Contexto contexto, UserManager<Usuario> userManager, RoleManager<Rol> roleManager)
         {
-            _contexto = contexto;       
+            _contexto = contexto;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
-        public RepositoryIngrediente Ingrediente 
+        public RepositoryIngrediente Ingrediente
         {
             get
             {
@@ -91,7 +97,7 @@ namespace Monografico.Repositorio
             get
             {
                 if (_usuario == null)
-                    _usuario = new RepositoryUsuario(_contexto);
+                    _usuario = new RepositoryUsuario(_contexto, _userManager);
                 return _usuario;
             }
         }
@@ -101,7 +107,7 @@ namespace Monografico.Repositorio
             get
             {
                 if (_rol == null)
-                    _rol = new RepositoryRol(_contexto);
+                    _rol = new RepositoryRol(_contexto, _roleManager);
                 return _rol;
             }
         }
@@ -140,5 +146,7 @@ namespace Monografico.Repositorio
         {
             return await _contexto.Database.CanConnectAsync();
         }
+
+
     }
 }
