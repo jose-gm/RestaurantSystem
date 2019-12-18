@@ -13,7 +13,7 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
-    [Authorize]
+   
     public class UsuarioController : Controller
     {
 
@@ -45,7 +45,7 @@ namespace Monografico.Controllers
 
         // POST: Usuario/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]//Todo: Validar la contraseña
         public async Task<IActionResult> Create([FromBody]UsuarioViewModel usuario)
         {
             try

@@ -35,7 +35,7 @@ namespace Monografico.Repositorio
         public async Task<IdentityResult> Create(Usuario user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);
-            return result;
+            return result;// todo: Validar el usuario, Username, Email
         }
 
         public async Task<IdentityResult> Create(Usuario user, string password, int roles)
