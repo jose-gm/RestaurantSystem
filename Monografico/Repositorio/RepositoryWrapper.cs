@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Monografico.Data;
-using Monografico.Models;
+﻿using Monografico.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +24,9 @@ namespace Monografico.Repositorio
         private  RepositoryUsuario _usuario;
         private  RepositoryRol _rol;
 
-        public RepositoryWrapper(Contexto contexto, UserManager<Usuario> userManager, RoleManager<Rol> roleManager)
+        public RepositoryWrapper(Contexto contexto)
         {
-            _contexto = contexto;
-            _userManager = userManager;
-            _roleManager = roleManager;
+            _contexto = contexto;       
         }
 
         public RepositoryIngrediente Ingrediente 

@@ -5,8 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Monografico.Models;
 
 namespace Monografico
 {
@@ -14,11 +17,83 @@ namespace Monografico
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+
+            //CreateWebHostBuilder(args).Build().Run();
+
+            // Build the application host
+            var host = BuildWebHost(args);
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var serviceProvider = services.GetRequiredService<IServiceProvider>();
+                    var configuration = services.GetRequiredService<IConfiguration>();
+
+                    // TODO: Codigo para crear un usuario inicial en el sistema
+                    ///Esto no debe usarse en producción
+                    CreateFirstUser(serviceProvider.GetService<UserManager<Usuario>>(),
+                                    serviceProvider.GetService<RoleManager<Rol>>()).Wait();
+
+                }
+                catch (Exception exception)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(exception, "Ocurrió un error creando los roles de usuario.");
+                    //TODO: Pendiente definir donde se almacenará el log del sistema.
+                }
+            }
+
+            // Run the application
+            host.Run();
+            BuildWebHost(args).Run();
+            //  CreateWebHostBuilder(args).Build().Run();
         }
+        public static IWebHost BuildWebHost(string[] args) =>
+          WebHost.CreateDefaultBuilder(args)
+              .UseStartup<Startup>()
+              .Build();
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
+
+        public static async Task CreateFirstUser(UserManager<Usuario> _userManager, RoleManager<Rol> _roleManager)
+        {
+            var usuario = await _userManager.FindByNameAsync("nelson");
+            if (usuario == null)
+            {
+
+                Usuario user = new Usuario
+                {
+                    UserName = "nelson",
+                    Nombre = "Nelson Abreu",
+                    Email = "nelson@hotmail.com",  //El userManager no permite correos repetidos.
+                    PhoneNumber = "8093432342",
+                    LockoutEnabled = false,
+                };
+                var result = await _userManager.CreateAsync(user, "nelson");
+
+                if (result.Succeeded)
+                {
+                    var roleExist = await _roleManager.RoleExistsAsync("Administrador");
+                    if (!roleExist)
+                    {
+                        var identityRole = new Rol
+                        {
+                            Name = "Administrador",
+
+                        };
+                        var roleResult = await _roleManager.CreateAsync(identityRole);
+                        if (roleResult.Succeeded)
+                        {
+                            await _userManager.AddToRoleAsync(user, "Administrador");
+
+                            ///Estas dos opciones permiten recuperar la informacion del usuario cuando este logeado.
+                        }
+                    }
+                }
+            }
+        }
     }
 }

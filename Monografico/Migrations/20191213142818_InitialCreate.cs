@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Monografico.Migrations
 {
-    public partial class InicialCreate : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -338,13 +338,13 @@ namespace Monografico.Migrations
                         column: x => x.IdIngrediente,
                         principalTable: "Ingrediente",
                         principalColumn: "IdIngrediente",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Inventario_Producto_IdProducto",
                         column: x => x.IdProducto,
                         principalTable: "Producto",
                         principalColumn: "IdProducto",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
