@@ -5,8 +5,7 @@
 }
 
 @section link {
-    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
-    <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+
 }
 
 <div class="card">
@@ -38,6 +37,7 @@
                         </thead>
                     </table>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -75,16 +75,13 @@
 </div>
 
 @section script {
-
-    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
-    <script src="~/lib/toastr.js/toastr.min.js"></script>
     <script src="~/js/site.js"></script>
 
     <script>
         //Carga la tabla cuando el documento html esta cargado
         $(document).ready(() => {
             $('#zona-datatable').DataTable({
+                responsive: false,
                 ajax: {
                     url: "@Url.Action("List","Zona")",
                     dataSrc: ''

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Monografico.Models;
 using Monografico.Repositorio;
 
 namespace Monografico.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         RepositoryWrapper repo;

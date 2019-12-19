@@ -53,6 +53,11 @@
                 <span asp-validation-for="NombreUsuario" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Rol" class="control-label"></label>
+                <select asp-for="Rol" class="custom-select" asp-items="@ViewBag.Roles"></select>
+                <span asp-validation-for="Rol" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" required />
                 <span asp-validation-for="Email" class="text-danger"></span>
@@ -87,6 +92,7 @@
                 "Sexo": document.getElementById("Sexo").value,
                 "Cedula": document.getElementById("Cedula").value,
                 "Direccion" : document.getElementById("Direccion").value,
+                "Rol" : document.getElementById("Rol").value,
                 "NombreUsuario": document.getElementById("NombreUsuario").value,
                 "Email": document.getElementById("Email").value,
                 "Clave": document.getElementById("Clave").value

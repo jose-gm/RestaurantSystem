@@ -24,7 +24,8 @@ namespace Monografico.Repositorio
             List<Zona> lista = null;
             try
             {
-                lista = await _contexto.Zona.Include(x => x.Mesas).AsNoTracking().ToListAsync();
+                lista = await _contexto.Zona.Include(x => x.Mesas).ThenInclude(y => y.Cuentas).AsNoTracking().ToListAsync();
+                lista.ForEach(a => a.Mesas.ForEach(b => b.Cuentas.RemoveAll(c => c.Activa == false)));
             }
             catch (Exception)
             {

@@ -16,5 +16,6 @@ namespace Monografico.Models
         public int IdZona { get; set; }
         public string Descripcion { get; set; }
         public int Asientos { get; set; }
+        public virtual List<Cuenta> Cuentas { get; set; }
     }
 }

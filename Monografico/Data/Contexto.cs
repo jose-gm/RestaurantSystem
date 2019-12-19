@@ -100,6 +100,15 @@ namespace Monografico.Data
                     .HasForeignKey(pp => pp.IdCuenta)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+            
+            builder.Entity<Mesa>(entity =>
+            {
+                entity.HasKey(c => c.IdMesa);
+                entity.HasMany(x => x.Cuentas)
+                    .WithOne(p => p.Mesa)
+                    .HasForeignKey(pp => pp.IdMesa)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
         }
 

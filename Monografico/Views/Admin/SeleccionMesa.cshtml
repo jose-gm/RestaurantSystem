@@ -15,8 +15,12 @@
             <div class="row">
                 @foreach (var mesa in item.Mesas)
                 {
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-sm-4">
                         <a asp-action="Index" asp-controller="Cuenta" asp-route-id="@mesa.IdMesa">
+                            @if (mesa.Cuentas.Count > 0)
+                            {
+                                <span class="badge badge-info mesa-info">Ocupado</span>
+                            }
                             <img src="~/img/mesa.png" alt="icono de una mesa" style="width:30%; height:70%" />
                         </a>
                     </div>

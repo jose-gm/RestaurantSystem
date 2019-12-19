@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Monografico.ViewModels.OrdenViewModel>
+
+<div class="row mb-3">
+    <div class="col-md-8">
+        <h6><strong>@Model.FirstOrDefault().Mesa</strong></h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>producto</th>
+                        <th>cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Descripcion</td>
+                            <td>@item.Cantidad</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

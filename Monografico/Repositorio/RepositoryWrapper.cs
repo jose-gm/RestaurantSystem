@@ -1,4 +1,6 @@
-﻿using Monografico.Data;
+﻿using Microsoft.AspNetCore.Identity;
+using Monografico.Data;
+using Monografico.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,8 @@ namespace Monografico.Repositorio
     public class RepositoryWrapper
     {
         private readonly Contexto _contexto;
+        private readonly UserManager<Usuario> _userManager;
+        private readonly RoleManager<Rol> _roleManager;
         private  RepositoryIngrediente _ingrediente;
         private  RepositoryCategoria _categoria;
         private  RepositoryInventario _inventario;
@@ -22,9 +26,11 @@ namespace Monografico.Repositorio
         private  RepositoryUsuario _usuario;
         private  RepositoryRol _rol;
 
-        public RepositoryWrapper(Contexto contexto)
+        public RepositoryWrapper(Contexto contexto, UserManager<Usuario> userManager, RoleManager<Rol> roleManager)
         {
-            _contexto = contexto;       
+            _contexto = contexto;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public RepositoryIngrediente Ingrediente 
@@ -91,7 +97,7 @@ namespace Monografico.Repositorio
             get
             {
                 if (_usuario == null)
-                    _usuario = new RepositoryUsuario(_contexto);
+                    _usuario = new RepositoryUsuario(_userManager,_roleManager);
                 return _usuario;
             }
         }
@@ -101,7 +107,7 @@ namespace Monografico.Repositorio
             get
             {
                 if (_rol == null)
-                    _rol = new RepositoryRol(_contexto);
+                    _rol = new RepositoryRol(_roleManager);
                 return _rol;
             }
         }

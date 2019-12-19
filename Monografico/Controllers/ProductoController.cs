@@ -250,7 +250,7 @@ namespace Monografico.Controllers
         //GET:
         public async Task<JsonResult> List()
         {
-            return Json(await repo.Producto.GetList(x => true));
+            return Json(await repo.Producto.GetAllWithCategoria());
         }
         
         //GET:

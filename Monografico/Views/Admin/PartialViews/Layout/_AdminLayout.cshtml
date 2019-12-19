@@ -7,14 +7,21 @@
     <title>@ViewData["Title"] - Monografico</title>
 
     <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <!-- CoreUI CSS -->
     <environment include="Development">
         <link href="~/lib/coreui-master/dist/css/coreui.min.css" rel="stylesheet" />
         <link href="~/lib/coreui-icons-master/css/free.min.css" rel="stylesheet" />
+        <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+        <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+        <link href="~/lib/Responsive-2.2.3/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     </environment>
     <environment include="Production">
-        <link rel="stylesheet" href="https://unpkg.com/@@coreui/coreui/dist/css/coreui.min.css">
-        <link rel="stylesheet" href="https://unpkg.com/@@coreui/icons/css/coreui-icons.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/%40coreui/coreui/dist/css/coreui.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/%40coreui/icons/css/coreui-icons.min.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     </environment>
 
     @RenderSection("link",false)
@@ -48,14 +55,40 @@
         <script src="~/lib/popper.js/popper.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/lib/coreui-master/dist/js/coreui.min.js"></script>
+        <script src="~/lib/toastr.js/toastr.min.js"></script>
+        <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+        <script src="~/lib/Responsive-2.2.3/js/dataTables.responsive.min.js"></script>
+        <script src="~/lib/Responsive-2.2.3/js/responsive.bootstrap4.min.js"></script>
+        <script src="~/lib/datables-plugins/sum.js"></script>
     </environment>
-    <environment include="Production">
-        <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-        <script src="https://unpkg.com/@@coreui/coreui/dist/js/coreui.min.js"></script>
-    </environment>
+        <environment include="Production">
+            <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+            <script src="https://unpkg.com/@@coreui/coreui/dist/js/coreui.min.js"></script>
+            <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+            <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/plug-ins/1.10.20/api/sum().js"></script>
+        </environment>
+        <script>
+            function hideSideBar(x) {
+                if (x.matches) {
+                    document.querySelector(".app").classList.add("sidebar-show");
 
-    @RenderSection("script", false)
-</body>
-</html>
+                }
+                else {
+                    document.querySelector(".app").classList.remove("sidebar-show");
+                }
+            }
+            var mquery = window.matchMedia("(min-width: 769px)");
+            hideSideBar(mquery);
+            mquery.addEventListener(hideSideBar);
+        </script>
+
+        @RenderSection("script", false)
+    </body>
+    </html>

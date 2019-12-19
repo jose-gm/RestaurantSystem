@@ -155,5 +155,36 @@ namespace Monografico.Repositorio
             }
             return paso;
         }
+
+        public async Task<List<ProductoViewModel>> GetAllWithCategoria()
+        {
+            List<ProductoViewModel> list = null;
+            try
+            {
+                var productos = await _contexto.Producto.Include(x => x.Categoria).AsNoTracking().ToListAsync();
+                list = new List<ProductoViewModel>();
+
+                foreach (var item in productos)
+                {
+                    list.Add(new ProductoViewModel() { 
+                        IdProducto = item.IdProducto,
+                        IdCategoria = item.IdCategoria,
+                        Descripcion = item.Descripcion,
+                        Precio = item.Precio,
+                        LlevaIngredientes = item.LlevaIngredientes,
+                        LlevaInventario = item.LlevaInventario,
+                        ImagenEncoded = item.Imagen,
+                        Categoria = item.Categoria.Descripcion
+                    });
+                }
+                
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return list;
+        }
     }
 }

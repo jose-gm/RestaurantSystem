@@ -54,6 +54,20 @@
 
   <ItemGroup>
     <None Include="wwwroot\lib\datables-plugins\sum.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\dataTables.responsive.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\dataTables.responsive.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.bootstrap.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.bootstrap.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.bootstrap4.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.bootstrap4.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.dataTables.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.dataTables.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.foundation.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.foundation.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.jqueryui.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.jqueryui.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.semanticui.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.semanticui.min.js" />
   </ItemGroup>
 
 </Project>

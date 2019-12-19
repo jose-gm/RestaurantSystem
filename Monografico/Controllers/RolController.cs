@@ -19,7 +19,7 @@ namespace Monografico.Controllers
         }
 
         // GET: Rol
-        public async Task<IActionResult> Index()
+        /*public async Task<IActionResult> Index()
         {
             return View();
         }
@@ -115,6 +115,6 @@ namespace Monografico.Controllers
         public async Task<JsonResult> List()
         {
             return Json(await repo.Rol.GetList(x => true));
-        }
+        }*/
     }
 }

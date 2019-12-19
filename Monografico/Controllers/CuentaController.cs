@@ -71,61 +71,34 @@ namespace Monografico.Controllers
             return NotFound();
         }
 
-        // GET: Orden/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Orden/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Orden/Create
-        [HttpPost]
-        public ActionResult Create([FromBody]CuentaViewModel model)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
         // GET: Orden/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Orden/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> EnviarOrdenes(int id)
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                await repo.Cuenta.EnviarOrdenes(id);
+                return Ok();
             }
-            catch
+            catch (Exception)
             {
-                return View();
+
+                return NotFound();
             }
         }
 
         // GET: Orden/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            try
+            {
+                await repo.Cuenta.Remove(id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
         
         // GET:
@@ -177,7 +150,12 @@ namespace Monografico.Controllers
 
         public async Task<JsonResult> ListOFOrden(int id)
         {
-            return Json(await repo.Cuenta.GetAllOrdenViewModel(id));
+            return Json(await repo.Cuenta.GetListOrdenViewModels(id, x => true));
+        }
+        
+        public async Task<IActionResult> TablaOrden(int id)
+        {
+            return PartialView("~/Views/Admin/PartialViews/Orden/_TablaOrden.cshtml", await repo.Cuenta.GetListOrdenViewModels(id, x => x.Enviado == false));
         }
     }
 }

@@ -31,6 +31,7 @@ namespace Monografico.ViewModels
         [StringLength(60)]
         public string Descripcion { get; set; }
         public Decimal Precio { get; set; }
+        public string Categoria { get; set; }
         public IFormFile Imagen { get; set; }
         public string ImagenEncoded { get; set; }
 

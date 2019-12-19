@@ -35,14 +35,14 @@ function abrirModalBorrar(id) {
 }
 
 //Abre el modal de mensaje de confirmacion para eliminar
-function abrirModalBorrar() {
+/*function abrirModalBorrar() {
     $('#borrarModal').modal({
         keyboard: false,
         backdrop: 'static'
     });
-}
+}*/
 
-function abrirModalBorrar(titulo, imgSrc) {
+function abrirModalBorrarImg(titulo, imgSrc) {
     document.getElementById("modal-delete-titulo").innerHTML = titulo;
     document.getElementById("modal-delete-imagen").src = imgSrc;
     $('#borrarModal').modal({
@@ -80,20 +80,19 @@ function eliminar(_url, table) {
 }
 
 //Elimina un modelo usando ajax
-function eliminar(_url, table, id) {
+function eliminar2(_url, table, id) {
     var url = _url;
     $.ajax({
         url: url,
         data: { id: id },
         error: function (response) {
             $('#borrarModal').modal('hide');
-            toastr.error("Error al borrar");
+            //toastr.error("Error al borrar");
             //alert(response);
         },
         success: function () {
             $('#' + table).DataTable().ajax.reload();
-            $('#borrarModal').modal('hide');
-            toastr.success("Eliminado");
+            $('#borrarModal').modal('hide');        
         }
     });
 }

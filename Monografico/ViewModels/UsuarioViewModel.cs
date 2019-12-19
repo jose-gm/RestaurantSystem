@@ -29,5 +29,6 @@ namespace Monografico.ViewModels
         [Required]
         [DataType(DataType.Password)]
         public string Clave { get; set; }
+        public string Rol { get; set; }
     }
 }

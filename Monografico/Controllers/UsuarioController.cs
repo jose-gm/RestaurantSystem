@@ -34,27 +34,29 @@ namespace Monografico.Controllers
         // GET: Usuario/Create
         public async Task<IActionResult> Create()
         {
+            ViewBag.Roles = await repo.Rol.GetSelectList();
             return PartialView("~/Views/Admin/PartialViews/Empleado/_Create.cshtml", new UsuarioViewModel());
         }
 
         // POST: Usuario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromBody]UsuarioViewModel usuario)
+        public async Task<IActionResult> Create([FromBody]UsuarioViewModel model)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    //repo.Usuario.Guardar(usuario);
+                    await repo.Usuario.Create(model);
+                    return Ok();
                 }
-                return Ok();
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+            return NotFound();
         }
 
         // GET: Usuario/Edit/5
@@ -115,7 +117,7 @@ namespace Monografico.Controllers
         //GET:
         public async Task<JsonResult> List()
         {
-            return Json(await repo.Usuario.GetList(x => true));
+            return Json(await repo.Usuario.GetList());
         }
     }
 }

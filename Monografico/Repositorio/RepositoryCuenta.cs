@@ -5,6 +5,7 @@ using Monografico.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -56,7 +57,7 @@ namespace Monografico.Repositorio
             {
                 Orden orden = null;
                 var cuenta = _contexto.Cuenta.Include(x => x.Ordenes).ThenInclude(y => y.Detalle).AsNoTracking().SingleOrDefault(z => z.IdCuenta == model.IdCuenta);
-                if(cuenta.Ordenes.Count > 0)
+                if(cuenta.Ordenes.Count > 0 && cuenta.Ordenes.Find(z => z.Enviado == false) != null)
                 {
                     orden = cuenta.Ordenes.Find(z => z.Enviado == false);
                 }
@@ -87,6 +88,29 @@ namespace Monografico.Repositorio
                     detalle.Cantidad++;
                     
                 
+
+                _contexto.Cuenta.Update(cuenta);
+                await _contexto.SaveChangesAsync();
+
+                paso = true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
+        }
+
+        public async Task<bool> EnviarOrdenes(int id)
+        {
+            var paso = false;
+            try
+            {
+                Orden orden = null;
+                var cuenta = _contexto.Cuenta.Include(x => x.Ordenes).ThenInclude(y => y.Detalle).AsNoTracking().SingleOrDefault(z => z.IdCuenta == id);
+                orden = cuenta.Ordenes.Find(z => z.Enviado == false);
+                orden.Enviado = true;
 
                 _contexto.Cuenta.Update(cuenta);
                 await _contexto.SaveChangesAsync();
@@ -156,13 +180,14 @@ namespace Monografico.Repositorio
         /// </summary>
         /// <param name="id">Id de la cuenta</param>
         /// <returns></returns>
-        public async Task<List<OrdenViewModel>> GetAllOrdenViewModel(int id)
+        public async Task<List<OrdenViewModel>> GetListOrdenViewModels(int id, Func<Orden, bool> expression)
         {
             List<OrdenViewModel> lista = null;
             try
             {
                 lista = new List<OrdenViewModel>();
-                var cuenta = _contexto.Cuenta.Include(x => x.Ordenes).ThenInclude(y => y.Detalle).AsNoTracking().SingleOrDefault(c => c.IdCuenta == id);
+                var cuenta = _contexto.Cuenta.Include(s => s.Mesa).Include(x => x.Ordenes).ThenInclude(y => y.Detalle).AsNoTracking().SingleOrDefault(c => c.IdCuenta == id);
+                var ordenes = cuenta.Ordenes.Where(expression);
                 foreach(var item in cuenta.Ordenes)
                 {
                     foreach(var inner in item.Detalle)
@@ -178,7 +203,8 @@ namespace Monografico.Repositorio
                             Descripcion = producto.Descripcion,
                             Precio = producto.Precio,
                             Total = inner.Cantidad * producto.Precio,
-                            Enviado = item.Enviado
+                            Enviado = item.Enviado,
+                            Mesa = cuenta.Mesa.Descripcion
                         });
                     }
                 }
@@ -190,5 +216,6 @@ namespace Monografico.Repositorio
             }
             return lista;
         }
+
     }
 }

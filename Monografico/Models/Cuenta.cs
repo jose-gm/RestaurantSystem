@@ -15,6 +15,7 @@ namespace Monografico.Models
         public int IdCuenta { get; set; }
         public int IdMesa { get; set; } 
         public bool Activa { get; set; } 
-        public List<Orden> Ordenes { get; set; } 
+        public virtual Mesa Mesa { get; set; } 
+        public virtual List<Orden> Ordenes { get; set; } 
     }
 }
