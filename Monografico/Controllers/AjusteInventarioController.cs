@@ -4,16 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Monografico.Data;
 using Monografico.Models;
 using Monografico.Repositorio;
 
 namespace Monografico.Controllers
 {
-    public class InventarioController : Controller
+    public class AjusteInventarioController : Controller
     {
         RepositoryWrapper repo;
-        public InventarioController(RepositoryWrapper _repo)
+        public AjusteInventarioController(RepositoryWrapper _repo)
         {
             repo = _repo;
         }
@@ -24,29 +23,31 @@ namespace Monografico.Controllers
             return View();
         }
 
-        // GET: Inventario/Details/5
-        public async Task<IActionResult> Details(int id)
-        {
-            return View();
-        }
-
         // GET: Inventario/Create
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Inventario/_Create.cshtml", new Inventario());
+            var Inventario = await repo.Inventario.Find(id);
+            AjusteInventario ajusteInventario = new AjusteInventario()
+            {
+                CantidadAnterior = Inventario.Cantidad,
+                IdInventario = Inventario.IdInventario,
+                Fecha = DateTime.Now
+
+            };
+            return PartialView("~/Views/Admin/PartialViews/AjusteInventario/_Create.cshtml", ajusteInventario);
         }
 
         // POST: Inventario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromBody]Inventario inventario)
+        public async Task<IActionResult> Create([FromBody]AjusteInventario inventario)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    await repo.Inventario.Add(inventario);
+                    await repo.AjusteInventario.Add(inventario);
                 }
                 return Ok();
             }
@@ -58,19 +59,19 @@ namespace Monografico.Controllers
 
         // GET: Inventario/Edit/5
         public async Task<IActionResult> Edit(int id)
-        {  
-            return PartialView("~/Views/Admin/PartialViews/Inventario/_Edit.cshtml", await repo.Inventario.Find(id));
+        {
+            return PartialView("~/Views/Admin/PartialViews/AjusteInventario/_Edit.cshtml", await repo.AjusteInventario.Find(id));
         }
 
         // POST: Inventario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([FromBody]Inventario inventario)
+        public async Task<IActionResult> Edit([FromBody]AjusteInventario inventario)
         {
             try
             {
                 // TODO: Add update logic here
-                await repo.Inventario.Update(inventario);
+                await repo.AjusteInventario.Update(inventario);
                 return Ok();
             }
             catch
@@ -85,14 +86,14 @@ namespace Monografico.Controllers
             try
             {
                 // TODO: Add delete logic here
-                await repo.Inventario.Remove(id);
+                await repo.AjusteInventario.Remove(id);
                 return Ok();
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
+
         }
 
         // POST: Inventario/Delete/5
@@ -103,7 +104,7 @@ namespace Monografico.Controllers
             try
             {
                 // TODO: Add delete logic here
-                
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -115,9 +116,7 @@ namespace Monografico.Controllers
         //GET:
         public async Task<JsonResult> List()
         {
-            var a= Json(await repo.Inventario.GetListViewModel(x => true));
-            return a;
+            return Json(await repo.AjusteInventario.GetList(x => true));
         }
     }
 }
-

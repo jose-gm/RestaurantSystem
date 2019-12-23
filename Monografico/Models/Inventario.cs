@@ -29,9 +29,9 @@ namespace Monografico.Models
         public int Cantidad { get; set; }
         [StringLength(10)]
         public string Unidad { get; set; }
-        [JsonIgnore]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Producto Producto { get; set; }
-        [JsonIgnore]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Ingrediente Ingrediente { get; set; }
     }
 }

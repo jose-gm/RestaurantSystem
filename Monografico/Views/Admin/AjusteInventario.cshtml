@@ -1,11 +1,6 @@
-﻿@model IEnumerable<Monografico.ViewModels.InventarioViewModel>
-
+﻿@model IEnumerable<Monografico.Models.AjusteInventario>
 @{
-    ViewData["Title"] = "Inventario";
-}
-
-@section link {
-
+    ViewData["Title"] = "AjusteInventario";
 }
 
 <div class="card">
@@ -13,8 +8,7 @@
         <div class="row mb-2">
             <div class="col-md-3">
                 <!-- Button trigger modal -->
-                @*<a asp-action="List" asp-controller="Inventario">Link</a>
-                <button type="button" class="btn btn-primary" onclick="abrirModalCrear();">
+                @*<button type="button" class="btn btn-primary" onclick="abrirModalCrear();">
                     Agregar Inventario
                 </button>*@
             </div>
@@ -22,29 +16,24 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table id="inventario-datatable" class="table table-bordered">
+                    <table id="ajusteinventario-datatable" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>
                                     @Html.DisplayNameFor(model => model.IdInventario)
                                 </th>
+
                                 <th>
-                                    @Html.DisplayNameFor(model => model.IdProducto)
+                                    @Html.DisplayNameFor(model => model.CantidadAnterior)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.IdIngrediente)
+                                    @Html.DisplayNameFor(model => model.CantidadActual)
                                 </th>
                                 <th>
-                                    Descripcion
+                                    @Html.DisplayNameFor(model => model.Fecha)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.FechaEntrada)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Cantidad)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Unidad)
+                                    @Html.DisplayNameFor(model => model.Descripcion)
                                 </th>
                                 <th>
                                     Acciones
@@ -71,28 +60,26 @@
     <script>
         //Carga la tabla cuando el documento html esta cargado
         $(document).ready(() => {
-            $('#inventario-datatable').DataTable({
+            $('#ajusteinventario-datatable').DataTable({
                 responsive: false,
                 ajax: {
-                    url: "@Url.Action("List","Inventario")",
+                    url: "@Url.Action("List","AjusteInventario")",
                     dataSrc: ''
                 },
                 columnDefs: [
                     {
-                        targets: [0,1,2],
+                        targets: 0,
                         visible: false
                     }
                 ],
                 columns: [
                     { data: 'idInventario' },
-                    { data: 'idProducto' },
-                    { data: 'idIngrediente' },
+                    { data: 'cantidadAnterior' },
+                    { data: 'cantidadActual' },
+                    { data: 'fecha' },
                     { data: 'descripcion' },
-                    { data: 'fechaEntrada' },
-                    { data: 'cantidad' },
-                    { data: 'unidad' },
                     {
-                        data: 'idInventario',
+                        data: 'id',
                         render: function (data, type, row, meta) {
                             return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
                             '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
@@ -103,15 +90,15 @@
         });
 
         function abrirModalCrear() {
-            agregarCrear("@Url.Action("Create","Inventario")");
+            agregarCrear("@Url.Action("Create","AjusteInventario")");
         }
 
         function abrirModalEditar(id) {
-            agregarEditar(id, "@Url.Action("Create","AjusteInventario")");
+            agregarEditar(id, "@Url.Action("Edit","AjusteInventario")");
         }
 
         document.getElementById("botonEliminar").addEventListener('click', () => {
-            eliminar("@Url.Action("Delete","Inventario")", "inventario-datatable");
+            eliminar("@Url.Action("Delete","AjusteInventario")", "ajusteinventario-datatable");
         });
     </script>
 }

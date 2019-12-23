@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,8 +21,11 @@ namespace Monografico.Models
         public string Imagen { get; set; }
         public bool LlevaIngredientes { get; set; }
         public bool LlevaInventario { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public virtual Inventario Inventario { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public virtual Categoria Categoria { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<ProductoDetalle> Detalle { get; set; }
     }
 }

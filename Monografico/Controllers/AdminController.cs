@@ -10,7 +10,7 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
-    [Authorize]
+
     public class AdminController : Controller
     {
        
@@ -31,7 +31,12 @@ namespace Monografico.Controllers
         {
             return View();
         }
-     
+
+        public IActionResult AjusteInventario()
+        {
+            return View();
+        }
+
         public IActionResult Empleado()
         {
             return View();
