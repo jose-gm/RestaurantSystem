@@ -36,6 +36,12 @@
                                     @Html.DisplayNameFor(model => model.Descripcion)
                                 </th>
                                 <th>
+                                    @Html.DisplayNameFor(model => model.Observacion)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Estado)
+                                </th>
+                                <th>
                                     Acciones
                                 </th>
                             </tr>
@@ -78,6 +84,8 @@
                     { data: 'cantidadActual' },
                     { data: 'fecha' },
                     { data: 'descripcion' },
+                    { data: 'observacion' },
+                    { data: 'estado' },
                     {
                         data: 'id',
                         render: function (data, type, row, meta) {

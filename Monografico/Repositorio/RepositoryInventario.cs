@@ -19,10 +19,10 @@ namespace Monografico.Repositorio
         public async override Task<List<Inventario>> GetList(Expression<Func<Inventario, bool>> expression)
         {
             var a = await _contexto.Inventario.Include(x => x.Producto).Include(y => y.Ingrediente).ToListAsync();
-           
+
             return a;
         }
-        
+
         public async Task<List<InventarioViewModel>> GetListViewModel(Expression<Func<Inventario, bool>> expression)
         {
             List<InventarioViewModel> model = new List<InventarioViewModel>();
@@ -32,7 +32,8 @@ namespace Monografico.Repositorio
 
             foreach (var item in a)
             {
-                model.Add(new InventarioViewModel() { 
+                model.Add(new InventarioViewModel()
+                {
                     IdInventario = item.IdInventario,
                     Descripcion = (item.Producto == null) ? item.Ingrediente.Descripcion : item.Producto.Descripcion,
                     Cantidad = item.Cantidad,
@@ -42,8 +43,14 @@ namespace Monografico.Repositorio
                     IdIngrediente = item.IdIngrediente ?? default(int)
                 });
             }
-           
+
             return model;
+        }
+
+
+        public async override Task<Inventario> Find(int id)
+        {
+            return await _contexto.Inventario.Include(x => x.Producto).Include(x => x.Ingrediente).AsNoTracking().SingleOrDefaultAsync(x => x.IdInventario == id);
         }
     }
 }

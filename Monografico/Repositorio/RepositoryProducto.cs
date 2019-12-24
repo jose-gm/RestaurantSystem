@@ -54,7 +54,7 @@ namespace Monografico.Repositorio
             bool paso = false;
             try
             {
-                var entity = _contexto.Producto.Include(x => x.Inventario).SingleOrDefault(c => c.IdProducto == id);
+                var entity = _contexto.Producto.Include(x => x.Inventario).ThenInclude(x=>x.AjusteInventarios).SingleOrDefault(c => c.IdProducto == id);
                 _contexto.Producto.Remove(entity);
 
                 await _contexto.SaveChangesAsync();

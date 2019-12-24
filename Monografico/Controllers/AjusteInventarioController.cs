@@ -31,7 +31,8 @@ namespace Monografico.Controllers
             {
                 CantidadAnterior = Inventario.Cantidad,
                 IdInventario = Inventario.IdInventario,
-                Fecha = DateTime.Now
+                Fecha = DateTime.Now,
+                Descripcion = Inventario.Producto != null ? Inventario.Producto.Descripcion : Inventario.Ingrediente.Descripcion
 
             };
             return PartialView("~/Views/Admin/PartialViews/AjusteInventario/_Create.cshtml", ajusteInventario);

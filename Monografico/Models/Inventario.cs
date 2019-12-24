@@ -33,5 +33,6 @@ namespace Monografico.Models
         public Producto Producto { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Ingrediente Ingrediente { get; set; }
+        public List<AjusteInventario> AjusteInventarios { get; set; }
     }
 }

@@ -1,8 +1,10 @@
-﻿using Monografico.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Monografico.Data;
 using Monografico.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Monografico.Repositorio
@@ -20,7 +22,23 @@ namespace Monografico.Repositorio
             bool paso = false;
             try
             {
-                _contexto.Inventario.Find(entity.IdInventario).Cantidad = entity.CantidadActual;
+                var Inventario = await _contexto.Inventario.Include(x => x.Producto).Include(x => x.Ingrediente).AsNoTracking().SingleOrDefaultAsync(x => x.IdInventario == entity.IdInventario);
+                switch (entity.Estado)
+                {
+                    case "Ajustar":
+                        Inventario.Cantidad = entity.CantidadActual;
+                        break;
+                    case "Sumar":
+                        Inventario.Cantidad += entity.CantidadActual;
+                        break;
+                    case "Restar":
+                        Inventario.Cantidad -= entity.CantidadActual;
+                        break;
+                    default:
+                        break;
+                }
+                _contexto.Inventario.Update(Inventario);
+                entity.Descripcion = Inventario.Producto != null ? Inventario.Producto.Descripcion : Inventario.Ingrediente.Descripcion;
                 _contexto.Ajusteinventario.Add(entity);
                 await _contexto.SaveChangesAsync();
                 paso = true;
@@ -38,14 +56,33 @@ namespace Monografico.Repositorio
             return base.Find(id);
         }
 
-        public override Task<bool> Remove(int id)
+        public async override Task<bool> Remove(int id)
         {
-            return base.Remove(id);
+            bool paso = false;
+            try
+            {
+                var ajuste = await _contexto.Ajusteinventario.FindAsync(id);
+                var inventario = await _contexto.Inventario.FindAsync(ajuste.IdInventario);
+                inventario.Cantidad = ajuste.CantidadAnterior;
+                _contexto.Inventario.Update(inventario);
+                await base.Remove(id);
+                await _contexto.SaveChangesAsync();
+                paso = true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
+
+
         }
 
         public override Task<bool> Update(AjusteInventario entity)
         {
             return base.Update(entity);
         }
+
     }
 }
