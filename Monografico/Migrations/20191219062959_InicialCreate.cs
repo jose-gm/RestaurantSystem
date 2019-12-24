@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Monografico.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InicialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,35 +20,6 @@ namespace Monografico.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categoria", x => x.IdCategoria);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Cuenta",
-                columns: table => new
-                {
-                    IdCuenta = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    IdMesa = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cuenta", x => x.IdCuenta);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Factura",
-                columns: table => new
-                {
-                    IdFactura = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    IdCuenta = table.Column<int>(nullable: false),
-                    Fecha = table.Column<DateTime>(nullable: false),
-                    Monto = table.Column<decimal>(nullable: false),
-                    Descuento = table.Column<decimal>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Factura", x => x.IdFactura);
                 });
 
             migrationBuilder.CreateTable(
@@ -131,7 +102,7 @@ namespace Monografico.Migrations
                 {
                     IdProducto = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    IdCategoria = table.Column<int>(nullable: false),
+                    IdCategoria = table.Column<int>(nullable: true),
                     Descripcion = table.Column<string>(maxLength: 60, nullable: true),
                     Precio = table.Column<decimal>(nullable: false),
                     Imagen = table.Column<string>(nullable: true),
@@ -146,49 +117,7 @@ namespace Monografico.Migrations
                         column: x => x.IdCategoria,
                         principalTable: "Categoria",
                         principalColumn: "IdCategoria",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orden",
-                columns: table => new
-                {
-                    IdOrden = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    IdCuenta = table.Column<int>(nullable: false),
-                    Fecha = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orden", x => x.IdOrden);
-                    table.ForeignKey(
-                        name: "FK_Orden_Cuenta_IdCuenta",
-                        column: x => x.IdCuenta,
-                        principalTable: "Cuenta",
-                        principalColumn: "IdCuenta",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FacturaDetalle",
-                columns: table => new
-                {
-                    IdFacturaDetalle = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    IdFactura = table.Column<int>(nullable: false),
-                    IdProducto = table.Column<int>(nullable: false),
-                    Cantidad = table.Column<int>(nullable: false),
-                    Precio = table.Column<decimal>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FacturaDetalle", x => x.IdFacturaDetalle);
-                    table.ForeignKey(
-                        name: "FK_FacturaDetalle_Factura_IdFactura",
-                        column: x => x.IdFactura,
-                        principalTable: "Factura",
-                        principalColumn: "IdFactura",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -369,6 +298,91 @@ namespace Monografico.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cuenta",
+                columns: table => new
+                {
+                    IdCuenta = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    IdMesa = table.Column<int>(nullable: false),
+                    Activa = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cuenta", x => x.IdCuenta);
+                    table.ForeignKey(
+                        name: "FK_Cuenta_Mesa_IdMesa",
+                        column: x => x.IdMesa,
+                        principalTable: "Mesa",
+                        principalColumn: "IdMesa",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Factura",
+                columns: table => new
+                {
+                    IdFactura = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    IdCuenta = table.Column<int>(nullable: true),
+                    Fecha = table.Column<DateTime>(nullable: false),
+                    Monto = table.Column<decimal>(nullable: false),
+                    Descuento = table.Column<decimal>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Factura", x => x.IdFactura);
+                    table.ForeignKey(
+                        name: "FK_Factura_Cuenta_IdCuenta",
+                        column: x => x.IdCuenta,
+                        principalTable: "Cuenta",
+                        principalColumn: "IdCuenta",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orden",
+                columns: table => new
+                {
+                    IdOrden = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    IdCuenta = table.Column<int>(nullable: false),
+                    Enviado = table.Column<bool>(nullable: false),
+                    Fecha = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orden", x => x.IdOrden);
+                    table.ForeignKey(
+                        name: "FK_Orden_Cuenta_IdCuenta",
+                        column: x => x.IdCuenta,
+                        principalTable: "Cuenta",
+                        principalColumn: "IdCuenta",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FacturaDetalle",
+                columns: table => new
+                {
+                    IdFacturaDetalle = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    IdFactura = table.Column<int>(nullable: false),
+                    IdProducto = table.Column<int>(nullable: false),
+                    Cantidad = table.Column<int>(nullable: false),
+                    Precio = table.Column<decimal>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FacturaDetalle", x => x.IdFacturaDetalle);
+                    table.ForeignKey(
+                        name: "FK_FacturaDetalle_Factura_IdFactura",
+                        column: x => x.IdFactura,
+                        principalTable: "Factura",
+                        principalColumn: "IdFactura",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrdenDetalle",
                 columns: table => new
                 {
@@ -403,6 +417,16 @@ namespace Monografico.Migrations
                 name: "IX_AspNetUserLogins_UserId",
                 table: "AspNetUserLogins",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cuenta_IdMesa",
+                table: "Cuenta",
+                column: "IdMesa");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Factura_IdCuenta",
+                table: "Factura",
+                column: "IdCuenta");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FacturaDetalle_IdFactura",
@@ -494,9 +518,6 @@ namespace Monografico.Migrations
                 name: "Inventario");
 
             migrationBuilder.DropTable(
-                name: "Mesa");
-
-            migrationBuilder.DropTable(
                 name: "OrdenDetalle");
 
             migrationBuilder.DropTable(
@@ -510,9 +531,6 @@ namespace Monografico.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ingrediente");
-
-            migrationBuilder.DropTable(
-                name: "Zona");
 
             migrationBuilder.DropTable(
                 name: "Orden");
@@ -531,6 +549,12 @@ namespace Monografico.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categoria");
+
+            migrationBuilder.DropTable(
+                name: "Mesa");
+
+            migrationBuilder.DropTable(
+                name: "Zona");
         }
     }
 }

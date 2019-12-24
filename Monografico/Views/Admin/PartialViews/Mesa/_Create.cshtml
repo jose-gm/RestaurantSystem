@@ -47,7 +47,7 @@
     var formulario = document.getElementById("form-crear");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
-        alert(formulario.checkValidity());
+        //alert(formulario.checkValidity());
         if (formulario.checkValidity()) {
             var model = {
                 "Descripcion": document.getElementById("Descripcion").value,

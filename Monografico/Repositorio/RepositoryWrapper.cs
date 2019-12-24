@@ -1,4 +1,6 @@
-﻿using Monografico.Data;
+﻿using Microsoft.AspNetCore.Identity;
+using Monografico.Data;
+using Monografico.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

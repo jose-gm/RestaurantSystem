@@ -28,7 +28,7 @@
                                 <a asp-action="SeleccionMesa" asp-controller="Admin" class="btn btn-secondary btn-block">Mesas</a>
                             </div>
                             <div class="col-md-6">
-                                <button id="cancelarcuentabtn" class="btn btn-danger btn-block">Cancelar cuenta</button>
+                                <button id="liberar-mesa-btn" class="btn btn-secondary btn-block">Liberar mesa</button>
                             </div>
                         </div>
 
@@ -78,35 +78,62 @@
                                                     Total
                                                 </th>
                                                 <th>
+                                                    Enviado
+                                                </th>
+                                                <th>
                                                 </th>
                                             </tr>
                                         </thead>
                                     </table>
                                 </div>
 
+                                <hr />
                             </div>
                         </div>
 
                         <!--Total-->
                         <div class="row mb-2">
-                            <div class="col-md-12">
-                                <div class="bg-secondary">
-                                    <label>Total:</label>
-                                    <span id="total-span" class="ml-auto">0</span>
+                            <div class="col-12">
+                                <div class="row justify-content-between">
+                                    <div class="col-md-3">
+                                        <label>Total:</label>                                            
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span id="total-span" class="ml-auto">0</span>
+                                    </div>
                                 </div>
+
+                                <div class="row justify-content-between">
+                                    <div class="col-md-3">
+                                        <label>Descuento:</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-sm">
+                                            <input id="descuento-inp" type="number" class="form-control" value="0" min="0" />
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <hr />
                             </div>
                         </div>
 
                         <!--Acciones-->
                         <div class="row">
                             <div class="col-md-4 col-sm-4">
-                                <button id="cancelarbtn" class="btn btn-secondary">Cancelar</button>
+                                <button id="cancelarbtn" class="btn btn-danger"><i class="fa fa-trash"></i>Cancelar</button>
                             </div>
                             <div class="col-md-4 col-sm-4">
-                                <button id="ordenarbtn" class="btn btn-secondary">Ordenar</button>
+                                <button id="ordenarbtn" class="btn btn-secondary"><i class="fa fa-sticky-note"></i>Ordenar</button>
                             </div>
                             <div class="col-md-4 col-sm-4">
-                                <button id="cuentabtn" class="btn btn-secondary">Cuenta</button>
+                                <button id="cuentabtn" class="btn btn-secondary">
+                                    <i class="fa fa-money"></i>Cuenta
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden></span>
+                                    <span class="sr-only">Loading...</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -198,11 +225,17 @@
     </div>
 </div>
 
-<!-- Modal de confirmacion de eliminacion-->
-<partial name="~/Views/Admin/PartialViews/_ModalMensajeOrden.cshtml" />
+<!-- Modal de confirmacion de impresion de cuenta-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalConfirmarPago.cshtml" />
+    
+    <!-- Modal de confirmacion de impresion de cuenta-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalConfirmacionCuenta.cshtml" />
+    
+    <!-- Modal de confirmacion de eliminacion-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalMensaje.cshtml" />
     
 <!-- Modal de impresion de orden-->
-<partial name="~/Views/Admin/PartialViews/Orden/_ModalOrden.cshtml" />
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalTicket.cshtml" />
 
 @section script {
     <environment include="Development">
@@ -220,27 +253,6 @@
         var table;
 
         $(document).ready(function () {
-            //Mesa select
-            /*$('.select2-mesero').select2({
-                minuminminimumResultsForSearch: Infinity,
-                theme: 'bootstrap4',
-                ajax: {
-                    url: "",
-                    dataType: 'json',
-                    processResults: function (data) {
-                        return {
-                            results: $.map(data, function (item) {
-                                return {
-                                    id: item.idMesa,
-                                    text: item.descripcion
-                                };
-                            }),
-                        };
-                    }
-                },
-                placeholder: 'Selecciona una mesa',
-            });*/
-
             //Datatable
             var _url = "@Url.Action("ListOfOrden","Cuenta")" + "/" +"@Model.IdCuenta";
             table = $('#datatable').DataTable({
@@ -268,7 +280,7 @@
                 },
                 columnDefs: [
                     {
-                        targets: [0,1,2,3],
+                        targets: [0,1,2,3,8],
                         visible: false
                     },
                 ],
@@ -278,7 +290,7 @@
                     { data: 'idDetalle' },
                     { data: 'idProducto' },
                     { data: 'descripcion' , width: "20%",responsivePriority: 1},
-                    { data: 'precio', width: "4%", responsivePriority: 4},
+                    { data: 'precio', width: "4%", responsivePriority: 4, render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) },
                     {
                         data: {},
                         width: "2%",
@@ -290,7 +302,8 @@
                                 return data.cantidad;
                         }
                     },
-                    { data: 'total' , width: "6%", responsivePriority:5},
+                    { data: 'total' , width: "6%", responsivePriority:5, render: $.fn.dataTable.render.number( ',', '.', 2, '$' )},
+                    { data: 'enviado'},
                     {
                         data: {},
                         width: "2%",
@@ -334,19 +347,6 @@
                 table.columns.adjust().responsive.recalc();
             });
 
-            /*function hideSideBar(x) {
-                if (x.matches) {
-                    document.querySelector(".app").classList.add("sidebar-show");
-                }
-                else {
-                    document.querySelector(".app").classList.remove("sidebar-show");
-                    table.column(7).visible(false);
-                    table.columns.adjust().draw( false );
-                }
-            }
-            var mquery = window.matchMedia("(min-width: 769px)");
-            hideSideBar(mquery);
-            mquery.addEventListener(hideSideBar);*/
         });
 
         //Evento de seleccion de producto y lo agrega a la lista
@@ -374,15 +374,111 @@
             });
         });
 
-        //Abre modal de impresion de orden
+        //Abre modal de impresion de orden y lo envia a la cocina
         document.getElementById("ordenarbtn").addEventListener('click', () => {
-            $('.print-orden').load("@Url.Action("TablaOrden","Cuenta", new { id = Model.IdCuenta })", () => {
+            $('.imprimible').load("@Url.Action("TicketOrden","Cuenta", new { id = Model.IdCuenta })", () => {
                 $('#myModal').modal({
                     keyboard: false,
                     backdrop: 'static'
                 });
             });
-        });        
+        });  
+
+
+
+        //Abre modal para imprimir cuenta
+        var cuentabtn = document.getElementById("cuentabtn");
+        cuentabtn.addEventListener('click', function (e) {
+            $('#modal-cuenta').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });      
+        });
+
+        //Crea e imprime la factura de la cuenta
+        document.getElementById("imprimir-btn").addEventListener('click', function (e) {
+            var table = $('#datatable').DataTable();
+
+            var data = table.rows().data().filter(function (data, index) {
+                return data.enviado === true ? true : false;
+            });
+
+            var sum = table.cells(function (index, data, node) {
+                                return table.row(index).data().enviado === true ? true : false;
+                            }, 7, { search: 'applied' })
+                                .data()
+                                .sum().toFixed(2);
+
+            var ordenes = [];
+
+            for (let i = 0; i < data.length; i++) {
+                ordenes.push(data[i]);
+            }
+
+            //console.log(ordenes);
+
+            var model = {
+                "IdCuenta": @Model.IdCuenta,
+                "Mesa": "@Model.Mesa",
+                "Monto": sum,
+                "Descuento": document.getElementById("descuento-inp").value,
+                "Ordenes": ordenes
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Create","Factura")",
+                data: JSON.stringify(model),
+                headers: {
+                    "Content-type": "application/json"
+                },
+                error: function () {
+                },
+                success: function (response) {
+                    var $div = $('<div></div>');
+                    $div.html(response);
+                    $div.printThis();
+                    $div.remove();
+
+                    document.querySelector(".modal-cuenta-mensaje").classList.add("d-none");
+                    document.querySelector(".modal-cuenta-progress").classList.remove("d-none");
+
+                    setTimeout(function () {
+                        $("#modal-cuenta").modal('hide');
+
+                        $('#modal-cp-body').load("@Url.Action("ConfirmarPago","Factura", new { idCuenta = Model.IdCuenta })", () => {
+                            $('#modal-cp').modal({
+                                keyboard: false,
+                                backdrop: 'static'
+                            });
+                        });
+                        @*window.location.href= "@Url.Action("ConfirmarPago","Factura", new { idCuenta = Model.IdCuenta })";*@
+                    },1000);
+                }
+            });      
+        });
+
+
+        //Imprime las ordenes
+        document.getElementById("com-ordenar").addEventListener('click', () => {
+            $('.imprimible').printThis();
+
+            setTimeout(function () {
+                $.ajax({
+                    url: "@Url.Action("EnviarOrdenes","Cuenta")",
+                    data: { id: @Model.IdCuenta },
+                    error: function () {
+                    },
+                    success: function () {
+                        $('#datatable').DataTable().ajax.reload(actualizar);
+                        $('#myModal').modal('hide');
+                    }
+                });
+            },
+                1000); 
+        }); 
+
+
 
         //borra una orden de la lista
         function borrar(idorden, iddetalle) {
@@ -397,63 +493,104 @@
             });
         }
 
-        //Actualiza los totales y impuestos
-        function actualizar() {
-            document.getElementById("total-span").innerHTML = $('#datatable').DataTable().column(7).data().sum();
-        }
-
-
+     
         var parent;
         //Abre el modal para cancelar todas las ordenes actuales
         document.getElementById("cancelarbtn").addEventListener('click', function(e) {
-            abrirModalBorrarImg("Seguro que desea cancelar la orden?", "/img/delete.png");
+            abrirModalMensaje("Seguro que desea cancelar la orden?", "/img/delete.png");
             parent = 1;
         });
 
         //Abre el modal para cancelar la cuenta actual y desocupar la mesa
-        document.getElementById("cancelarcuentabtn").addEventListener('click', function (e) {            
-            abrirModalBorrarImg("Seguro que desea cancelar la cuenta?", "/img/warning.png");
+        document.getElementById("liberar-mesa-btn").addEventListener('click', function (e) {            
+            abrirModalMensaje("Seguro que desea cancelar la cuenta?", "/img/warning.png");
             parent = 2;
         });
 
-        //Elimina todas las ordenes actuales
+        //Evento del boton eliminar del modal mensaje
         document.getElementById("botonEliminar").addEventListener('click', function (e) {
             switch (parent) {
                 case 1:
-                    eliminar2("@Url.Action("CancelarOrden","Cuenta")", "datatable", @Model.IdCuenta);
-                    toastr.success("Eliminado");
+                    var table = $('#datatable').DataTable();
+                    var lenght = table.rows().data().filter(function (data, index) {
+                        return data.enviado === true ? true : false;
+                    }).length;
+
+                    if (lenght > 0) {
+                        cancelarOrdenes("@Url.Action("CancelarOrden","Cuenta")",
+                                    "datatable", @Model.IdCuenta, actualizar);
+                    }
+                    else {
+                        eliminarOrdenes("@Url.Action("CancelarOrden","Cuenta")", "datatable", @Model.IdCuenta,actualizar);                        
+                    }
+                    
                     break;
 
                 case 2:
-                    $.ajax({
-                        url: "@Url.Action("Delete","Cuenta")",
-                        data: { id: @Model.IdCuenta },
-                        error: function () {
-                        },
-                        success: function () {
-                            window.location.replace("@Url.Action("SeleccionMesa","Admin")");
-                        }
-                    });
+                    var table = $('#datatable').DataTable();
+                    var lenght = table.rows().data().filter(function (data, index) {
+                        return data.enviado === true ? true : false;
+                    }).length;
+
+                    if (lenght > 0) {
+                        cerrarModalMensaje();
+                        toastr.warning("Hay ordenes pendientes");
+                    }
+                    else {  
+                        $.ajax({
+                            url: "@Url.Action("Delete","Cuenta")",
+                            data: { id: @Model.IdCuenta },
+                            error: function () {
+                            },
+                            success: function () {
+                                window.location.replace("@Url.Action("SeleccionMesa","Admin")");
+                            }
+                        });
+                    }
+                    
                     break;
             }          
         });
+        
+  
 
-        //Imprime las ordenes
-        document.getElementById("com-ordenar").addEventListener('click', () => {
-            $('.print-orden').printThis();
+         //Actualiza los totales y impuestos
+        function actualizar() {
+            var table = $('#datatable').DataTable();
+            var sum = table.column(7).data().sum().toFixed(2);
+                                      
+            document.getElementById("total-span").innerHTML = sum;
 
-            setTimeout(function () {
-                $.ajax({
-                    url: "@Url.Action("EnviarOrdenes","Cuenta")",
-                    data: { id: @Model.IdCuenta },
-                    error: function () {
-                    },
-                    success: function () {
-                        $('#datatable').DataTable().ajax.reload(actualizar); 
-                    }
-                });
-            },
-                1000); 
-        }); 
+                //$('#datatable').DataTable().column(7).data().sum();
+
+            var descuentoInput = document.getElementById("descuento-inp");
+            descuentoInput.value = (sum > 0) ? descuentoInput.value : 0;
+        }
+
+
+        //Cancela y elimina las ordenes e imprime un ticket de cancelacion de orden.
+        function cancelarOrdenes(_url, table, id,callback) {
+            var url = _url;
+            $.ajax({
+                url: url,
+                data: { id: id, ordenPendiente: true },
+                error: function (response) {
+                    $('#borrarModal').modal('hide');
+                    //toastr.error("Error al borrar");
+                    //alert(response);
+                },
+                success: function (response) {
+                    var $div = $('<div></div>');
+
+                    $div.html(response);
+                    $div.printThis();
+                    $div.remove();
+
+                    $('#' + table).DataTable().ajax.reload(callback);
+                    $('#borrarModal').modal('hide');    
+                    toastr.success("Eliminado");
+                }
+            });
+        }
     </script>
 }

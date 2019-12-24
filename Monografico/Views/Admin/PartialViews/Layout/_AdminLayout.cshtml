@@ -26,7 +26,7 @@
 
     @RenderSection("link",false)
 </head>
-<body class="app header-fixed sidebar-show sidebar-fixed">
+<body class="app header-fixed sidebar-xl-show sidebar-lg-show sidebar-minimized sidebar-fixed">
     <!-- Header -->
     <partial name="~/Views/Admin/PartialViews/_Header.cshtml" />
 
@@ -66,7 +66,7 @@
             <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-            <script src="https://unpkg.com/@@coreui/coreui/dist/js/coreui.min.js"></script>
+            <script src="https://unpkg.com/%40coreui/coreui/dist/js/coreui.min.js"></script>
             <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
             <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
             <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
@@ -75,7 +75,7 @@
             <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/plug-ins/1.10.20/api/sum().js"></script>
         </environment>
         <script>
-            function hideSideBar(x) {
+            /*function hideSideBar(x) {
                 if (x.matches) {
                     document.querySelector(".app").classList.add("sidebar-show");
 
@@ -86,7 +86,7 @@
             }
             var mquery = window.matchMedia("(min-width: 769px)");
             hideSideBar(mquery);
-            mquery.addEventListener(hideSideBar);
+            mquery.addEventListener(hideSideBar);*/
         </script>
 
         @RenderSection("script", false)

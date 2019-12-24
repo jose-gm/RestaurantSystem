@@ -129,6 +129,8 @@ namespace Monografico.Migrations
 
                     b.HasKey("IdCuenta");
 
+                    b.HasIndex("IdMesa");
+
                     b.ToTable("Cuenta");
                 });
 
@@ -140,13 +142,17 @@ namespace Monografico.Migrations
 
                     b.Property<decimal>("Descuento");
 
+                    b.Property<string>("Estado");
+
                     b.Property<DateTime>("Fecha");
 
-                    b.Property<int>("IdCuenta");
+                    b.Property<int?>("IdCuenta");
 
                     b.Property<decimal>("Monto");
 
                     b.HasKey("IdFactura");
+
+                    b.HasIndex("IdCuenta");
 
                     b.ToTable("Factura");
                 });
@@ -466,6 +472,21 @@ namespace Monografico.Migrations
                         .WithMany("UsuarioRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Monografico.Models.Cuenta", b =>
+                {
+                    b.HasOne("Monografico.Models.Mesa", "Mesa")
+                        .WithMany("Cuentas")
+                        .HasForeignKey("IdMesa")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Monografico.Models.Factura", b =>
+                {
+                    b.HasOne("Monografico.Models.Cuenta", "Cuenta")
+                        .WithMany()
+                        .HasForeignKey("IdCuenta");
                 });
 
             modelBuilder.Entity("Monografico.Models.FacturaDetalle", b =>

@@ -1,0 +1,74 @@
+﻿@model Monografico.ViewModels.FacturaViewModel
+
+@{
+    ViewData["Title"] = "ComfirmarPago";
+    Layout = "";
+}
+
+<!doctype html>
+<html>
+<head>@Model.IdFactura
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"]</title>
+
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- CoreUI CSS -->
+    <environment include="Development">
+        <link href="~/lib/coreui-master/dist/css/coreui.min.css" rel="stylesheet" />
+        <link href="~/lib/coreui-icons-master/css/free.min.css" rel="stylesheet" />
+        <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link rel="stylesheet" href="https://unpkg.com/%40coreui/coreui/dist/css/coreui.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/%40coreui/icons/css/coreui-icons.min.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+    </environment>
+</head>
+<body>
+    <h1>ComfirmarPago</h1>
+
+    <button id="confirm-pago" class="btn btn-primary">Confirmar pago</button>
+
+
+    <!-- jQuery first, then Popper.js, Bootstrap, then CoreUI  -->
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/popper.js/popper.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/lib/coreui-master/dist/js/coreui.min.js"></script>
+        <script src="~/lib/toastr.js/toastr.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/%40coreui/coreui/dist/js/coreui.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    </environment>
+
+    <script>
+        $(document).ready(() => {
+
+        });
+
+        document.getElementById("confirm-pago").addEventListener('click', function (e) {
+            $.ajax({
+                url: "@Url.Action("CambiarEstado","Factura")",
+                data: { id: @Model.IdFactura },
+                error: function () {
+                },
+                success: function () {
+                    setTimeout(function () {
+                        window.location.replace("@Url.Action("Index","Cuenta")");
+                    }, 1000);
+
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

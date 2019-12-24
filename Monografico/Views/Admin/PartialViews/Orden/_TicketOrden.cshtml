@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Monografico.ViewModels.OrdenViewModel>
+
+@{
+    var mesa = (@Model.FirstOrDefault() != null) ? @Model.FirstOrDefault().Mesa : "n/a";
+}
+
+
+@if (ViewBag.OrdenCancelada)
+{
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <h3><strong>Orden cancelada</strong></h3>
+        </div>
+    </div>
+}
+
+<div class="row mb-3">
+    <div class="col-md-8">
+        <h4>Cuenta #: @Model.FirstOrDefault().IdCuenta</h4>
+        <h6>Mesa: @mesa</h6>
+        <h6>Fecha: @DateTime.Now</h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>producto</th>
+                    <th>cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Descripcion</td>
+                        <td>@item.Cantidad</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

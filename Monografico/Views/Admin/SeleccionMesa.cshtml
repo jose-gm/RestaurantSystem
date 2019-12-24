@@ -16,7 +16,7 @@
                 @foreach (var mesa in item.Mesas)
                 {
                     <div class="col-md-4 col-sm-4">
-                        <a asp-action="Index" asp-controller="Cuenta" asp-route-id="@mesa.IdMesa">
+                        <a asp-action="Index" asp-controller="Cuenta" asp-route-idMesa="@mesa.IdMesa">
                             @if (mesa.Cuentas.Count > 0)
                             {
                                 <span class="badge badge-info mesa-info">Ocupado</span>

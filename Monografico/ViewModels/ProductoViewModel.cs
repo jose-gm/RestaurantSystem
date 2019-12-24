@@ -25,6 +25,7 @@ namespace Monografico.ViewModels
     public class ProductoViewModel
     {
         public int IdProducto { get; set; }
+        [Required(ErrorMessage = "Debe seleccionar una categoria")]
         [Display(Name = "Categoria")]
         public int? IdCategoria { get; set; }
         [Required]

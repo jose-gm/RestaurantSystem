@@ -10,8 +10,8 @@ using Monografico.Data;
 namespace Monografico.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20191212045325_Change2")]
-    partial class Change2
+    [Migration("20191219062959_InicialCreate")]
+    partial class InicialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -131,6 +131,8 @@ namespace Monografico.Migrations
 
                     b.HasKey("IdCuenta");
 
+                    b.HasIndex("IdMesa");
+
                     b.ToTable("Cuenta");
                 });
 
@@ -144,11 +146,13 @@ namespace Monografico.Migrations
 
                     b.Property<DateTime>("Fecha");
 
-                    b.Property<int>("IdCuenta");
+                    b.Property<int?>("IdCuenta");
 
                     b.Property<decimal>("Monto");
 
                     b.HasKey("IdFactura");
+
+                    b.HasIndex("IdCuenta");
 
                     b.ToTable("Factura");
                 });
@@ -470,6 +474,21 @@ namespace Monografico.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("Monografico.Models.Cuenta", b =>
+                {
+                    b.HasOne("Monografico.Models.Mesa", "Mesa")
+                        .WithMany("Cuentas")
+                        .HasForeignKey("IdMesa")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Monografico.Models.Factura", b =>
+                {
+                    b.HasOne("Monografico.Models.Cuenta", "Cuenta")
+                        .WithMany()
+                        .HasForeignKey("IdCuenta");
+                });
+
             modelBuilder.Entity("Monografico.Models.FacturaDetalle", b =>
                 {
                     b.HasOne("Monografico.Models.Factura")
@@ -501,8 +520,8 @@ namespace Monografico.Migrations
 
             modelBuilder.Entity("Monografico.Models.Orden", b =>
                 {
-                    b.HasOne("Monografico.Models.Cuenta")
-                        .WithMany("ordenes")
+                    b.HasOne("Monografico.Models.Cuenta", "Cuenta")
+                        .WithMany("Ordenes")
                         .HasForeignKey("IdCuenta")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

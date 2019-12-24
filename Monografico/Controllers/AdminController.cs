@@ -10,7 +10,7 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
-    [Authorize]
+    /*[Authorize]*/
     public class AdminController : Controller
     {
        

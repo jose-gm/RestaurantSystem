@@ -1,0 +1,134 @@
+﻿@model Monografico.ViewModels.FacturaViewModel
+
+@{
+    var descuento = (Model.Descuento / 100) * Model.Monto;
+    var monto = Model.Monto;
+    var total = monto - descuento;
+    var facturaNo = "00" + Model.IdFactura;
+}
+
+<h5>Factura No.: facturaNo </h5>
+<span>Fecha: @DateTime.Now.Date</span>
+<br />
+<h5 class="mb-3">Para:</h5>
+<h3 class="text-dark mb-1">Mesa: @Model.Mesa</h3>
+<br />
+<br />
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Ordenes)
+        {
+            <tr>
+                <td>1</td>
+                <td>@item.Descripcion</td>
+                <td>@item.Precio</td>
+                <td>@item.Cantidad</td>
+                <td>@item.Total</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<table>
+    <tbody>
+        <tr>
+            <td>
+                <strong class="text-dark">Subtotal</strong>
+            </td>
+            <td>@monto</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Descuento</strong>
+            </td>
+            <td>@descuento</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Total</strong>
+            </td>
+            <td>
+                <strong>@total</strong>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+@*
+    <div class="offset-xl-2 col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 padding">
+        <div class="card">
+            <div class="card-header p-4" style="background-color:#fff;">
+                <div class="float-right">
+                    <h5 class="mb-0">Factura No.: @Model.IdFactura</h5>
+                    Fecha: @DateTime.Now.Date
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-sm-6 ">
+                        <h5 class="mb-3">Para:</h5>
+                        <h3 class="text-dark mb-1">Mesa: @Model.Mesa</h3>
+                    </div>
+                </div>
+                <div class="table-responsive-sm">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-sm-5">
+                    </div>
+                    <div class="col-lg-4 col-sm-5 ml-auto">
+                        <table class="table table-clear">
+                            <tbody>
+                                <tr>
+                                    <td class="left">
+                                        <strong class="text-dark">Subtotal</strong>
+                                    </td>
+                                    <td class="right">@Model.Monto</td>
+                                </tr>
+                                <tr>
+                                    <td class="left">
+                                        <strong class="text-dark">Descuento</strong>
+                                    </td>
+                                    <td class="right">@descuento</td>
+                                </tr>
+                                <tr>
+                                    <td class="left">
+                                        <strong class="text-dark">Total</strong>
+                                    </td>
+                                    <td class="right">
+                                        <strong class="text-dark">@total</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-white">
+                <p class="mb-0">BBBootstrap.com, Sounth Block, New delhi, 110034</p>
+            </div>
+        </div>
+    </div>
+*@

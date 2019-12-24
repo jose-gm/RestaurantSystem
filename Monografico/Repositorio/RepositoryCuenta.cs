@@ -13,7 +13,6 @@ namespace Monografico.Repositorio
 {
     public class RepositoryCuenta : RepositoryBase<Cuenta>
     {
-        private readonly Contexto _contexto;
 
         public RepositoryCuenta(Contexto contexto) : base(contexto)
         {
@@ -142,6 +141,7 @@ namespace Monografico.Repositorio
                     model.Mesa = mesa.Descripcion;
                     //model.Ordenes = cuenta.ordenes;
                     model.Categorias = categorias;
+                    model.Activa = cuenta.Activa;
                 }
             }
             catch (Exception)
@@ -187,8 +187,7 @@ namespace Monografico.Repositorio
             {
                 lista = new List<OrdenViewModel>();
                 var cuenta = _contexto.Cuenta.Include(s => s.Mesa).Include(x => x.Ordenes).ThenInclude(y => y.Detalle).AsNoTracking().SingleOrDefault(c => c.IdCuenta == id);
-                var ordenes = cuenta.Ordenes.Where(expression);
-                foreach(var item in cuenta.Ordenes)
+                foreach(var item in cuenta.Ordenes.Where(expression))
                 {
                     foreach(var inner in item.Detalle)
                     {

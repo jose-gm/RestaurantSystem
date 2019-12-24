@@ -1,0 +1,27 @@
+﻿@model Monografico.ViewModels.FacturaViewModel
+
+
+<h1>ComfirmarPago</h1>
+
+<button id="confirm-pago" class="btn btn-primary">Confirmar pago</button>
+
+<script>
+        $(document).ready(() => {
+
+        });
+
+        document.getElementById("confirm-pago").addEventListener('click', function (e) {
+            $.ajax({
+                url: "@Url.Action("CambiarEstado","Factura")",
+                data: { id: @Model.IdFactura },
+                error: function () {
+                },
+                success: function () {
+                    setTimeout(function () {
+                        window.location.replace("@Url.Action("Index","Cuenta", new { idMesa = Model.IdMesa })");
+                    }, 1000);
+
+                }
+            });
+        });
+</script>

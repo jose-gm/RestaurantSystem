@@ -10,8 +10,8 @@ using Monografico.Data;
 namespace Monografico.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20191213142818_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20191222081258_Change")]
+    partial class Change
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -125,9 +125,13 @@ namespace Monografico.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Activa");
+
                     b.Property<int>("IdMesa");
 
                     b.HasKey("IdCuenta");
+
+                    b.HasIndex("IdMesa");
 
                     b.ToTable("Cuenta");
                 });
@@ -140,13 +144,17 @@ namespace Monografico.Migrations
 
                     b.Property<decimal>("Descuento");
 
+                    b.Property<string>("Estado");
+
                     b.Property<DateTime>("Fecha");
 
-                    b.Property<int>("IdCuenta");
+                    b.Property<int?>("IdCuenta");
 
                     b.Property<decimal>("Monto");
 
                     b.HasKey("IdFactura");
+
+                    b.HasIndex("IdCuenta");
 
                     b.ToTable("Factura");
                 });
@@ -244,6 +252,8 @@ namespace Monografico.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Enviado");
+
                     b.Property<DateTime>("Fecha");
 
                     b.Property<int>("IdCuenta");
@@ -283,7 +293,7 @@ namespace Monografico.Migrations
                     b.Property<string>("Descripcion")
                         .HasMaxLength(60);
 
-                    b.Property<int>("IdCategoria");
+                    b.Property<int?>("IdCategoria");
 
                     b.Property<string>("Imagen");
 
@@ -466,6 +476,21 @@ namespace Monografico.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("Monografico.Models.Cuenta", b =>
+                {
+                    b.HasOne("Monografico.Models.Mesa", "Mesa")
+                        .WithMany("Cuentas")
+                        .HasForeignKey("IdMesa")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Monografico.Models.Factura", b =>
+                {
+                    b.HasOne("Monografico.Models.Cuenta", "Cuenta")
+                        .WithMany()
+                        .HasForeignKey("IdCuenta");
+                });
+
             modelBuilder.Entity("Monografico.Models.FacturaDetalle", b =>
                 {
                     b.HasOne("Monografico.Models.Factura")
@@ -497,8 +522,8 @@ namespace Monografico.Migrations
 
             modelBuilder.Entity("Monografico.Models.Orden", b =>
                 {
-                    b.HasOne("Monografico.Models.Cuenta")
-                        .WithMany("ordenes")
+                    b.HasOne("Monografico.Models.Cuenta", "Cuenta")
+                        .WithMany("Ordenes")
                         .HasForeignKey("IdCuenta")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -513,10 +538,10 @@ namespace Monografico.Migrations
 
             modelBuilder.Entity("Monografico.Models.Producto", b =>
                 {
-                    b.HasOne("Monografico.Models.Categoria")
+                    b.HasOne("Monografico.Models.Categoria", "Categoria")
                         .WithMany("Productos")
                         .HasForeignKey("IdCategoria")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("Monografico.Models.ProductoDetalle", b =>

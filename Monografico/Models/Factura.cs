@@ -13,10 +13,12 @@ namespace Monografico.Models
     {
         [Key]
         public int IdFactura { get; set; }
-        public int IdCuenta { get; set; }
+        public int? IdCuenta { get; set; }
         public DateTime Fecha { get; set; }
         public decimal Monto { get; set; }
         public decimal Descuento { get; set; }
-        public List<FacturaDetalle> Detalle { get; set; }
+        public string Estado { get; set; }
+        public virtual List<FacturaDetalle> Detalle { get; set; }
+        public virtual Cuenta Cuenta { get; set; }
     }
 }

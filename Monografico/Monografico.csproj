@@ -6,9 +6,13 @@
   </PropertyGroup>
   
     <ItemGroup>
+      <Compile Remove="Autorizacion\**" />
       <Compile Remove="Views\Inventario\**" />
+      <Content Remove="Autorizacion\**" />
       <Content Remove="Views\Inventario\**" />
+      <EmbeddedResource Remove="Autorizacion\**" />
       <EmbeddedResource Remove="Views\Inventario\**" />
+      <None Remove="Autorizacion\**" />
       <None Remove="Views\Inventario\**" />
     </ItemGroup>
   
@@ -61,10 +65,6 @@
     <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.jqueryui.min.js" />
     <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.semanticui.js" />
     <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.semanticui.min.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Autorizacion\" />
   </ItemGroup>
 
 </Project>
