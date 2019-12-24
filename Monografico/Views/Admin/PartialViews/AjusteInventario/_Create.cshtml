@@ -1,0 +1,116 @@
+﻿@model Monografico.Models.AjusteInventario
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+
+@{
+    var modalTitle = "Ajuste de Inventario";
+}
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="form-crear" method="post" asp-antiforgery="false" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @*<div class="form-group">
+            <label asp-for="Descripcion" class="control-label"></label>
+            <input asp-for="Descripcion" class="form-control" required />
+            <span asp-validation-for="Descripcion" class="text-danger"></span>
+        </div>*@
+            <div class="form-group">
+                <label asp-for="IdInventario" class="control-label"></label>
+                <input asp-for="IdInventario" class="form-control" disabled />
+                <span asp-validation-for="IdInventario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" disabled />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CantidadAnterior" class="control-label"></label>
+                <input asp-for="CantidadAnterior" class="form-control" disabled />
+                <span asp-validation-for="CantidadAnterior" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
+                <select asp-for="Estado" class="form-control">
+                    <option value="Ajustar">Ajustar</option>
+                    <option value="Sumar">Sumar</option>
+                    <option value="Restar">Restar</option>
+                </select>
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CantidadActual" class="control-label"></label>
+                <input asp-for="CantidadActual" class="form-control" />
+                <span asp-validation-for="CantidadActual" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Fecha" class="control-label"></label>
+                <input asp-for="Fecha" type="date" class="form-control" disabled />
+                <span asp-validation-for="Fecha" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Observacion" class="control-label"></label>
+                <input asp-for="Observacion" class="form-control" />
+                <span asp-validation-for="Observacion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+            <input type="hidden" id="RequestVerificationToken"
+                   name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+        </form>
+    </div>
+</div>
+
+
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    $('#myModalLabel').html("@modalTitle");
+
+    var formulario = document.getElementById("form-crear");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert(formulario.checkValidity());
+        if (formulario.checkValidity()) {
+            var model = {
+                "IdInventario": document.getElementById("IdInventario").value,
+                "CantidadAnterior": document.getElementById("CantidadAnterior").value,
+                "CantidadActual": document.getElementById("CantidadActual").value,
+                "Fecha": new Date().toJSON().slice(0,10),
+                "Estado": document.getElementById("Estado").value,
+                "Descripcion": document.getElementById("Descripcion").value,
+                "Observacion": document.getElementById("Observacion").value
+            };
+
+            //alert(model.Descripcion + model.Cantidad + model.Precio + model.FechaEntrada + model.EsContabilizable);
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Create","AjusteInventario")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                    $('#myModal').modal('hide');
+                    toastr.error("Error al guardar");
+                },
+                success: function () {
+                    $('#inventario-datatable').DataTable().ajax.reload();
+                    $('#myModal').modal('hide');
+                    toastr.success("Guardado con exito");
+                }
+            });
+        }
+    });
+</script>
+

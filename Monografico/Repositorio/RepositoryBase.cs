@@ -110,7 +110,7 @@ namespace Monografico.Repositorio
         /// </summary> 
         ///<param name="expression">Expression Lambda conteniendo los filtros de busqueda </param>
         ///// <returns>Retorna una lista de entidades</returns>
-        public async Task<List<T>> GetList(Expression<Func<T, bool>> expression)
+        public async virtual Task<List<T>> GetList(Expression<Func<T, bool>> expression)
         {
             List<T> lista = new List<T>();
             try

@@ -14,24 +14,25 @@ namespace Monografico.Repositorio
         private readonly Contexto _contexto;
         private readonly UserManager<Usuario> _userManager;
         private readonly RoleManager<Rol> _roleManager;
-        private  RepositoryIngrediente _ingrediente;
-        private  RepositoryCategoria _categoria;
-        private  RepositoryInventario _inventario;
-        private  RepositoryCuenta _cuenta;
-        private  RepositoryOrden _orden;
-        private  RepositoryFactura _factura;
-        private  RepositoryProducto _producto;
-        private  RepositoryZona _zona;
-        private  RepositoryMesa _mesa;
-        private  RepositoryUsuario _usuario;
-        private  RepositoryRol _rol;
+        private RepositoryIngrediente _ingrediente;
+        private RepositoryCategoria _categoria;
+        private RepositoryInventario _inventario;
+        private RepositoryCuenta _cuenta;
+        private RepositoryOrden _orden;
+        private RepositoryFactura _factura;
+        private RepositoryProducto _producto;
+        private RepositoryZona _zona;
+        private RepositoryMesa _mesa;
+        private RepositoryUsuario _usuario;
+        private RepositoryRol _rol;
+        private RepositoryAjusteInventario _ajusteinventario;
 
         public RepositoryWrapper(Contexto contexto)
         {
-            _contexto = contexto;       
+            _contexto = contexto;
         }
 
-        public RepositoryIngrediente Ingrediente 
+        public RepositoryIngrediente Ingrediente
         {
             get
             {
@@ -95,7 +96,7 @@ namespace Monografico.Repositorio
             get
             {
                 if (_usuario == null)
-                    _usuario = new RepositoryUsuario(_userManager,_roleManager);
+                    _usuario = new RepositoryUsuario(_userManager, _roleManager);
                 return _usuario;
             }
         }
@@ -107,6 +108,15 @@ namespace Monografico.Repositorio
                 if (_rol == null)
                     _rol = new RepositoryRol(_roleManager);
                 return _rol;
+            }
+        }
+        public RepositoryAjusteInventario AjusteInventario
+        {
+            get
+            {
+                if (_ajusteinventario == null)
+                    _ajusteinventario = new RepositoryAjusteInventario(_contexto);
+                return _ajusteinventario;
             }
         }
 

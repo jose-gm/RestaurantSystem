@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Monografico.Data;
 
 namespace Monografico.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    [Migration("20191221195051_AjusteInventario")]
+    partial class AjusteInventario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,13 +103,9 @@ namespace Monografico.Migrations
 
                     b.Property<string>("Descripcion");
 
-                    b.Property<string>("Estado");
-
                     b.Property<DateTime>("Fecha");
 
                     b.Property<int>("IdInventario");
-
-                    b.Property<string>("Observacion");
 
                     b.HasKey("Id");
 
@@ -167,17 +165,13 @@ namespace Monografico.Migrations
 
                     b.Property<decimal>("Descuento");
 
-                    b.Property<string>("Estado");
-
                     b.Property<DateTime>("Fecha");
 
-                    b.Property<int?>("IdCuenta");
+                    b.Property<int>("IdCuenta");
 
                     b.Property<decimal>("Monto");
 
                     b.HasKey("IdFactura");
-
-                    b.HasIndex("IdCuenta");
 
                     b.ToTable("Factura");
                 });
@@ -505,13 +499,6 @@ namespace Monografico.Migrations
                         .WithMany("Cuentas")
                         .HasForeignKey("IdMesa")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Monografico.Models.Factura", b =>
-                {
-                    b.HasOne("Monografico.Models.Cuenta", "Cuenta")
-                        .WithMany()
-                        .HasForeignKey("IdCuenta");
                 });
 
             modelBuilder.Entity("Monografico.Models.FacturaDetalle", b =>

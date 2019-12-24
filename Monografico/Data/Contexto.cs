@@ -20,6 +20,7 @@ namespace Monografico.Data
         public DbSet<Ingrediente> Ingrediente { get; set; }
         public DbSet<Inventario> Inventario { get; set; }
         public DbSet<Mesa> Mesa { get; set; }
+        public DbSet<AjusteInventario> Ajusteinventario { get; set; }
         public DbSet<Zona> Zona { get; set; }
         public DbSet<Cuenta> Cuenta { get; set; }
         public DbSet<Orden> Orden { get; set; }

@@ -31,7 +31,12 @@ namespace Monografico.Controllers
         {
             return View();
         }
-     
+
+        public IActionResult AjusteInventario()
+        {
+            return View();
+        }
+
         public IActionResult Empleado()
         {
             return View();
