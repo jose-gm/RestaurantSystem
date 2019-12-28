@@ -23,8 +23,27 @@
       "destination": "wwwroot/lib/printThis/"
     },
     {
-      "library": "font-awesome@4.7.0",
+      "library": "font-awesome@5.11.2",
       "destination": "wwwroot/lib/font-awesome/"
+    },
+    {
+      "library": "moment.js@2.24.0",
+      "destination": "wwwroot/lib/moment.js/",
+      "files": [
+        "moment.min.js",
+        "moment.js",
+        "moment-with-locales.min.js",
+        "moment-with-locales.js",
+        "locale/es-do.js",
+        "locale/es-us.js",
+        "locale/en-au.js",
+        "locale/en-ca.js",
+        "locale/en-gb.js",
+        "locale/en-ie.js",
+        "locale/en-nz.js",
+        "locale/en-SG.js",
+        "locale/en-il.js"
+      ]
     }
   ]
 }

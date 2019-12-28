@@ -27,8 +27,8 @@ namespace Monografico.Repositorio
                 {
                     IdCuenta = model.IdCuenta,
                     Fecha = DateTime.Now.Date,
-                    Monto = model.Monto,
-                    Descuento = model.Descuento,
+                    Descuento = (model.Descuento/100)*model.Monto,
+                    Monto = model.Monto - ((model.Descuento / 100)*model.Monto),
                     Estado = "No pago",
                     Detalle = new List<FacturaDetalle>()
                 };
@@ -95,6 +95,50 @@ namespace Monografico.Repositorio
             return model;
         }
         
+        public async Task<FacturaViewModel> FindAsViewModel(int id)
+        {
+            FacturaViewModel model = null;
+            try
+            {
+                var factura = await _contexto.Factura.Include(x => x.Detalle).Include(s => s.Cuenta).ThenInclude(c => c.Mesa).AsNoTracking().SingleOrDefaultAsync(w => w.IdFactura == id);
+
+                model = new FacturaViewModel()
+                {
+                    IdFactura = factura.IdFactura,
+                    IdCuenta = factura.IdCuenta ?? default(int),
+                    IdMesa = factura.Cuenta.IdMesa,
+                    Fecha = factura.Fecha,
+                    Estado = factura.Estado,
+                    Monto = factura.Monto,
+                    Mesa = factura.Cuenta.Mesa.Descripcion,
+                    Descuento = factura.Descuento,
+                    Ordenes = new List<OrdenViewModel>()
+                };
+
+                foreach(var item in factura.Detalle)
+                {
+                    var producto = await _contexto.Producto.FindAsync(item.IdProducto);
+
+                    model.Ordenes.Add(new OrdenViewModel() { 
+                        IdProducto = item.IdProducto,
+                        IdCuenta = factura.IdCuenta ?? default(int),
+                        Precio = item.Precio,
+                        Descripcion = producto.Descripcion,
+                        Cantidad = item.Cantidad,
+                        Total = item.Cantidad * item.Precio
+                    });
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return model;
+        }
+
+        
         public async Task<FacturaViewModel> FindOnlyFactura(int idCuenta)
         {
             FacturaViewModel model = null;
@@ -108,6 +152,8 @@ namespace Monografico.Repositorio
                     IdCuenta = factura.IdCuenta ?? default(int),
                     Monto = factura.Monto,
                     Descuento = factura.Descuento,
+                    Fecha = factura.Fecha,
+                    Estado = factura.Estado,
                     Ordenes = new List<OrdenViewModel>()
                 };
             }
@@ -127,11 +173,7 @@ namespace Monografico.Repositorio
                 var factura = await _contexto.Factura.AsNoTracking().SingleOrDefaultAsync(w => w.IdFactura == id);
                 factura.Estado = "Pago";
 
-                var cuenta = await _contexto.Cuenta.AsNoTracking().SingleOrDefaultAsync(q => q.IdCuenta == factura.IdCuenta);
-                cuenta.Activa = false;
-
                 _contexto.Factura.Update(factura);
-                _contexto.Cuenta.Update(cuenta);
 
                 await _contexto.SaveChangesAsync();
 
@@ -144,5 +186,34 @@ namespace Monografico.Repositorio
             }
             return paso;
         }
+
+        public async Task<List<Factura>> GetAll()
+        {
+            List<Factura> list = null;
+            try
+            {
+                list = await _contexto.Factura.ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return list;
+        }
+
+        /*public async Task<List<FacturaViewModel>> GetAllViewModel()
+        {
+            List<FacturaViewModel> list = new List<FacturaViewModel>();
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }*/
     }
 }

@@ -91,7 +91,7 @@ namespace Monografico.Migrations
 
             modelBuilder.Entity("Monografico.Models.AjusteInventario", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdAjuste")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -109,7 +109,9 @@ namespace Monografico.Migrations
 
                     b.Property<string>("Observacion");
 
-                    b.HasKey("Id");
+                    b.HasKey("IdAjuste");
+
+                    b.HasIndex("IdInventario");
 
                     b.ToTable("AjusteInventario");
                 });
@@ -483,6 +485,14 @@ namespace Monografico.Migrations
                     b.HasOne("Monografico.Models.Usuario")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Monografico.Models.AjusteInventario", b =>
+                {
+                    b.HasOne("Monografico.Models.Inventario")
+                        .WithMany("AjusteInventarios")
+                        .HasForeignKey("IdInventario")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

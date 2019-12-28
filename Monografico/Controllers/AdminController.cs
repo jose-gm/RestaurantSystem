@@ -10,7 +10,7 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
-    /*[Authorize]*/
+    [Authorize]
     public class AdminController : Controller
     {
        
@@ -22,55 +22,80 @@ namespace Monografico.Controllers
            
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            if (User.IsInRole("Mesero"))
+                return RedirectToAction("SeleccionMesa", "Admin");
+
+            var productos = await repo.Producto.GetList(x => true);
+            var ingredientes = await repo.Ingrediente.GetList(x => true);
+            var facturas = await repo.Factura.GetList(x => x.Fecha.Date == DateTime.Now.Date);
+            decimal totaldia = 0;
+            facturas.ForEach(x => totaldia += x.Monto);
+
+            ViewModel model = new ViewModel() { 
+                CantidadProducto = productos.Count,
+                CantidadIngrediente = ingredientes.Count,
+                TotalDia = totaldia
+            };
+            return View(model);
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult Inventario()
         {
             return View();
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult AjusteInventario()
         {
             return View();
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult Empleado()
         {
             return View();
         }
-      
-        public IActionResult Rol()
-        {
-            return View();
-        }
+
+        [Authorize(Roles = "Administrador")]
         public IActionResult Zona()
         {
             return View();
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult Mesa()
         {
             return View();
         }
-        
+
+        [Authorize(Roles = "Administrador")]
         public IActionResult Producto()
         {
             return View();
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult Categoria()
         {
             return View();
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult Ingrediente()
         {
             return View();
         }
-        
+
+        [Authorize(Roles = "Administrador")]
+        public IActionResult Factura()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Administrador,Mesero")]
         public async Task<IActionResult> SeleccionMesa()
         {
             return View(await repo.Zona.GetAllWithMesa());

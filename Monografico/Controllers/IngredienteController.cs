@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Monografico.Models;
@@ -10,6 +11,7 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class IngredienteController : Controller
     {
         RepositoryWrapper repo;
@@ -161,12 +163,12 @@ namespace Monografico.Controllers
         }
         
         //GET:
-        public async Task<JsonResult> ListWitInventory(string search)
+        public async Task<JsonResult> GetAll(string search)
         {
             if(!string.IsNullOrEmpty(search))
-                return Json(await repo.Ingrediente.GetAllWithInventory(x => x.Descripcion.Contains(search)));
+                return Json(await repo.Ingrediente.GetList(x => x.Descripcion.Contains(search)));
             else
-                return Json(await repo.Ingrediente.GetAllWithInventory(x => true));
+                return Json(await repo.Ingrediente.GetList(x => true));
         }
     }
 }

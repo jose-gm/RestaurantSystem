@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Monografico.Models;
@@ -9,6 +10,7 @@ using Monografico.Repositorio;
 
 namespace Monografico.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class AjusteInventarioController : Controller
     {
         RepositoryWrapper repo;

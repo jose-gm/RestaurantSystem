@@ -39,7 +39,22 @@ namespace Monografico.Repositorio
             Cuenta cuenta = null;
             try
             {
-                cuenta = _contexto.Cuenta.Include(x => x.Ordenes).AsNoTracking().SingleOrDefault(c => c.IdCuenta == id);
+                cuenta = await _contexto.Cuenta.Include(x => x.Ordenes).AsNoTracking().SingleOrDefaultAsync(c => c.IdCuenta == id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return cuenta;
+        }
+        
+        public async Task<Cuenta> FindWithOrdenes(int id)
+        {
+            Cuenta cuenta = null;
+            try
+            {
+                cuenta = await _contexto.Cuenta.Include(x => x.Ordenes).ThenInclude(x => x.Detalle).AsNoTracking().SingleOrDefaultAsync(c => c.IdCuenta == id);
             }
             catch (Exception)
             {
@@ -124,6 +139,30 @@ namespace Monografico.Repositorio
             return paso;
         }
 
+
+        public async Task<bool> ChangeStatus(int id)
+        {
+            var paso = false;
+            try
+            {
+                var cuenta =  _contexto.Cuenta.AsNoTracking().SingleOrDefault(q => q.IdCuenta == id);
+                cuenta.Activa = false;
+
+                _contexto.Cuenta.Update(cuenta);
+
+                await _contexto.SaveChangesAsync();
+
+                paso = true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
+        }
+
+
         public async Task<CuentaViewModel> FindCuentaViewModel(int idMesa, bool isActivo)
         {
             CuentaViewModel model = null;
@@ -151,6 +190,8 @@ namespace Monografico.Repositorio
             }
             return model;
         }
+
+        
 
         public async Task<bool> RemoveAllOrdenes(int id)
         {

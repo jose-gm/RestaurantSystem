@@ -9,7 +9,7 @@ namespace Monografico.ViewModels
 {
     public class UsuarioViewModel
     {
-        public int IdUsuarioViewModel { get; set; }
+        public int IdUsuario { get; set; }
         [Required]
         public string NombreUsuario { get; set; }
         [Required]

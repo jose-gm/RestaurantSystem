@@ -14,6 +14,8 @@ namespace Monografico.ViewModels
         public decimal Monto { get; set; }
         public decimal Descuento { get; set; }
         public string Mesa { get; set; }
+        public DateTime Fecha { get; set; }
+        public string Estado { get; set; }
         public List<OrdenViewModel> Ordenes { get; set; }
     }
 }

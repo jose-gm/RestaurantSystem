@@ -13,7 +13,7 @@
         document.getElementById("confirm-pago").addEventListener('click', function (e) {
             $.ajax({
                 url: "@Url.Action("CambiarEstado","Factura")",
-                data: { id: @Model.IdFactura },
+                data: { id: @Model.IdFactura, idCuenta: @Model.IdCuenta },
                 error: function () {
                 },
                 success: function () {

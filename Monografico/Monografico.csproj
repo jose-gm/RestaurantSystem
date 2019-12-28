@@ -40,12 +40,17 @@
       <Compile Remove="Migrations\20191205011819_Change.cs" />
       <Compile Remove="Migrations\20191205011819_Change.Designer.cs" />
     </ItemGroup>
+  
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\login.css" />
+    </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.6" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.1.1" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.19" />
   </ItemGroup>
 

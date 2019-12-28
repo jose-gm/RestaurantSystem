@@ -11,9 +11,10 @@ namespace Monografico.Models
     public class AjusteInventario
     {
         [Key]
-        public int Id { get; set; }
+        public int IdAjuste { get; set; }
         public int IdInventario { get; set; }
         public int CantidadAnterior { get; set; }
+        [Display(Name = "Cantidad a justar")]
         public int CantidadActual { get; set; }
         [DataType(DataType.Date)]
         public DateTime Fecha { get; set; }

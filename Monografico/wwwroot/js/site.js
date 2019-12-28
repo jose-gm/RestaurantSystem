@@ -43,7 +43,9 @@ function abrirModalBorrar(id) {
 }*/
 
 function abrirModalMensaje(titulo, imgSrc) {
-    document.getElementById("modal-delete-titulo").innerHTML = titulo;
+    console.log("mmg");
+    $("h4#modal-delete-titulo").text(titulo);
+    //document.getElementById("modal-delete-titulo").innerText = "fdsgsd";
     document.getElementById("modal-delete-imagen").src = imgSrc;
     $('#borrarModal').modal({
         keyboard: false,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Monografico.Repositorio;
@@ -9,6 +10,7 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class UsuarioController : Controller
     {
 
@@ -62,7 +64,8 @@ namespace Monografico.Controllers
         // GET: Usuario/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Empleado/_Edit.cshtml", await repo.Usuario.Find(id));
+            ViewBag.Roles = await repo.Rol.GetSelectList();
+            return PartialView("~/Views/Admin/PartialViews/Empleado/_Edit.cshtml", await repo.Usuario.FindAsViewModel(id));
         }
 
         // POST: Usuario/Edit/5
@@ -73,7 +76,7 @@ namespace Monografico.Controllers
             try
             {
                 // TODO: Add update logic here
-                //repo.Usuario.Editar(usuario);
+                await repo.Usuario.Update(usuario);
                 return Ok();
             }
             catch
@@ -117,7 +120,7 @@ namespace Monografico.Controllers
         //GET:
         public async Task<JsonResult> List()
         {
-            return Json(await repo.Usuario.GetList());
+            return Json(await repo.Usuario.GetListAsViewModel());
         }
     }
 }

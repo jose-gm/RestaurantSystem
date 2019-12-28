@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Monografico.Models;
@@ -10,6 +11,7 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
+    [Authorize(Roles = "Administrador,Mesero")]
     public class CuentaController : Controller
     {
         RepositoryWrapper repo;

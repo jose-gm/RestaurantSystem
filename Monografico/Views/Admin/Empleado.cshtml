@@ -26,7 +26,7 @@
                         <thead>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.IdUsuarioViewModel)
+                                    @Html.DisplayNameFor(model => model.IdUsuario)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Nombre)
@@ -35,10 +35,7 @@
                                     @Html.DisplayNameFor(model => model.Apellido)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Sexo)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Cedula)
+                                    @Html.DisplayNameFor(model => model.Rol)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.NombreUsuario)
@@ -84,15 +81,14 @@
                     }
                 ],
                 columns: [
-                    { data: 'id' },
+                    { data: 'idUsuario' },
                     { data: 'nombre' },
                     { data: 'apellido' },
-                    { data: 'sexo' },
-                    { data: 'cedula' },
-                    { data: 'userName' },
+                    { data: 'rol' },
+                    { data: 'nombreUsuario' },
                     { data: 'email' },
                     {
-                        data: 'id',
+                        data: 'idUsuario',
                         render: function (data, type, row, meta) {
                             return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
                             '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';

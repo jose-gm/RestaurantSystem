@@ -27,9 +27,11 @@ namespace Monografico.Repositorio
         private RepositoryRol _rol;
         private RepositoryAjusteInventario _ajusteinventario;
 
-        public RepositoryWrapper(Contexto contexto)
+        public RepositoryWrapper(Contexto contexto, UserManager<Usuario> userManager, RoleManager<Rol> roleManager)
         {
             _contexto = contexto;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public RepositoryIngrediente Ingrediente
