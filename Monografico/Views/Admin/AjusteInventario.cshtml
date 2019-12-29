@@ -9,8 +9,8 @@
             <div class="col-md-3">
                 <!-- Button trigger modal -->
                 @*<button type="button" class="btn btn-primary" onclick="abrirModalCrear();">
-                    Agregar Inventario
-                </button>*@
+                        Agregar Inventario
+                    </button>*@
             </div>
         </div>
         <div class="row">
@@ -89,7 +89,7 @@
                     {
                         data: 'id',
                         render: function (data, type, row, meta) {
-                            return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
+                            return /*'<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +*/
                             '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
                         }
                     }
