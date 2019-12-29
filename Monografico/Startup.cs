@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Monografico.Data;
 using Monografico.Models;
 using Monografico.Repositorio;
+using Rotativa.AspNetCore;
 
 namespace Monografico
 {
@@ -73,7 +74,7 @@ namespace Monografico
                 options.LoginPath = "/Home/Login";
                 // If the AccessDeniedPath isn't set, ASP.NET Core defaults 
                 // the path to /Account/AccessDenied.
-                options.AccessDeniedPath = "/Home/AccessDenied";
+                options.AccessDeniedPath = "/Home/AccesoDenegado";
                 options.SlidingExpiration = true;
                 options.Cookie.SameSite = SameSiteMode.None;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
@@ -112,6 +113,8 @@ namespace Monografico
                     name: "default",
                     template: "{controller=Admin}/{action=Index}/{id?}");
             });
+
+            RotativaConfiguration.Setup(env);
         }
     }
 }

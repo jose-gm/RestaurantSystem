@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Monografico.ViewModels.FacturaViewModel>
+
+@{
+    ViewData["Title"] = "Factura";
+}
+
+@section link {
+
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="factura-datatable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IdFactura)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Fecha)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Monto)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Estado)
+                                </th>
+
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
+
+<!-- Modal de confirmacion de eliminacion-->
+<partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
+
+@section script {
+    <script src="~/js/site.js"></script>
+
+    <script>
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {
+            $('#factura-datatable').DataTable({
+                responsive: false,
+                ajax: {
+                    url: "@Url.Action("List","Factura")",
+                    dataSrc: ''
+                },
+                columnDefs: [
+                    {
+                        targets: [0],
+                        visible: false
+                    }
+                ],
+                columns: [
+                    { data: 'idFactura' },
+                    {
+                        data: 'fecha',
+                        render: function (data, type, row) {
+                            return moment(data).format("MM/DD/YYYY");
+                        }
+                    },
+                    { data: 'monto', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) },
+                    { data: 'estado' },
+
+                    {
+                        data: 'idFactura',
+                        render: function (data, type, row, meta) {
+                            return '<input onclick="ViewFacturaPDF(' + data + ')" class="btn btn-primary" type="button" value="Ver" />' +
+                                    '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';   
+                        }
+                    }
+                ]
+            });
+        });
+
+        function ViewFacturaPDF(id) {
+            window.open("@Url.Action("FacturaAsPDF","Factura")"+"/"+id, "_blank");
+        }
+
+
+        document.getElementById("botonEliminar").addEventListener('click', () => {
+            eliminar("@Url.Action("Delete","Factura")", "factura-datatable");
+        });
+    </script>
+}

@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="control-label">Cantidad</label>
-                    <input asp-for="Cantidad" class="form-control"/>
+                    <input asp-for="Cantidad" class="form-control" />
                 </div>
                 <div class="col-md-2">
                     <label class="control-label"></label>
@@ -75,7 +75,7 @@
             dropdownParent: $('#myModal-lg'),
             theme: 'bootstrap4',
             ajax: {
-                url: "@Url.Action("ListWitInventory","Ingrediente")",
+                url: "@Url.Action("GetAll","Ingrediente")",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -97,7 +97,6 @@
             },
             placeholder: 'Selecciona los ingredientes',
         });
-
         var table = $('#datatable').DataTable({
             searching: false,
             paging: false,
@@ -135,19 +134,16 @@
                 }
             ]
         });
-
         /*$('#datatable .cantidad-td').on('change', 'input', function () {
             var data = $(this).val();
             console.log("mg");
         });*/
-
         //Actualiza la cantidad del detalle del producto
         $('#datatable tbody').on('click', '.updatebtn', function () {
             var data = table.row($(this).parents('tr')).data();
             var cellIndex = table.cell($(this).parents('td')).index();
             var d = table.cell(cellIndex.row, 4).nodes().to$().find('input').val();
             //console.log(data);
-
             var model = {
                 "IdProducto": data.idProducto,
                 "IdDetalle": data.idDetalle,
@@ -156,7 +152,6 @@
                 "Cantidad": d,
                 "Unidad": data.unidad
             };
-
             $.ajax({
                 method: "POST",
                 url: "@Url.Action("UpdateIngrediente","Producto")",
@@ -175,21 +170,18 @@
             });
         });
     });
-
     //Formulario sumit
     var formulario = document.getElementById("form-ingrediente");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
-
         if (formulario.checkValidity()) {
             var selectlist = $('.select2-multiple').select2('data');
-
             var model = {
                 "IdProducto": document.getElementById("IdProducto").value,
                 "IdIngrediente": selectlist[0].id,
                 "Cantidad": document.getElementById("Cantidad").value
             };
-        
+
             $.ajax({
                 method: "POST",
                 url: "@Url.Action("AddIngrediente","Producto")",
@@ -208,7 +200,6 @@
                     }
                     else {
                         $('#datatable').DataTable().ajax.reload();
-
                         $('.select2-multiple').val(null).trigger('change');
                         document.getElementById("Cantidad").value = 0;
                         toastr.success("Ingrediente agregado");
@@ -218,8 +209,6 @@
         }
     });
 
-    
-
     //Elimina el ingrediente
     function eliminarIngrediente(idProducto, idDetalle) {
         console.log(idProducto + " " + idDetalle);
@@ -227,7 +216,6 @@
             "IdProducto": new String(idProducto),
             "IdDetalle": new String(idDetalle)
         };
-
         $.ajax({
             method: "POST",
             url: "@Url.Action("DeleteIngrediente","Producto")",
@@ -245,5 +233,4 @@
             }
         });
     }
-
 </script>

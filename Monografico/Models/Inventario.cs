@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Monografico.Models
 {
-    [Bind("IdInventario," +
+    /*[Bind("IdInventario," +
         "IdProducto," +
         "IdIngrediente," +
         "FechaEntrada," +
         "Cantidad," +
-        "Unidad")]
+        "Unidad")]*/
     [Table("Inventario")]
     public class Inventario
     {
@@ -33,6 +33,7 @@ namespace Monografico.Models
         public Producto Producto { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Ingrediente Ingrediente { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<AjusteInventario> AjusteInventarios { get; set; }
     }
 }

@@ -22,7 +22,9 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.IdInventario)
                                 </th>
-
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Descripcion)
+                                </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.CantidadAnterior)
                                 </th>
@@ -31,9 +33,6 @@
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Fecha)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Descripcion)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Observacion)
@@ -80,14 +79,19 @@
                 ],
                 columns: [
                     { data: 'idInventario' },
+                    { data: 'descripcion' },
                     { data: 'cantidadAnterior' },
                     { data: 'cantidadActual' },
-                    { data: 'fecha' },
-                    { data: 'descripcion' },
+                    {
+                        data: 'fecha',
+                        render: function (data, type, row) {
+                            return moment(data).format("MM/DD/YYYY");
+                        }
+                    },
                     { data: 'observacion' },
                     { data: 'estado' },
                     {
-                        data: 'id',
+                        data: 'idAjuste',
                         render: function (data, type, row, meta) {
                             return /*'<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +*/
                             '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
@@ -97,9 +101,9 @@
             });
         });
 
-        function abrirModalCrear() {
+        @*function abrirModalCrear() {
             agregarCrear("@Url.Action("Create","AjusteInventario")");
-        }
+        }*@
 
         function abrirModalEditar(id) {
             agregarEditar(id, "@Url.Action("Edit","AjusteInventario")");

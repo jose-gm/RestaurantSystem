@@ -52,5 +52,29 @@ namespace Monografico.Repositorio
         {
             return await _contexto.Inventario.Include(x => x.Producto).Include(x => x.Ingrediente).AsNoTracking().SingleOrDefaultAsync(x => x.IdInventario == id);
         }
+
+        public async Task<bool> RestarInventario(int id, int cantidad)
+        {
+            var paso = false;
+            try
+            {
+                var inventario = await _contexto.Inventario.FindAsync(id);
+                inventario.Cantidad -= cantidad;
+                if (inventario.Cantidad <= 0)
+                    inventario.Cantidad = 0;
+
+                _contexto.Inventario.Update(inventario);
+                await _contexto.SaveChangesAsync();
+
+                paso = true;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
+        }
     }
 }

@@ -91,7 +91,7 @@ namespace Monografico.Migrations
 
             modelBuilder.Entity("Monografico.Models.AjusteInventario", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdAjuste")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -109,7 +109,9 @@ namespace Monografico.Migrations
 
                     b.Property<string>("Observacion");
 
-                    b.HasKey("Id");
+                    b.HasKey("IdAjuste");
+
+                    b.HasIndex("IdInventario");
 
                     b.ToTable("AjusteInventario");
                 });
@@ -167,13 +169,17 @@ namespace Monografico.Migrations
 
                     b.Property<decimal>("Descuento");
 
+                    b.Property<string>("Estado");
+
                     b.Property<DateTime>("Fecha");
 
-                    b.Property<int>("IdCuenta");
+                    b.Property<int?>("IdCuenta");
 
                     b.Property<decimal>("Monto");
 
                     b.HasKey("IdFactura");
+
+                    b.HasIndex("IdCuenta");
 
                     b.ToTable("Factura");
                 });
@@ -482,6 +488,14 @@ namespace Monografico.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Monografico.Models.AjusteInventario", b =>
+                {
+                    b.HasOne("Monografico.Models.Inventario")
+                        .WithMany("AjusteInventarios")
+                        .HasForeignKey("IdInventario")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Monografico.Models.ApplicationUserRole", b =>
                 {
                     b.HasOne("Monografico.Models.Rol", "Role")
@@ -501,6 +515,13 @@ namespace Monografico.Migrations
                         .WithMany("Cuentas")
                         .HasForeignKey("IdMesa")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Monografico.Models.Factura", b =>
+                {
+                    b.HasOne("Monografico.Models.Cuenta", "Cuenta")
+                        .WithMany()
+                        .HasForeignKey("IdCuenta");
                 });
 
             modelBuilder.Entity("Monografico.Models.FacturaDetalle", b =>

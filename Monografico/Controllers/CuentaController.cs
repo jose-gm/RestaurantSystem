@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Monografico.Models;
@@ -10,6 +11,7 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
+    [Authorize(Roles = "Administrador,Mesero")]
     public class CuentaController : Controller
     {
         RepositoryWrapper repo;
@@ -20,13 +22,13 @@ namespace Monografico.Controllers
         }
 
         // GET: Orden
-        public async Task<ActionResult> Index(int id)
+        public async Task<ActionResult> Index(int idMesa)
         {
-            var cuenta = await repo.Cuenta.FindCuentaViewModel(id, true);
-            if(cuenta == null)
+            var cuenta = await repo.Cuenta.FindCuentaViewModel(idMesa, true);
+            if(cuenta == null || !cuenta.Activa)
             {
-                await repo.Cuenta.Add(new Cuenta() { IdCuenta = 0, IdMesa = id, Activa = true });
-                cuenta = await repo.Cuenta.FindCuentaViewModel(id, true);
+                await repo.Cuenta.Add(new Cuenta() { IdCuenta = 0, IdMesa = idMesa, Activa = true });
+                cuenta = await repo.Cuenta.FindCuentaViewModel(idMesa, true);
             }
 
             return View("~/Views/Admin/Orden.cshtml",cuenta);
@@ -106,6 +108,7 @@ namespace Monografico.Controllers
         {
             try
             {
+
                 await repo.Orden.RemoveOrden(idOrden, idDetalle);
                 return Ok();
             }
@@ -117,12 +120,22 @@ namespace Monografico.Controllers
         }
         
         // GET:
-        public async Task<ActionResult> CancelarOrden(int id)
+        public async Task<IActionResult> CancelarOrden(int id, bool ordenPendiente)
         {
             try
             {
-                await repo.Cuenta.RemoveAllOrdenes(id);
-                return Ok();
+                if (ordenPendiente)
+                {
+                    ViewBag.OrdenCancelada = true;
+                    var ticket = await repo.Cuenta.GetListOrdenViewModels(id, x => x.Enviado == true);
+                    await repo.Cuenta.RemoveAllOrdenes(id);
+                    return PartialView("~/Views/Admin/PartialViews/Orden/_TicketOrden.cshtml", ticket);
+                }
+                else
+                {
+                    await repo.Cuenta.RemoveAllOrdenes(id);
+                    return Ok();
+                }
             }
             catch (Exception)
             {
@@ -131,31 +144,15 @@ namespace Monografico.Controllers
             }
         }
 
-        // POST: Orden/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
         public async Task<JsonResult> ListOFOrden(int id)
         {
             return Json(await repo.Cuenta.GetListOrdenViewModels(id, x => true));
         }
         
-        public async Task<IActionResult> TablaOrden(int id)
+        public async Task<IActionResult> TicketOrden(int id)
         {
-            return PartialView("~/Views/Admin/PartialViews/Orden/_TablaOrden.cshtml", await repo.Cuenta.GetListOrdenViewModels(id, x => x.Enviado == false));
+            ViewBag.OrdenCancelada = false;
+            return PartialView("~/Views/Admin/PartialViews/Orden/_TicketOrden.cshtml", await repo.Cuenta.GetListOrdenViewModels(id, x => x.Enviado == false));
         }
     }
 }

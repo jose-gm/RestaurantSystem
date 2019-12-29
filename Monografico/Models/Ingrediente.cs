@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,6 +17,7 @@ namespace Monografico.Models
         public string Descripcion { get; set; }
         public decimal Costo { get; set; }
         public bool LlevaInventario { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Inventario Inventario { get; set; }
     }
 }

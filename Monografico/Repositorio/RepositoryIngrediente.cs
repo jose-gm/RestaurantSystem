@@ -23,7 +23,7 @@ namespace Monografico.Repositorio
             Ingrediente ingrediente = null;
             try
             {
-                ingrediente = _contexto.Ingrediente.Include(x => x.Inventario).SingleOrDefault(c => c.IdIngrediente == id);
+                ingrediente = await _contexto.Ingrediente.Include(x => x.Inventario).SingleOrDefaultAsync(c => c.IdIngrediente == id);
             }
             catch (Exception)
             { throw; }

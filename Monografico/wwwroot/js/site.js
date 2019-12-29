@@ -42,13 +42,19 @@ function abrirModalBorrar(id) {
     });
 }*/
 
-function abrirModalBorrarImg(titulo, imgSrc) {
-    document.getElementById("modal-delete-titulo").innerHTML = titulo;
+function abrirModalMensaje(titulo, imgSrc) {
+    console.log("mmg");
+    $("h4#modal-delete-titulo").text(titulo);
+    //document.getElementById("modal-delete-titulo").innerText = "fdsgsd";
     document.getElementById("modal-delete-imagen").src = imgSrc;
     $('#borrarModal').modal({
         keyboard: false,
         backdrop: 'static'
     });
+}
+
+function cerrarModalMensaje() {
+    $('#borrarModal').modal('hide');
 }
 
 function agregarIngredientes(id,_url) {
@@ -79,8 +85,8 @@ function eliminar(_url, table) {
     });
 }
 
-//Elimina un modelo usando ajax
-function eliminar2(_url, table, id) {
+//Elimina las ordenes
+function eliminarOrdenes(_url, table, id,callback) {
     var url = _url;
     $.ajax({
         url: url,
@@ -91,12 +97,12 @@ function eliminar2(_url, table, id) {
             //alert(response);
         },
         success: function () {
-            $('#' + table).DataTable().ajax.reload();
-            $('#borrarModal').modal('hide');        
+            $('#' + table).DataTable().ajax.reload(callback);
+            $('#borrarModal').modal('hide');    
+            toastr.success("Eliminado");
         }
     });
 }
-
 
 function getActualDateUTC() {
     var today = new Date();

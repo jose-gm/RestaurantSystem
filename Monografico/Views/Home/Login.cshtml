@@ -1,7 +1,76 @@
-﻿@model Monografico.ViewModels.UsuarioViewModel
+﻿@model Monografico.ViewModels.LoginViewModel
 
 @{
-    ViewData["Title"] = "Conectarse al Sistema";
+    ViewData["Title"] = "Login";
+    Layout = "";
 }
 
-    <h1>Login</h1>
+<!doctype html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"]</title>
+
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- CoreUI CSS -->
+    <environment include="Development">
+        <link href="~/lib/coreui-master/dist/css/coreui.min.css" rel="stylesheet" />
+        <link href="~/lib/coreui-icons-master/css/free.min.css" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link rel="stylesheet" href="https://unpkg.com/%40coreui/coreui/dist/css/coreui.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/%40coreui/icons/css/coreui-icons.min.css">
+    </environment>
+    <link href="~/css/login.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card card-signin my-5">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Sign In</h5>
+                        <form class="form-signin" method="post" asp-action="Login" asp-controller="Home">
+                            <div class="form-label-group">
+                                <input type="text" asp-for="Usuario" class="form-control" placeholder="Nombre de usuario" required autofocus>
+                                <label asp-for="Usuario">Nombre de usuario</label>
+                            </div>
+
+                            <div class="form-label-group">
+                                <input type="password" asp-for="Password" class="form-control" placeholder="Password" required>
+                                <label asp-for="Password">Password</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox mb-3">
+                                <input type="checkbox" class="custom-control-input" asp-for="RememberMe">
+                                <label class="custom-control-label" asp-for="RememberMe">Recordarme</label>
+                            </div>
+                            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- jQuery first, then Popper.js, Bootstrap, then CoreUI  -->
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/popper.js/popper.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/lib/coreui-master/dist/js/coreui.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/%40coreui/coreui/dist/js/coreui.min.js"></script>
+    </environment>
+</body>
+</html>

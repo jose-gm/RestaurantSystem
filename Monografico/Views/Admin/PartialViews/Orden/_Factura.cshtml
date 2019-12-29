@@ -1,0 +1,68 @@
+﻿@model Monografico.ViewModels.FacturaViewModel
+@using System.Globalization;
+
+@{
+    NumberFormatInfo precision = new NumberFormatInfo();
+    precision.NumberDecimalDigits = 2;
+    /*var descuento = (Model.Descuento / 100) * Model.Monto;
+    var total = monto - descuento;*/
+    decimal monto = 0;
+    var facturaNo = "00" + Model.IdFactura;
+}
+
+<h5>Factura No.: @facturaNo </h5>
+<span>Fecha: @DateTime.Now.Date</span>
+<br />
+<h5 class="mb-3">Para:</h5>
+<h3 class="text-dark mb-1">Mesa: @Model.Mesa</h3>
+<br />
+<br />
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Ordenes)
+        {
+             monto += item.Total; 
+            <tr>
+                <td>1</td>
+                <td>@item.Descripcion</td>
+                <td>@item.Precio</td>
+                <td>@item.Cantidad</td>
+                <td>@item.Total</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<hr />
+<table>
+    <tbody>
+        <tr>
+            <td>
+                <strong class="text-dark">Subtotal</strong>
+            </td>
+            <td><strong>@monto.ToString("N", precision)</strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Descuento</strong>
+            </td>
+            <td><strong>@Model.Descuento.ToString("N", precision)</strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Total</strong>
+            </td>
+            <td>
+                <strong>@Model.Monto.ToString("N",precision)</strong>
+            </td>
+        </tr>
+    </tbody>
+</table>

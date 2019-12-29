@@ -13,7 +13,6 @@ namespace Monografico.Repositorio
 {
     public class RepositoryCuenta : RepositoryBase<Cuenta>
     {
-        private readonly Contexto _contexto;
 
         public RepositoryCuenta(Contexto contexto) : base(contexto)
         {
@@ -40,7 +39,22 @@ namespace Monografico.Repositorio
             Cuenta cuenta = null;
             try
             {
-                cuenta = _contexto.Cuenta.Include(x => x.Ordenes).AsNoTracking().SingleOrDefault(c => c.IdCuenta == id);
+                cuenta = await _contexto.Cuenta.Include(x => x.Ordenes).AsNoTracking().SingleOrDefaultAsync(c => c.IdCuenta == id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return cuenta;
+        }
+        
+        public async Task<Cuenta> FindWithOrdenes(int id)
+        {
+            Cuenta cuenta = null;
+            try
+            {
+                cuenta = await _contexto.Cuenta.Include(x => x.Ordenes).ThenInclude(x => x.Detalle).AsNoTracking().SingleOrDefaultAsync(c => c.IdCuenta == id);
             }
             catch (Exception)
             {
@@ -125,6 +139,30 @@ namespace Monografico.Repositorio
             return paso;
         }
 
+
+        public async Task<bool> ChangeStatus(int id)
+        {
+            var paso = false;
+            try
+            {
+                var cuenta =  _contexto.Cuenta.AsNoTracking().SingleOrDefault(q => q.IdCuenta == id);
+                cuenta.Activa = false;
+
+                _contexto.Cuenta.Update(cuenta);
+
+                await _contexto.SaveChangesAsync();
+
+                paso = true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
+        }
+
+
         public async Task<CuentaViewModel> FindCuentaViewModel(int idMesa, bool isActivo)
         {
             CuentaViewModel model = null;
@@ -142,6 +180,7 @@ namespace Monografico.Repositorio
                     model.Mesa = mesa.Descripcion;
                     //model.Ordenes = cuenta.ordenes;
                     model.Categorias = categorias;
+                    model.Activa = cuenta.Activa;
                 }
             }
             catch (Exception)
@@ -151,6 +190,8 @@ namespace Monografico.Repositorio
             }
             return model;
         }
+
+        
 
         public async Task<bool> RemoveAllOrdenes(int id)
         {
@@ -187,8 +228,7 @@ namespace Monografico.Repositorio
             {
                 lista = new List<OrdenViewModel>();
                 var cuenta = _contexto.Cuenta.Include(s => s.Mesa).Include(x => x.Ordenes).ThenInclude(y => y.Detalle).AsNoTracking().SingleOrDefault(c => c.IdCuenta == id);
-                var ordenes = cuenta.Ordenes.Where(expression);
-                foreach(var item in cuenta.Ordenes)
+                foreach(var item in cuenta.Ordenes.Where(expression))
                 {
                     foreach(var inner in item.Detalle)
                     {

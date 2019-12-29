@@ -6,9 +6,13 @@
   </PropertyGroup>
   
     <ItemGroup>
+      <Compile Remove="Autorizacion\**" />
       <Compile Remove="Views\Inventario\**" />
+      <Content Remove="Autorizacion\**" />
       <Content Remove="Views\Inventario\**" />
+      <EmbeddedResource Remove="Autorizacion\**" />
       <EmbeddedResource Remove="Views\Inventario\**" />
+      <None Remove="Autorizacion\**" />
       <None Remove="Views\Inventario\**" />
     </ItemGroup>
   
@@ -36,12 +40,17 @@
       <Compile Remove="Migrations\20191205011819_Change.cs" />
       <Compile Remove="Migrations\20191205011819_Change.Designer.cs" />
     </ItemGroup>
+  
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\login.css" />
+    </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.6" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.1.1" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.19" />
   </ItemGroup>
 
@@ -61,10 +70,6 @@
     <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.jqueryui.min.js" />
     <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.semanticui.js" />
     <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.semanticui.min.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Autorizacion\" />
   </ItemGroup>
 
 </Project>

@@ -14,6 +14,7 @@ namespace Monografico.ViewModels
         public int IdOrden { get; set; }
         public decimal Total { get; set; }
         public string Mesa { get; set; }
+        public bool Activa { get; set; }
         public List<Categoria> Categorias { get; set; }
     }
 }

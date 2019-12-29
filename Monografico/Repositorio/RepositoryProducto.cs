@@ -49,6 +49,21 @@ namespace Monografico.Repositorio
             return model;
         }
 
+        public async Task<Producto> FindWithChildren(int id)
+        {
+            Producto producto = null;
+
+            try
+            {
+                producto = await _contexto.Producto.Include(x => x.Inventario).Include(x => x.Detalle).AsNoTracking().SingleOrDefaultAsync(x => x.IdProducto == id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return producto;
+        }
+
         public async Task<bool> RemoveWithInventario(int id)
         {
             bool paso = false;
