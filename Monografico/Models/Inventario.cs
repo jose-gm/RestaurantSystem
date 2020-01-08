@@ -24,6 +24,7 @@ namespace Monografico.Models
         public int IdInventario { get; set; }
         public int? IdProducto { get; set; }
         public int? IdIngrediente { get; set; }
+        [Display(Name = "Fecha de entrada")]
         [DataType(DataType.Date)]
         public DateTime? FechaEntrada { get; set; }
         public int Cantidad { get; set; }

@@ -163,13 +163,23 @@ namespace Monografico.Repositorio
         }
 
 
-        public async Task<CuentaViewModel> FindCuentaViewModel(int idMesa, bool isActivo)
+        public async Task<CuentaViewModel> FindCuentaViewModel(int idMesa)
         {
             CuentaViewModel model = null;
             try
             {
-                var cuenta =  _contexto.Cuenta.Include(x => x.Ordenes).AsNoTracking().SingleOrDefault(c => c.IdMesa == idMesa && c.Activa == isActivo);
-                if(cuenta != null)
+                var cuentas = _contexto.Cuenta.Where(x => x.IdMesa == idMesa && x.Activa).AsNoTracking().ToList();
+                var mesa = await _contexto.Mesa.FindAsync(idMesa);
+
+                model = new CuentaViewModel()
+                {
+                    IdMesa = idMesa,
+                    Cuentas = cuentas,
+                    Categorias = await _contexto.Categoria.Include(w => w.Productos).AsNoTracking().ToListAsync(),
+                    Mesa = mesa.Numero
+                };
+
+                /*if(cuenta != null)
                 {
                     model = new CuentaViewModel();
                     var categorias = await _contexto.Categoria.Include(w => w.Productos).AsNoTracking().ToListAsync();
@@ -177,11 +187,11 @@ namespace Monografico.Repositorio
 
                     model.IdCuenta = cuenta.IdCuenta;
                     model.IdMesa = cuenta.IdMesa;
-                    model.Mesa = mesa.Descripcion;
-                    //model.Ordenes = cuenta.ordenes;
+                    model.IdUsuario = cuenta.IdUsuario;
+                    model.Mesa = mesa.Numero;
                     model.Categorias = categorias;
                     model.Activa = cuenta.Activa;
-                }
+                }*/
             }
             catch (Exception)
             {
@@ -191,7 +201,40 @@ namespace Monografico.Repositorio
             return model;
         }
 
+        public async Task<bool> RemoveAllAsync(int idMesa)
+        {
+            var paso = false;
+            try
+            {
+                var cuentas = await _contexto.Cuenta.Include(x => x.Ordenes).Where(x => x.IdMesa == idMesa && x.Activa).AsNoTracking().ToListAsync();
+                _contexto.Cuenta.RemoveRange(cuentas);
+                await _contexto.SaveChangesAsync();
+                paso = true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
+        }
         
+        public async Task<bool> RemoveAllAsync(List<Cuenta> cuentas)
+        {
+            var paso = false;
+            try
+            {
+                _contexto.Cuenta.RemoveRange(cuentas);
+                await _contexto.SaveChangesAsync();
+                paso = true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
+        }
 
         public async Task<bool> RemoveAllOrdenes(int id)
         {
@@ -244,7 +287,7 @@ namespace Monografico.Repositorio
                             Precio = producto.Precio,
                             Total = inner.Cantidad * producto.Precio,
                             Enviado = item.Enviado,
-                            Mesa = cuenta.Mesa.Descripcion
+                            Mesa = cuenta.Mesa.Numero
                         });
                     }
                 }
@@ -257,5 +300,44 @@ namespace Monografico.Repositorio
             return lista;
         }
 
+        public async Task<bool> HayOrdenesPendiente(int idMesa)
+        {
+            try
+            {
+                var cuentas = await _contexto.Cuenta.Include(x => x.Ordenes).Where(x => x.IdMesa == idMesa && x.Activa).AsNoTracking().ToListAsync();
+                foreach(var item in cuentas)
+                {
+                    foreach(var orden in item.Ordenes)
+                    {
+                        if (orden.Enviado)
+                        {
+                            return true;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return false;
+        }
+
+        public async override Task<List<Cuenta>> GetList(Expression<Func<Cuenta, bool>> expression)
+        {
+            List<Cuenta> list = null;
+            try
+            {
+                list = await _contexto.Cuenta.Include(x => x.Ordenes).Where(expression).AsNoTracking().ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return list;
+        }
     }
 }

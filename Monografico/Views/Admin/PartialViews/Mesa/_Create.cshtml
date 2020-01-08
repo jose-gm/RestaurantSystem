@@ -17,13 +17,13 @@
         <form id="form-crear" method="post" asp-antiforgery="false" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" required />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
+                <label asp-for="Numero" class="control-label"></label>
+                <input asp-for="Numero" class="form-control" readonly/>
+                <span asp-validation-for="Numero" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Asientos" class="control-label"></label>
-                <input asp-for="Asientos" class="form-control" />
+                <input asp-for="Asientos" type="number" class="form-control" min="0" />
                 <span asp-validation-for="Asientos" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -31,7 +31,7 @@
                 <select asp-for="IdZona" class="custom-select" asp-items="@ViewBag.Zonas" required></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
             <input type="hidden" id="RequestVerificationToken"
                    name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
@@ -50,7 +50,7 @@
         //alert(formulario.checkValidity());
         if (formulario.checkValidity()) {
             var model = {
-                "Descripcion": document.getElementById("Descripcion").value,
+                "Numero": document.getElementById("Numero").value,
                 "IdZona": document.getElementById("IdZona").value,
                 "Asientos": document.getElementById("Asientos").value,
             };

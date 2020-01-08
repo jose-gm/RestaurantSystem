@@ -32,24 +32,28 @@ namespace Monografico.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    await repo.Factura.Create(model);
-                    var factura = await repo.Factura.FindOnlyFactura(model.IdCuenta);
-                    factura.Mesa = model.Mesa;
-                    factura.Ordenes = model.Ordenes;
-                    return PartialView("~/Views/Admin/PartialViews/Orden/_Factura.cshtml", factura);
+                    if (model.Ordenes.Count > 0)
+                    {
+                        await repo.Factura.Create(model);
+                        var factura = await repo.Factura.FindOnlyFactura(model.IdCuenta);
+                        factura.Mesa = model.Mesa;
+                        factura.Ordenes = model.Ordenes;
+                        return PartialView("~/Views/Admin/PartialViews/Orden/_Factura.cshtml", factura);
+                    }
+                    else
+                        throw new Exception("No hay ordenes realizadas");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                return Json("Error");
+                return StatusCode(500, new { Message = ex.Message});
             }
             return BadRequest();
         }
 
-        public async Task<IActionResult> ConfirmarPago(int idCuenta)
+        public async Task<IActionResult> ConfirmarPago(int id)
         {      
-            return PartialView("~/Views/Admin/PartialViews/Orden/_ConfirmarPago.cshtml", await repo.Factura.Find(idCuenta,false));  
+            return PartialView("~/Views/Admin/PartialViews/Orden/_ConfirmarPago.cshtml", await repo.Factura.Find(id,false));  
         }
         
         public async Task<IActionResult> CambiarEstado(int id, int idCuenta)
@@ -100,7 +104,7 @@ namespace Monografico.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<JsonResult> List()
         {
-            return Json(await repo.Factura.GetAll());
+            return Json(await repo.Factura.GetAllAsViewModel());
         }
     }
 }

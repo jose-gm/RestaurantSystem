@@ -52,5 +52,21 @@ namespace Monografico.Repositorio
             }
             return lista;
         }
+
+        public async Task<Categoria> FindWithProductos(int id)
+        {
+            Categoria categoria = null;
+            try
+            {
+                categoria = await _contexto.Categoria.Include(x => x.Productos).AsNoTracking().SingleOrDefaultAsync(x => x.IdCategoria == id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return categoria;
+        }
     }
 }

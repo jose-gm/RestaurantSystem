@@ -11,10 +11,13 @@ namespace Monografico.ViewModels
         public int IdInventario { get; set; }
         public int IdProducto { get; set; }
         public int IdIngrediente { get; set; }
+        [Display(Name = "Fecha entrada")]
+        [DataType(DataType.Date)]
         public DateTime? FechaEntrada { get; set; }
         public int Cantidad { get; set; }
         [StringLength(10)]
         public string Unidad { get; set; }
+        [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
     }
 }

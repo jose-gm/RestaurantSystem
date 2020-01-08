@@ -43,9 +43,7 @@ function abrirModalBorrar(id) {
 }*/
 
 function abrirModalMensaje(titulo, imgSrc) {
-    console.log("mmg");
     $("h4#modal-delete-titulo").text(titulo);
-    //document.getElementById("modal-delete-titulo").innerText = "fdsgsd";
     document.getElementById("modal-delete-imagen").src = imgSrc;
     $('#borrarModal').modal({
         keyboard: false,
@@ -73,32 +71,17 @@ function eliminar(_url, table) {
         url: url,
         data: { id: temp },
         error: function (response) {
+            console.log(response);
             $('#borrarModal').modal('hide');
-            toastr.error("Error al borrar");
-            //alert(response);
+
+            if(response !== null)
+                toastr.error(response.responseText !== "" ? response.responseText : "Error al eliminar la zona");
+            else
+                toastr.error("Error al eliminar la zona");
         },
         success: function () {
             $('#' + table).DataTable().ajax.reload();
             $('#borrarModal').modal('hide');
-            toastr.success("Eliminado");
-        }
-    });
-}
-
-//Elimina las ordenes
-function eliminarOrdenes(_url, table, id,callback) {
-    var url = _url;
-    $.ajax({
-        url: url,
-        data: { id: id },
-        error: function (response) {
-            $('#borrarModal').modal('hide');
-            //toastr.error("Error al borrar");
-            //alert(response);
-        },
-        success: function () {
-            $('#' + table).DataTable().ajax.reload(callback);
-            $('#borrarModal').modal('hide');    
             toastr.success("Eliminado");
         }
     });

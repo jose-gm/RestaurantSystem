@@ -34,6 +34,21 @@ namespace Monografico.Repositorio
             }
             return lista;
         }
+
+        public async Task<Zona> FindWithMesasAsync(int id)
+        {
+            Zona zona = null;
+            try
+            {
+                zona = await _contexto.Zona.Include(x => x.Mesas).AsNoTracking().SingleOrDefaultAsync(x => x.IdZona == id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return zona;
+        }
  
         public async Task<SelectList> GetSelectList()
         {

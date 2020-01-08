@@ -26,7 +26,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
+                <input asp-for="Descripcion" class="form-control" required />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
             <input type="hidden" id="RequestVerificationToken"
                    name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
@@ -44,6 +44,7 @@
     </div>
 </div>
 
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
     $(document).ready(() => {
         $('.custom-file-input').on("change", function() {
@@ -85,7 +86,7 @@
                 success: function (data) {
                     $('#categoria-datatable').DataTable().ajax.reload();
                     $('#myModal').modal('hide');
-                    toastr.success("Se a editado con exito");
+                    toastr.success("Actualizado con exito");
                 }
             });
         }

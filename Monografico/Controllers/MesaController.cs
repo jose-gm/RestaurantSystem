@@ -35,7 +35,9 @@ namespace Monografico.Controllers
         public async Task<IActionResult> Create()
         {
             ViewBag.Zonas = await repo.Zona.GetSelectList();
-            return PartialView("~/Views/Admin/PartialViews/Mesa/_Create.cshtml", new Mesa());
+            var mesas = await repo.Mesa.GetList(x => true);
+            var mesaAnterior = mesas.LastOrDefault();
+            return PartialView("~/Views/Admin/PartialViews/Mesa/_Create.cshtml", new Mesa() { Numero = (mesaAnterior == null) ? 1 : ++mesaAnterior.Numero });
         }
 
         // POST: Mesa/Create
@@ -62,6 +64,7 @@ namespace Monografico.Controllers
         // GET: Mesa/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
+            ViewBag.Zonas = await repo.Zona.GetSelectList();
             return PartialView("~/Views/Admin/PartialViews/Mesa/_Edit.cshtml", await repo.Mesa.Find(id));
         }
 
@@ -87,14 +90,19 @@ namespace Monografico.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
-                await repo.Mesa.Remove(id);
-                return Ok();
+                var mesa = await repo.Mesa.FindWithCuentasAsync(id);
+                if (mesa.Cuentas.Count == 0)
+                {
+                    // TODO: Add delete logic here
+                    await repo.Mesa.Remove(id);
+                    return Ok();
+                }
             }
             catch
             {
-                return NotFound();
+                
             }
+            return NotFound("Esta mesa contiene cuentas enlazada, no puede ser eliminada");
         }
 
         // POST: Mesa/Delete/5
@@ -116,7 +124,7 @@ namespace Monografico.Controllers
 
         public async Task<JsonResult> List()
         {
-            return Json(await repo.Mesa.GetList(x => true));
+            return Json(await repo.Mesa.GetAllAsViewModel());
         }
     }
 }

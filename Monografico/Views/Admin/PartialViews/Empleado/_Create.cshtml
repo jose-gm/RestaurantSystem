@@ -14,7 +14,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form id="form-crear" method="post" asp-antiforgery="false" novalidate>
+        <form id="form-crear" enctype="multipart/form-data" method="post" asp-antiforgery="false" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
@@ -39,7 +39,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Cedula" class="control-label"></label>
-                <input asp-for="Cedula" class="form-control" required />
+                <input asp-for="Cedula" class="form-control" data-mask="0-000000000-0" required />
                 <span asp-validation-for="Cedula" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -48,27 +48,34 @@
                 <span asp-validation-for="Direccion" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Telefono" class="control-label"></label>
+                <input asp-for="Telefono" class="form-control" data-mask="000-000-0000" required/>
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Imagen</label>
+                <div class="custom-file">
+                    <input asp-for="Imagen" class="custom-file-input">
+                    <label class="custom-file-label">Seleccionar imagen</label>
+                </div>
+            </div>
+            <div class="form-group">
                 <label asp-for="NombreUsuario" class="control-label"></label>
-                <input asp-for="NombreUsuario" class="form-control" />
+                <input asp-for="NombreUsuario" class="form-control" required />
                 <span asp-validation-for="NombreUsuario" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Rol" class="control-label"></label>
-                <select asp-for="Rol" class="custom-select" asp-items="@ViewBag.Roles"></select>
+                <select asp-for="Rol" class="custom-select" asp-items="@ViewBag.Roles" required></select>
                 <span asp-validation-for="Rol" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" required />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Clave" class="control-label"></label>
-                <input asp-for="Clave" class="form-control" />
+                <input asp-for="Clave" class="form-control" required/>
                 <span asp-validation-for="Clave" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
             <input type="hidden" id="RequestVerificationToken"
                    name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
@@ -78,39 +85,53 @@
 
 
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script src="~/lib/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
 <script>
-    $('#myModalLabel').html("@modalTitle");
+    $(document).ready(() => {
+        $('.custom-file-input').on("change", function() {
+            var nombreAchivo = $(this).val().split("\\").pop();
+            $(this).next('.custom-file-label').html(nombreAchivo);
+        });
+
+        $('#myModalLabel').html("@modalTitle");
+    });
 
     var formulario = document.getElementById("form-crear");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
         //alert(formulario.checkValidity());
         if (formulario.checkValidity()) {
-            var model = {
-                "Nombre": document.getElementById("Nombre").value,
-                "Apellido": document.getElementById("Apellido").value,
-                "Sexo": document.getElementById("Sexo").value,
-                "Cedula": document.getElementById("Cedula").value,
-                "Direccion" : document.getElementById("Direccion").value,
-                "Rol" : document.getElementById("Rol").value,
-                "NombreUsuario": document.getElementById("NombreUsuario").value,
-                "Email": document.getElementById("Email").value,
-                "Clave": document.getElementById("Clave").value
-            };
-
-            //alert(model.Descripcion + model.Cantidad + model.Precio + model.FechaEntrada + model.EsContabilizable);
+            var archivos = document.getElementById("Imagen").files;
+            var formData = new FormData();
+            for (var i = 0; i != archivos.length; i++) {
+                formData.append("Imagen",archivos[i]);
+            }
+            formData.append("Nombre",document.getElementById("Nombre").value);
+            formData.append("Apellido",document.getElementById("Apellido").value);
+            formData.append("Sexo",document.getElementById("Sexo").value);
+            formData.append("Cedula",document.getElementById("Cedula").value);
+            formData.append("Direccion",document.getElementById("Direccion").value);
+            formData.append("Telefono",document.getElementById("Telefono").value);
+            formData.append("Rol",document.getElementById("Rol").value);
+            formData.append("NombreUsuario",document.getElementById("NombreUsuario").value);
+            formData.append("Clave",document.getElementById("Clave").value);
 
             $.ajax({
                 method: "POST",
                 url: "@Url.Action("Create","Usuario")",
                 headers: {
                     "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
-                    "Content-type": "application/json"
                 },
-                data: JSON.stringify(model),
-                error: function () {
-                    $('#myModal').modal('hide');
-                    toastr.error("Error al guardar");
+                data: formData,
+                contentType: false,
+                processData: false,
+                error: function (response) {
+                    if (response.responseJSON === false) {
+                    }
+                    else {
+                        $('#myModal').modal('hide');
+                        toastr.error("Error al guardar");
+                    }
                 },
                 success: function () {
                     $('#empleado-datatable').DataTable().ajax.reload();

@@ -23,7 +23,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Costo" class="control-label"></label>
-                <input asp-for="Costo" class="form-control" />
+                <input asp-for="Costo" type="number" min="0" class="form-control" />
                 <span asp-validation-for="Costo" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
@@ -41,7 +41,7 @@
                 <input asp-for="Cantidad" type="number" class="form-control" min="0" disabled />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
             <input type="hidden" id="RequestVerificationToken"
                    name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">

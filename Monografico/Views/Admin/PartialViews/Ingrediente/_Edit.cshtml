@@ -31,7 +31,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Costo" class="control-label"></label>
-                <input asp-for="Costo" class="form-control" />
+                <input asp-for="Costo" type="number" min="0" class="form-control" />
                 <span asp-validation-for="Costo" class="text-danger"></span>
             </div>
             @if (!Model.TieneInventario)
@@ -52,7 +52,7 @@
                 </div>
             }
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
             <input type="hidden" id="RequestVerificationToken"
                    name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
@@ -60,6 +60,7 @@
     </div>
 </div>
 
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
     $('#myModalLabel').html("@modalTitle");
 
@@ -112,7 +113,7 @@
                 success: function (data) {
                     $('#ingrediente-datatable').DataTable().ajax.reload();
                     $('#myModal').modal('hide');
-                    toastr.success("Se a editado con exito");
+                    toastr.success("Actualizado con exito");
                 }
             });
         }

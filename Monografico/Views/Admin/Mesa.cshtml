@@ -1,7 +1,7 @@
-﻿@model IEnumerable<Monografico.Models.Mesa>
+﻿@model IEnumerable<Monografico.ViewModels.MesaViewModel>
 
 @{
-    ViewData["Title"] = "Mesa";
+    ViewData["Title"] = "Mesas";
 }
 
 @section link {
@@ -10,6 +10,11 @@
 
 <div class="card">
     <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
         <div class="row mb-2">
             <div class="col-md-6">
                 <!-- Button trigger modal -->
@@ -28,10 +33,10 @@
                                     @Html.DisplayNameFor(model => model.IdMesa)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.IdZona)
+                                    Zona
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Descripcion)
+                                    @Html.DisplayNameFor(model => model.Numero)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Asientos)
@@ -44,7 +49,7 @@
                         </thead>
                     </table>
                 </div>
-               
+
             </div>
         </div>
     </div>
@@ -70,21 +75,25 @@
                 },
                 columnDefs: [
                     {
-                        targets: [0,1],
+                        targets: [0],
                         visible: false
                     }
                 ],
                 columns: [
                     { data: 'idMesa' },
-                    { data: 'idZona' },
-                    { data: 'descripcion' },
+                    { data: 'zona.descripcion' },
+                    { data: 'numero' },
                     { data: 'asientos' },
 
                     {
                         data: 'idMesa',
+                        width: '20%',
                         render: function (data, type, row, meta) {
-                            return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
-                            '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                            
+                            return '<div class="btn-group">' +
+                                        '<button onclick="abrirModalEditar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                        '<button onclick="abrirModalBorrar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-times"></i></button>' +
+                                    '</div>';
                         }
                     }
                 ]

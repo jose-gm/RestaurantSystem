@@ -5,6 +5,10 @@
     var total = Model.TotalDia + "$";
 }
 
+@section link {
+    <link href="~/css/site.css" rel="stylesheet" />
+}
+
 <div class="row">
     <div class="col-lg-4 col-xl-4">
         <div class="card text-white bg-primary">
@@ -22,7 +26,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-lg-4 col-xl-4">
         <div class="card text-white bg-warning">
             <div class="card-body">
@@ -39,7 +43,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-lg-4 col-xl-4">
         <div class="card text-white bg-success">
             <div class="card-body">
@@ -57,3 +61,82 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="myChart"></canvas>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section script {
+    <environment include="Development">
+        <script src="~/lib/Chart.js/Chart.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="~https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    </environment>
+
+    <script>
+        var array = @Html.Raw(Json.Serialize(Model.MontoMensuales));
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio','Julio','Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                datasets: [{
+                    label: 'Monto total por mes',
+                    data: array,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+}

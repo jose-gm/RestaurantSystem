@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Monografico.Models.Ingrediente>
 
 @{
-    ViewData["Title"] = "Producto";
+    ViewData["Title"] = "Ingredientes";
 }
 
 @section link {
@@ -10,6 +10,11 @@
 
 <div class="card">
     <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
         <div class="row mb-2">
             <div class="col-md-3">
                 <!-- Button trigger modal -->
@@ -21,7 +26,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table id="ingrediente-datatable" class="table table-bordered">
+                    <table id="ingrediente-datatable" style="width:100%" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>
@@ -43,7 +48,7 @@
                         </thead>
                     </table>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -77,10 +82,12 @@
                 ],
                 columns: [
                     { data: 'idIngrediente' },
-                    { data: 'descripcion' },
-                    { data: 'costo' },
+                    { data: 'descripcion', width: '30%' },
+                    { data: 'costo', width: '12%', render: $.fn.dataTable.render.number(',', '.', 2, '$') },
                     {
                         data: 'llevaInventario',
+                        title: "¿Tiene Inventario?",
+                        width: '10%',
                         render: function (data, type, row, meta) {
                             var text;
                             if (data)
@@ -92,9 +99,12 @@
                     },
                     {
                         data: 'idIngrediente',
+                        width: "10%",
                         render: function (data, type, row, meta) {
-                            return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
-                            '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                            return '<div class="btn-group">' +
+                                        '<button onclick="abrirModalEditar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                        '<button onclick="abrirModalBorrar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-times"></i></button>' +
+                                    '</div>';
                         }
                     }
                 ]

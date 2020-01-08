@@ -11,6 +11,7 @@ namespace Monografico.ViewModels
     public class CategoriaViewModel
     {
         public int IdCategoria { get; set; }
+        [Display(Name = "Descripción")]
         [Required(ErrorMessage = "Introduzca una desripcion para la categoria")]
         public string Descripcion { get; set; }
         public IFormFile Imagen { get; set; }

@@ -76,7 +76,7 @@ namespace Monografico.Controllers
             }
             catch
             {
-                return BadRequest();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -85,14 +85,20 @@ namespace Monografico.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
-                await repo.Zona.Remove(id);
-                return Ok();
+                var zona = await repo.Zona.FindWithMesasAsync(id);
+                if(zona.Mesas.Count == 0)
+                {
+                    // TODO: Add delete logic here
+                    await repo.Zona.Remove(id);
+                    return Ok();
+                }
+                
             }
             catch
             {
-                return NotFound();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
+            return BadRequest("Esta zona contiene mesas, no puede ser eliminada");
         }
 
         // POST: Zona/Delete/5

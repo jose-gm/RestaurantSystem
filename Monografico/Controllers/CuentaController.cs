@@ -24,14 +24,18 @@ namespace Monografico.Controllers
         // GET: Orden
         public async Task<ActionResult> Index(int idMesa)
         {
-            var cuenta = await repo.Cuenta.FindCuentaViewModel(idMesa, true);
-            if(cuenta == null || !cuenta.Activa)
+            var usuario = await repo.Usuario.GetUsuario(HttpContext.User);
+            var model = await repo.Cuenta.FindCuentaViewModel(idMesa);
+
+            if(model.Cuentas.Count == 0)
             {
-                await repo.Cuenta.Add(new Cuenta() { IdCuenta = 0, IdMesa = idMesa, Activa = true });
-                cuenta = await repo.Cuenta.FindCuentaViewModel(idMesa, true);
+                await repo.Cuenta.Add(new Cuenta() { IdCuenta = 0, IdMesa = idMesa, IdUsuario = usuario.Id, Activa = true });
+                model = await repo.Cuenta.FindCuentaViewModel(idMesa);
             }
 
-            return View("~/Views/Admin/Orden.cshtml",cuenta);
+            model.IdUsuario = usuario.Id;
+            ViewBag.Usuario = usuario.Nombre + " " + usuario.Apellido;
+            return View("~/Views/Admin/Orden.cshtml",model);
         }
 
         [HttpPost]
@@ -88,6 +92,22 @@ namespace Monografico.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] Cuenta cuenta)
+        {
+            try
+            {
+                if (await repo.Cuenta.Add(cuenta))
+                    return Json(cuenta);
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return NotFound();
+        }
+
         // GET: Orden/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
@@ -101,6 +121,23 @@ namespace Monografico.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> CancelAll(int idMesa)
+        {
+            try
+            {
+                var cuentas = await repo.Cuenta.GetList(x => x.IdMesa == idMesa && x.Activa);
+                if(await repo.Cuenta.RemoveAllAsync(cuentas))
+                    return PartialView("~/Views/Admin/PartialViews/Orden/_TicketOrdenesCancelada.cshtml", cuentas);
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return NotFound();
         }
         
         // GET:
@@ -144,6 +181,11 @@ namespace Monografico.Controllers
             }
         }
 
+        public async Task<IActionResult> LoadCuentas(int idMesa)
+        {        
+            return PartialView("~/Views/Admin/PartialViews/Orden/_Cuentas.cshtml", await repo.Cuenta.GetList(x => x.IdMesa == idMesa && x.Activa));
+        }
+
         public async Task<JsonResult> ListOFOrden(int id)
         {
             return Json(await repo.Cuenta.GetListOrdenViewModels(id, x => true));
@@ -151,8 +193,15 @@ namespace Monografico.Controllers
         
         public async Task<IActionResult> TicketOrden(int id)
         {
+            var usuario = await repo.Usuario.GetUsuario(HttpContext.User);
+            ViewBag.Usuario = usuario.Nombre + " " + usuario.Apellido;
             ViewBag.OrdenCancelada = false;
             return PartialView("~/Views/Admin/PartialViews/Orden/_TicketOrden.cshtml", await repo.Cuenta.GetListOrdenViewModels(id, x => x.Enviado == false));
+        }
+
+        public async Task<bool> OrdenesEnviadas(int idMesa)
+        {
+            return await repo.Cuenta.HayOrdenesPendiente(idMesa);
         }
     }
 }

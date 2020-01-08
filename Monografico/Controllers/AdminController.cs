@@ -33,10 +33,13 @@ namespace Monografico.Controllers
             decimal totaldia = 0;
             facturas.ForEach(x => totaldia += x.Monto);
 
+            var montos = await repo.Factura.ListOfMontoPerMonth();
+
             ViewModel model = new ViewModel() { 
                 CantidadProducto = productos.Count,
                 CantidadIngrediente = ingredientes.Count,
-                TotalDia = totaldia
+                TotalDia = totaldia,
+                MontoMensuales = montos
             };
             return View(model);
         }

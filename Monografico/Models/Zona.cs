@@ -13,6 +13,8 @@ namespace Monografico.Models
     {
         [Key]
         public int IdZona { get; set; }
+        [Required(ErrorMessage = "Introduzca una descripcion para la zona")]
+        [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
         public List<Mesa> Mesas { get; set; }
     }
