@@ -78,6 +78,7 @@
                     }
                 ],
                 columns: [
+                   
                     { data: 'idInventario' },
                     { data: 'descripcion' },
                     { data: 'cantidadAnterior' },
@@ -93,8 +94,7 @@
                     {
                         data: 'idAjuste',
                         render: function (data, type, row, meta) {
-                            return /*'<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +*/
-                            '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                            return '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
                         }
                     }
                 ]
