@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Monografico.Models.Producto>
 
 @{
-    ViewData["Title"] = "Producto";
+    ViewData["Title"] = "Productos";
 }
 
 @section link {
@@ -18,6 +18,11 @@
 <div class="card">
     <div class="card-body">
         <div class="row mb-2">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <div class="row mb-2">
             <div class="col-md-3">
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-primary" onclick="abrirModal();">
@@ -28,7 +33,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table id="producto-datatable" width="100%" class="table table-bordered">
+                    <table id="producto-datatable" style="width:100%" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>
@@ -45,6 +50,9 @@
                                     Categoria
                                 </th>
                                 <th>
+                                    @Html.DisplayNameFor(model => model.LlevaInventario)
+                                </th>
+                                <th>
                                     @Html.DisplayNameFor(model => model.Precio)
                                 </th>
                                 <th>
@@ -53,7 +61,7 @@
                             </tr>
                         </thead>
                     </table>
-                </div>      
+                </div>
             </div>
         </div>
     </div>
@@ -104,31 +112,47 @@
                         render: function (data, type, row, meta) {
                             var src;
                             if (data == null)
-                                src = "/img/tomioka.jpg";
+                                src = "/img/noimage.png";
                             else
                                 src = 'data:image/jpeg;base64,' + data;
-                            return '<img class="rounded mx-auto d-block" src="' + src + '" width="60px" height="60px" />';
+                            return '<img class="rounded mx-auto d-block" src="' + src + '" width="80px" height="80px" />';
                         }
                     },
                     { data: 'categoria', responsivePriority: 4 },
-                              
-                    { data: 'precio', responsivePriority: 5, width: "5%", },
+                    {
+                        data: 'llevaInventario',
+                        title: "¿Tiene Inventario?",
+                        width: '6%',
+                        render: function (data, type, row, meta) {
+                            var text;
+                            if (data)
+                                text = "Si";
+                            else
+                                text = "No";
+                            return text;
+                        }
+                    },
+                    { data: 'precio', responsivePriority: 5, width: "5%", render: $.fn.dataTable.render.number( ',', '.', 2, '$' )},
                     {
                         data: {
                         },
-                        width: "20%",
+                        width: "15%",
                         responsivePriority: 2,
                         render: function (data, type, row, meta) {
                             var template;
                             var url = "@Url.Action("Ingredientes,Producto")";
                             if (data.llevaIngredientes) {
-                                template = '<input onclick="abrirModalIngrediente('+ data.idProducto +')" class="btn btn-primary" type="button" value="Ingredientes" /> ' +
-                                    '<input onclick="abrirModalEditar(' + data.idProducto + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
-                                    '<input onclick="abrirModalBorrar(' + data.idProducto + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                                template = '<div class="btn-group">' +
+                                                '<button onclick="abrirModalIngrediente(' + data.idProducto + ')" class="action-btn btn btn-secondary"><i class="fas fa-list"></i></button>' +
+                                                '<button onclick="abrirModalEditar(' + data.idProducto + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                                '<button onclick="abrirModalBorrar(' + data.idProducto + ')" class="action-btn btn btn-secondary"><i class="fas fa-times"></i></button>' +
+                                            '</div>';
                             }
                             else {
-                                template = '<input onclick="abrirModalEditar(' + data.idProducto + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
-                                            '<input onclick="abrirModalBorrar(' + data.idProducto + ')" class="btn btn-danger" type="button" value="Borrar" />';                                  
+                                template = '<div class="btn-group">' +
+                                                '<button onclick="abrirModalEditar(' + data.idProducto + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                                '<button onclick="abrirModalBorrar(' + data.idProducto + ')" class="action-btn btn btn-secondary"><i class="fas fa-times"></i></button>' +
+                                            '</div>';                                  
                             }
                             return template;
                         }

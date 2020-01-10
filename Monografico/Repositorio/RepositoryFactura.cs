@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Monografico.Data;
 using Monografico.Models;
 using Monografico.ViewModels;
@@ -67,7 +68,7 @@ namespace Monografico.Repositorio
                     IdCuenta = factura.IdCuenta ?? default(int),
                     IdMesa = factura.Cuenta.IdMesa,
                     Monto = factura.Monto,
-                    Mesa = factura.Cuenta.Mesa.Descripcion,
+                    Mesa = factura.Cuenta.Mesa.Numero,
                     Descuento = factura.Descuento,
                     Ordenes = new List<OrdenViewModel>()
                 };
@@ -101,6 +102,7 @@ namespace Monografico.Repositorio
             try
             {
                 var factura = await _contexto.Factura.Include(x => x.Detalle).Include(s => s.Cuenta).ThenInclude(c => c.Mesa).AsNoTracking().SingleOrDefaultAsync(w => w.IdFactura == id);
+                var usuario = await _contexto.Usuario.FindAsync(factura.Cuenta.IdUsuario);
 
                 model = new FacturaViewModel()
                 {
@@ -110,8 +112,9 @@ namespace Monografico.Repositorio
                     Fecha = factura.Fecha,
                     Estado = factura.Estado,
                     Monto = factura.Monto,
-                    Mesa = factura.Cuenta.Mesa.Descripcion,
+                    Mesa = factura.Cuenta.Mesa.Numero,
                     Descuento = factura.Descuento,
+                    Usuario = (usuario == null) ? "" : usuario.Nombre + " " + usuario.Apellido,
                     Ordenes = new List<OrdenViewModel>()
                 };
 
@@ -187,6 +190,38 @@ namespace Monografico.Repositorio
             return paso;
         }
 
+        public async Task<List<FacturaViewModel>> GetAllAsViewModel()
+        {
+            List<FacturaViewModel> list = new List<FacturaViewModel>();
+            try
+            {
+                var facturas = await _contexto.Factura.Include(x => x.Cuenta).ThenInclude(x => x.Mesa).AsNoTracking().ToListAsync();
+                
+                foreach (var items in facturas)
+                {
+                    var usuario = await _contexto.Usuario.FindAsync(items.Cuenta.IdUsuario);
+
+                    list.Add(new FacturaViewModel() {
+                        IdFactura = items.IdFactura,
+                        IdCuenta = items.IdCuenta ?? default(int),
+                        IdMesa = items.Cuenta.IdMesa,
+                        Fecha = items.Fecha,
+                        Estado = items.Estado,
+                        Monto = items.Monto,
+                        Mesa = items.Cuenta.Mesa.Numero,
+                        Descuento = items.Descuento,
+                        Usuario = (usuario == null) ? "" : usuario.Nombre + " " + usuario.Apellido
+                    });
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return list;
+        }
+        
         public async Task<List<Factura>> GetAll()
         {
             List<Factura> list = null;
@@ -202,18 +237,32 @@ namespace Monografico.Repositorio
             return list;
         }
 
-        /*public async Task<List<FacturaViewModel>> GetAllViewModel()
+        public async Task<decimal[]> ListOfMontoPerMonth()
         {
-            List<FacturaViewModel> list = new List<FacturaViewModel>();
+            decimal[] montos = new decimal[12];
             try
             {
+                var a = await _contexto.Factura.Where(x => x.Fecha.Year == DateTime.Now.Year)
+                    .GroupBy(x => x.Fecha.Month)
+                    .Select(x => new { Monto = x.Sum(i => i.Monto), Mes = x.Key })
+                    .OrderBy(x => x.Mes)
+                    .ToListAsync();
 
+                a.ForEach(x => montos[x.Mes-1] = x.Monto);
             }
             catch (Exception)
             {
 
                 throw;
             }
-        }*/
+            return montos;
+        }
+
+
+    } 
+
+    class Entry
+    {
+        public int Month { get; set; }
     }
 }

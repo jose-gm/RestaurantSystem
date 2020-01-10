@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Monografico.Models.Categoria>
 
 @{
-ViewData["Title"] = "Categoria";
+ViewData["Title"] = "Categorías";
 }
 
 @section link {
@@ -10,6 +10,11 @@ ViewData["Title"] = "Categoria";
 
 <div class="card">
     <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
         <div class="row mb-2">
             <div class="col-md-3">
                 <!-- Button trigger modal -->
@@ -21,17 +26,17 @@ ViewData["Title"] = "Categoria";
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table id="categoria-datatable" class="table table-bordered">
+                    <table id="categoria-datatable" style="width:100%" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>
                                     @Html.DisplayNameFor(model => model.IdCategoria)
                                 </th>
                                 <th>
-                                    Imagen
+                                    @Html.DisplayNameFor(model => model.Descripcion)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Descripcion)
+                                    Imagen
                                 </th>
                                 <th>
                                     Acciones
@@ -40,7 +45,7 @@ ViewData["Title"] = "Categoria";
                         </thead>
                     </table>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -72,23 +77,27 @@ ViewData["Title"] = "Categoria";
                 ],
                 columns: [
                     { data: 'idCategoria' },
+                    { data: 'descripcion', width: '30%' },
                     {
                         data: 'imagen',
+                        width: '20%',
                         render: function (data, type, row, meta) {
                             var src;
                             if (data == null)
-                                src = "/img/tomioka.jpg";
+                                src = "/img/noimage.png";
                             else
                                 src = 'data:image/jpeg;base64,' + data;
-                            return '<img class="rounded mx-auto d-block" src="' + src + '" width="60px" height="60px" />';
+                            return '<img class="rounded mx-auto d-block" src="' + src + '" width="80px" height="80px" />';
                         }
                     },
-                    { data: 'descripcion' },
                     {
                         data: 'idCategoria',
+                        width: '10%',
                         render: function (data, type, row, meta) {
-                            return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
-                            '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                            return '<div class="btn-group">' +
+                                        '<button onclick="abrirModalEditar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                        '<button onclick="abrirModalBorrar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-times"></i></button>' +
+                                    '</div>';
                         }
                     }
                 ]

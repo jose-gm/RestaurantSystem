@@ -123,32 +123,21 @@ namespace Monografico.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
-                await repo.Categoria.Remove(id);
-                return Ok();
+                var categoria = await repo.Categoria.FindWithProductos(id);
+                if (categoria.Productos.Count == 0)
+                {
+                    // TODO: Add delete logic here
+                    await repo.Categoria.Remove(id);
+                    return Ok();
+                }
             }
             catch
             {
-                return NotFound();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
+            return NotFound("Esta categoria contiene productos, no puede ser eliminada");
         }
 
-        // POST: Productos/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
         public async Task<JsonResult> List()
         {
             return Json(await repo.Categoria.GetList(x => true));

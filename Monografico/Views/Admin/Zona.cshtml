@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Monografico.Models.Zona>
 
 @{
-    ViewData["Title"] = "Zona";
+    ViewData["Title"] = "Zonas";
 }
 
 @section link {
@@ -10,6 +10,11 @@
 
 <div class="card">
     <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
         <div class="row mb-2">
             <div class="col-md-3">
                 <!-- Button trigger modal -->
@@ -21,7 +26,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table id="zona-datatable" class="table table-bordered">
+                    <table id="zona-datatable" style="width:100%" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>
@@ -37,42 +42,17 @@
                         </thead>
                     </table>
                 </div>
-                
+
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="myModalLabel">Fornulario de @ViewData["Title"]</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div id="modalBody" class="modal-body">
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
 
 <!-- Modal de confirmacion de eliminacion-->
-<div class="modal fade" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="EliminarModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div id="editarModal-body" class="modal-body">
-                <h4>Seguro que desea borrar el elemento</h4>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                <button id="botonEliminar" type="button" class="btn btn-danger" onclick="eliminar()">Eliminar</button>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
 
 @section script {
     <script src="~/js/site.js"></script>
@@ -95,12 +75,15 @@
                 columns: [
                     { data: 'idZona' },
                     { data: 'descripcion' },
-                   
+
                     {
                         data: 'idZona',
+                        width: "30%",
                         render: function (data, type, row, meta) {
-                            return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
-                            '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                            return '<div class="btn-group">' +
+                                        '<button onclick="abrirModalEditar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                        '<button onclick="abrirModalBorrar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-times"></i></button>' +
+                                    '</div>';
                         }
                     }
                 ]
@@ -108,7 +91,7 @@
         });
 
         function abrirModalCrear() {
-            agregarCrear("@Url.Action("Create","Zona")");               
+            agregarCrear("@Url.Action("Create","Zona")");
         }
 
         function abrirModalEditar(id) {

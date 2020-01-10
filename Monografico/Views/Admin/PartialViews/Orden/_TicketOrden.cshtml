@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Monografico.ViewModels.OrdenViewModel>
 
 @{
-    var mesa = (@Model.FirstOrDefault() != null) ? @Model.FirstOrDefault().Mesa : "n/a";
+    var mesa = (@Model.FirstOrDefault() != null) ? @Model.FirstOrDefault().Mesa : 0;
 }
 
 
@@ -16,7 +16,8 @@
 
 <div class="row mb-3">
     <div class="col-md-8">
-        <h4>Cuenta #: @Model.FirstOrDefault().IdCuenta</h4>
+        <h6>Orden #: @Model.FirstOrDefault().IdOrden</h6>
+        <h6>Mesero: @ViewBag.Usuario</h6>
         <h6>Mesa: @mesa</h6>
         <h6>Fecha: @DateTime.Now</h6>
     </div>

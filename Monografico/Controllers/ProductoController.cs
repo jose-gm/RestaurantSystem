@@ -136,7 +136,7 @@ namespace Monografico.Controllers
                     if (!(await repo.Producto.IsIngredienteAdded(model.IdProducto, model.IdIngrediente)))
                         await repo.Producto.Update(await ToProductoWithIngrediente(model));
                     else
-                        return Json(new { code = 666});
+                        return Json("Error");
                     return Json(Ok());
                 }
 

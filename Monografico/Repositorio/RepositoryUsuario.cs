@@ -6,8 +6,10 @@ using Monografico.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Monografico.Utils;
 
 namespace Monografico.Repositorio
 {
@@ -22,9 +24,9 @@ namespace Monografico.Repositorio
             _roleManager = roleManager;
         }
 
-        public async Task<bool> Create(UsuarioViewModel model)
+        public async Task<IdentityResult> Create(UsuarioViewModel model)
         {
-            var paso = false;
+            IdentityResult result = null;  
             try
             {
                 var usuario = new Usuario()
@@ -33,22 +35,19 @@ namespace Monografico.Repositorio
                     Apellido = model.Apellido,
                     Sexo = model.Sexo,
                     Cedula = model.Cedula,
+                    PhoneNumber = model.Telefono,
                     Direccion = model.Direccion,
-                    Email = model.Email,
+                    Imagen = (model.Imagen != null) ? model.Imagen.ToBase64String() : null,
                     UserName = model.NombreUsuario
                 };
-                var result = await _userManager.CreateAsync(usuario, model.Clave);
+                result = await _userManager.CreateAsync(usuario, model.Clave);
 
                 if (result.Succeeded)
                 {
-                    var existe = await _roleManager.RoleExistsAsync(model.Rol);
-                    if (existe)
+                    if (await _roleManager.RoleExistsAsync(model.Rol))
                     {
-                        var resultRol = await _userManager.AddToRoleAsync(usuario, model.Rol);
-                        if (resultRol.Succeeded)
-                            paso = true;
-                    }
-                    
+                        await _userManager.AddToRoleAsync(usuario, model.Rol);
+                    }          
                 }
                     
             }
@@ -57,7 +56,7 @@ namespace Monografico.Repositorio
 
                 throw;
             }
-            return paso;
+            return result;
         }
         
         public async Task<bool> Update(UsuarioViewModel model)
@@ -70,8 +69,9 @@ namespace Monografico.Repositorio
                 usuario.Apellido = model.Apellido;
                 usuario.Sexo = model.Sexo;
                 usuario.Cedula = model.Cedula;
+                usuario.PhoneNumber = model.Telefono;
+                usuario.Imagen = (model.Imagen != null) ? model.Imagen.ToBase64String() : model.ImagenEncoded;
                 usuario.Direccion = model.Direccion;
-                usuario.Email = model.Email;
                 usuario.UserName = model.NombreUsuario;
 
                 var roles = await _userManager.GetRolesAsync(usuario);
@@ -84,9 +84,12 @@ namespace Monografico.Repositorio
                         await _userManager.AddToRoleAsync(usuario,model.Rol);
                 }
 
-                var token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
-                await _userManager.ResetPasswordAsync(usuario, token, model.Clave);
-
+                if (!string.IsNullOrEmpty(model.Clave))
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
+                    await _userManager.ResetPasswordAsync(usuario, token, model.Clave);
+                }
+                
                 await _userManager.UpdateAsync(usuario);
             }
             catch (Exception)
@@ -111,6 +114,20 @@ namespace Monografico.Repositorio
             }
             return usuario;
         }
+        public async Task<Usuario> GetUsuario(ClaimsPrincipal claims)
+        {
+            Usuario usuario = null;
+            try
+            {
+                usuario = await _userManager.GetUserAsync(claims);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return usuario;
+        }
         
         public async Task<UsuarioViewModel> FindAsViewModel(int id)
         {
@@ -124,10 +141,12 @@ namespace Monografico.Repositorio
                     Nombre = usuario.Nombre,
                     Apellido = usuario.Apellido,
                     Sexo = usuario.Sexo,
+                    Telefono = usuario.PhoneNumber,
                     Cedula = usuario.Cedula,
                     Direccion = usuario.Direccion,
+                    ImagenEncoded = usuario.Imagen,
                     NombreUsuario = usuario.UserName,
-                    Email = usuario.Email,
+                    UsuarioActual = usuario.UserName,
                     Rol = usuario.UsuarioRoles.FirstOrDefault().Role.Name
 
                 };
@@ -146,16 +165,21 @@ namespace Monografico.Repositorio
             try
             {
                 var usuario = await _userManager.Users.Include(x => x.UsuarioRoles).ThenInclude(x => x.Role).SingleOrDefaultAsync(x => x.Id == id);
-                string role = usuario.UsuarioRoles.FirstOrDefault().Role.Name;
-                var deleted = await _userManager.RemoveFromRoleAsync(usuario, role);
+                usuario.Desactivado = true;
+                var result = await _userManager.UpdateAsync(usuario);
 
-                if (deleted.Succeeded)
+                if (result.Succeeded)
+                    paso = true;
+                //string role = usuario.UsuarioRoles.FirstOrDefault().Role.Name;
+                //var deleted = await _userManager.RemoveFromRoleAsync(usuario, role);
+
+                /*if (deleted.Succeeded)
                 {
                     var result = await _userManager.DeleteAsync(usuario);
 
                     if (result.Succeeded)
                         paso = true;
-                }            
+                } */           
             }
             catch (Exception)
             {
@@ -185,7 +209,7 @@ namespace Monografico.Repositorio
             List<UsuarioViewModel> list = new List<UsuarioViewModel>();
             try
             {
-                var usurios = await _userManager.Users.Include(x => x.UsuarioRoles).ThenInclude(x => x.Role).AsNoTracking().ToListAsync();
+                var usurios = await _userManager.Users.Include(x => x.UsuarioRoles).ThenInclude(x => x.Role).Where(x => !x.Desactivado).AsNoTracking().ToListAsync();
 
                 foreach (var item in usurios)
                 {
@@ -196,8 +220,8 @@ namespace Monografico.Repositorio
                         Sexo = item.Sexo,
                         Cedula = item.Cedula,
                         Direccion = item.Direccion,
+                        ImagenEncoded = item.Imagen,
                         NombreUsuario = item.UserName,
-                        Email = item.Email,
                         Rol = item.UsuarioRoles.FirstOrDefault().Role.Name
                     });
                 }
@@ -208,6 +232,47 @@ namespace Monografico.Repositorio
                 throw;
             }
             return list;
+        }
+
+        public async Task<bool> Exists(string nombreUsuario)
+        {
+            var paso = false;
+            try
+            {
+                var usuario = await _userManager.FindByNameAsync(nombreUsuario);
+
+                if (usuario != null)
+                    paso = true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
+        }
+
+        public async Task<bool> IsAnAdminPassword(string password)
+        {
+            var paso = false;
+            try
+            {
+                var usuarios = await _userManager.GetUsersInRoleAsync("Administrador");
+                foreach (var usuario in usuarios)
+                {
+                    if(await _userManager.CheckPasswordAsync(usuario, password))
+                    {
+                        paso = true;
+                        break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
         }
     }
 }

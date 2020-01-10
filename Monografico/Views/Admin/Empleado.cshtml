@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Monografico.ViewModels.UsuarioViewModel>
 
 @{
-    ViewData["Title"] = "Empleado";
+    ViewData["Title"] = "Empleados";
     ViewData["Controller"] = "Empleado";
 }
 
@@ -11,6 +11,11 @@
 
 <div class="card">
     <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
         <div class="row mb-2">
             <div class="col-md-3">
                 <!-- Button trigger modal -->
@@ -22,11 +27,14 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table id="empleado-datatable" class="table table-bordered">
+                    <table id="empleado-datatable" style="width:100%" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>
                                     @Html.DisplayNameFor(model => model.IdUsuario)
+                                </th>
+                                <th>
+                                    Imagen
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Nombre)
@@ -35,13 +43,10 @@
                                     @Html.DisplayNameFor(model => model.Apellido)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Rol)
-                                </th>
-                                <th>
                                     @Html.DisplayNameFor(model => model.NombreUsuario)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Email)
+                                    @Html.DisplayNameFor(model => model.Rol)
                                 </th>
                                 <th>
                                     Acciones
@@ -50,7 +55,7 @@
                         </thead>
                     </table>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -82,16 +87,28 @@
                 ],
                 columns: [
                     { data: 'idUsuario' },
+                    {
+                        data: 'imagenEncoded',
+                        render: function (data, type, row, meta) {
+                            var src;
+                            if (data == null)
+                                src = "/img/default_avatar.jpg";
+                            else
+                                src = 'data:image/jpeg;base64,' + data;
+                            return '<img class="rounded mx-auto d-block" src="' + src + '" width="80px" height="80px" />';
+                        }
+                    },
                     { data: 'nombre' },
                     { data: 'apellido' },
-                    { data: 'rol' },
                     { data: 'nombreUsuario' },
-                    { data: 'email' },
+                    { data: 'rol' },
                     {
                         data: 'idUsuario',
                         render: function (data, type, row, meta) {
-                            return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Edit" /> ' +
-                            '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                            return '<div class="btn-group">' +
+                                        '<button onclick="abrirModalEditar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                        '<button onclick="abrirModalBorrar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-times"></i></button>' +
+                                    '</div>';
                         }
                     }
                 ]

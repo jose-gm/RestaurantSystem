@@ -11,29 +11,16 @@
 <div class="card">
     <div class="card-body">
         <div class="row mb-2">
-            <div class="col-md-3">
-                <!-- Button trigger modal -->
-                @*<a asp-action="List" asp-controller="Inventario">Link</a>
-                <button type="button" class="btn btn-primary" onclick="abrirModalCrear();">
-                    Agregar Inventario
-                </button>*@
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table id="inventario-datatable" class="table table-bordered">
+                    <table id="inventario-datatable" style="width:100%" class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.IdInventario)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.IdProducto)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.IdIngrediente)
-                                </th>
                                 <th>
                                     Descripcion
                                 </th>
@@ -77,24 +64,23 @@
                     url: "@Url.Action("List","Inventario")",
                     dataSrc: ''
                 },
-                columnDefs: [
-                    {
-                        targets: [0,1,2],
-                        visible: false
-                    }
-                ],
                 columns: [
-                    { data: 'idInventario' },
-                    { data: 'idProducto' },
-                    { data: 'idIngrediente' },
-                    { data: 'descripcion' },
-                    { data: 'fechaEntrada' },
-                    { data: 'cantidad' },
-                    { data: 'unidad' },
+                    { data: 'descripcion', width: '15%' },
+                    {
+                        data: 'fechaEntrada',
+                        title: 'Fecha entrada',
+                        width: '8%',
+                        render: function (data, type, row) {
+                            return moment(data).format("MM/DD/YYYY");
+                        }
+                    },
+                    { data: 'cantidad', width: '6%' },
+                    { data: 'unidad', width: '6%'},
                     {
                         data: 'idInventario',
+                        width: '5%',
                         render: function (data, type, row, meta) {
-                            return '<input onclick="abrirModalEditar(' + data + ')" class="btn btn-primary" type="button" value="Ajustar" /> ';
+                            return '<button onclick="abrirModalEditar(' + data + ')" class="btn btn-secondary"><i class="fas fa-edit"></i></button>';
                         }
                     }
                 ]

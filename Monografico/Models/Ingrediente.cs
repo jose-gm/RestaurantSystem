@@ -14,6 +14,7 @@ namespace Monografico.Models
     {
         [Key]
         public int IdIngrediente { get; set; }
+        [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
         public decimal Costo { get; set; }
         public bool LlevaInventario { get; set; }

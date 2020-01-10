@@ -28,20 +28,24 @@ namespace Monografico.ViewModels
         [Required(ErrorMessage = "Debe seleccionar una categoria")]
         [Display(Name = "Categoria")]
         public int? IdCategoria { get; set; }
-        [Required]
-        [StringLength(60)]
+        [Required(ErrorMessage = "Introduzca una descripcion para el producto")]
+        [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
         public Decimal Precio { get; set; }
+        [Display(Name = "categoría")]
         public string Categoria { get; set; }
         public IFormFile Imagen { get; set; }
         public string ImagenEncoded { get; set; }
 
-        [Display(Name = "Lleva Ingredientes?")]
+        [Display(Name = "¿Lleva Ingredientes?")]
         public bool LlevaIngredientes { get; set; }
-        [Display(Name = "Lleva Inventario?")]
+        [Display(Name = "¿Lleva Inventario?")]
         public bool LlevaInventario { get; set; }
         public bool TieneInventario { get; set; }
+        [Display(Name = "Fecha entrada")]
+        [DataType(DataType.Date)]
         public DateTime? FechaEntada { get; set; }
+        [Required(ErrorMessage = "Introduzca la uniddad de medida del producto", AllowEmptyStrings = true)]
         public string Unidad { get; set; }
         public int Cantidad { get; set; }
     }

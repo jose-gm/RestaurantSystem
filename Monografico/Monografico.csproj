@@ -56,6 +56,9 @@
 
   <ItemGroup>
     <None Include="wwwroot\lib\datables-plugins\sum.js" />
+    <None Include="wwwroot\lib\jQuery-Mask-Plugin-master\dist\jquery.mask.js" />
+    <None Include="wwwroot\lib\jQuery-Mask-Plugin-master\dist\jquery.mask.min.js" />
+    <None Include="wwwroot\lib\jQuery-Mask-Plugin-master\src\jquery.mask.js" />
     <None Include="wwwroot\lib\Responsive-2.2.3\js\dataTables.responsive.js" />
     <None Include="wwwroot\lib\Responsive-2.2.3\js\dataTables.responsive.min.js" />
     <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.bootstrap.js" />

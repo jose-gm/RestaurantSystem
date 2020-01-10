@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Monografico.Models.Cuenta>
+
+@{
+    var mesa = Model.FirstOrDefault().IdMesa;
+    var i = 1;
+}
+
+<h4><strong>Ordenes Canceladas</strong></h4>
+<span>Fecha: @DateTime.Now.Date</span>
+<h3 class="text-dark mb-1">Mesa: @mesa</h3>
+<br />
+<br />
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Orden</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            foreach (var orden in item.Ordenes)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@orden.IdOrden</td>
+                </tr>
+                i++;
+            }      
+        }
+    </tbody>
+</table>

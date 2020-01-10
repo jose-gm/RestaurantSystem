@@ -154,6 +154,8 @@ namespace Monografico.Migrations
 
                     b.Property<int>("IdMesa");
 
+                    b.Property<int>("IdUsuario");
+
                     b.HasKey("IdCuenta");
 
                     b.HasIndex("IdMesa");
@@ -260,9 +262,9 @@ namespace Monografico.Migrations
 
                     b.Property<int>("Asientos");
 
-                    b.Property<string>("Descripcion");
-
                     b.Property<int>("IdZona");
+
+                    b.Property<int>("Numero");
 
                     b.HasKey("IdMesa");
 
@@ -396,12 +398,16 @@ namespace Monografico.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<bool>("Desactivado");
+
                     b.Property<string>("Direccion");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<string>("Imagen");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -449,7 +455,8 @@ namespace Monografico.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Descripcion");
+                    b.Property<string>("Descripcion")
+                        .IsRequired();
 
                     b.HasKey("IdZona");
 

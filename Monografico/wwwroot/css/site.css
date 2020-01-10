@@ -1,4 +1,42 @@
-﻿.img-modal {
+﻿.chart-container {
+    position: relative;
+    height: 62vh;
+    width: 100%;
+}
+
+.cuentas-container {
+    white-space: nowrap;
+}
+
+.cuenta {
+    display: inline;
+    font-weight: 400;
+    color: white;
+    background-color: #63c2de;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    border-bottom: 4px solid red;
+    padding: .375rem .75rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+}
+
+.cuenta-selected {
+    background-color: #557ff2;
+    border-bottom: 4px solid green;
+}
+
+.action-btn {
+    border: 0.5px solid black;
+}
+
+.img-modal {
     display: block;
     margin: 0 auto 0 auto;
 }
@@ -72,6 +110,10 @@
         height: 20vw;
         object-fit: fill;
     }
+
+    .chart-container {
+        height: 44vh;
+    }
 }
 
 
@@ -89,6 +131,10 @@
     .producto-descrip {
         font-size: 1.7vw;
     }
+
+    .chart-container {
+        height: 62vh;
+    }
 }
 
 /*Medium devices (tablets, 768px and up)*/
@@ -104,6 +150,10 @@
 
     .producto-descrip {
         font-size: 1.5vw;
+    }
+
+    .chart-container {
+        height: 44vh;
     }
 }
 
@@ -121,6 +171,10 @@
     .producto-descrip {
         font-size: 1vw;
     }
+
+    .chart-container {
+        height: 62vh;
+    }
 }
 
 
@@ -137,5 +191,9 @@
 
     .producto-descrip {
         font-size: 1vw;
+    }
+
+    .chart-container {
+        height: 62vh;
     }
 }

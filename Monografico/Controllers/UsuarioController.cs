@@ -10,7 +10,7 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Administrador, Mesero")]
     public class UsuarioController : Controller
     {
 
@@ -22,18 +22,21 @@ namespace Monografico.Controllers
         }
 
         // GET: Usuario
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Index()
         {
             return View();
         }
 
         // GET: Usuario/Details/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Details(int id)
         {
             return View();
         }
 
         // GET: Usuario/Create
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Roles = await repo.Rol.GetSelectList();
@@ -41,26 +44,30 @@ namespace Monografico.Controllers
         }
 
         // POST: Usuario/Create
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromBody]UsuarioViewModel model)
+        public async Task<IActionResult> Create(UsuarioViewModel model)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    await repo.Usuario.Create(model);
-                    return Ok();
+                    var result = await repo.Usuario.Create(model);
+                    if(result.Succeeded)
+                        return Ok();
                 }
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            return NotFound();
+            return BadRequest(false);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Administrador")]
         // GET: Usuario/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
@@ -69,58 +76,87 @@ namespace Monografico.Controllers
         }
 
         // POST: Usuario/Edit/5
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([FromBody]UsuarioViewModel usuario)
+        public async Task<IActionResult> Edit(UsuarioViewModel usuario)
         {
             try
             {
-                // TODO: Add update logic here
-                await repo.Usuario.Update(usuario);
-                return Ok();
+                if ((!(await repo.Usuario.Exists(usuario.NombreUsuario))) ||
+                    ((await repo.Usuario.Exists(usuario.NombreUsuario)) && usuario.NombreUsuario.Equals(usuario.UsuarioActual)))
+                {
+                    // TODO: Add update logic here
+                    if(!(await repo.Usuario.Update(usuario)))
+                        return Ok();
+                }
             }
             catch
             {
-                return BadRequest();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
+
+            return BadRequest(false);
         }
 
         // GET: Usuario/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-                await repo.Usuario.Remove(id);
-                return Ok();
+                if(await repo.Usuario.Remove(id))
+                    return Ok();
             }
             catch
             {
-                return NotFound();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        // POST: Usuario/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return NotFound();
         }
 
         //GET:
+        [Authorize(Roles = "Administrador")]
         public async Task<JsonResult> List()
         {
             return Json(await repo.Usuario.GetListAsViewModel());
+        }
+
+        [AcceptVerbs("GET","POST")]
+        public async Task<JsonResult> IsUserNameInUse(string nombreUsuario, string nombreUsuarioActual, bool isEdicion)
+        {
+            if (!isEdicion)
+            {
+                if ((await repo.Usuario.Exists(nombreUsuario)))
+                    return Json(false);
+            }
+            else
+            {
+                if (!nombreUsuario.Equals(nombreUsuarioActual))
+                {
+                    if ((await repo.Usuario.Exists(nombreUsuario)))
+                        return Json(false);
+                }
+            }
+
+            return Json(true);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VerifyPassword(string password)
+        {
+            try
+            {
+                if (await repo.Usuario.IsAnAdminPassword(password))
+                    return Ok();
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return NotFound();
         }
     }
 }

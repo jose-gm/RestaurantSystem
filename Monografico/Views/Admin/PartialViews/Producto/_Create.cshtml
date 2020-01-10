@@ -35,7 +35,7 @@
                 <label class="control-label">Imagen</label>
                 <div class="custom-file">
                     <input asp-for="Imagen" class="custom-file-input">
-                    <label class="custom-file-label">Selecciona una imagen...</label>
+                    <label class="custom-file-label">Seleccionar imagen</label>
                 </div>
             </div>
             <div class="form-group form-check">
@@ -62,7 +62,7 @@
                 <input asp-for="Cantidad" type="number" class="form-control" min="0" disabled />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
             <input type="hidden" id="RequestVerificationToken"
                    name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
@@ -92,29 +92,6 @@
         });
 
         $('#myModalLabel').html("@modalTitle");
-
-        /*$('.select2-multiple').select2({
-            theme: 'bootstrap4',
-            width: 'style',
-            ajax: {
-                url: "",
-                dataType: 'json',
-                processResults: function (data) {
-                    return {
-                        results: $.map(data, function (item) {
-                            return {
-                                id: item.idCategoria,
-                                text: item.descripcion
-                            };
-                        }),
-                        pagination: {
-                            more: 20
-                        }
-                    };
-                }
-            },
-            placeholder: 'Selecciona los ingredientes'
-        });*/
     });
 
     var formulario = document.getElementById("form-crear");
@@ -132,15 +109,11 @@
             formData.append("Precio",document.getElementById("Precio").value);
             formData.append("IdCategoria", document.getElementById("IdCategoria").value);
             formData.append("LlevaIngredientes", document.getElementById("LlevaIngredientes").checked);
-            formData.append("LlevaInventario",document.getElementById("LlevaInventario").checked);
-            formData.append("Unidad",document.getElementById("Unidad").value);
+            formData.append("LlevaInventario", document.getElementById("LlevaInventario").checked);
+            var unidad = (document.getElementById("Unidad").value) ? document.getElementById("Unidad").value : "viod";
+            formData.append("Unidad", unidad);
             formData.append("Cantidad", document.getElementById("Cantidad").value);
             formData.append("FechaEntrada", getActualDateUTC());
-            /*var select = document.getElementById("Ingredientes");
-            for (var i = 0; i < select.length; i++) {
-                if(select.options[i].selected)
-                    formData.append("Ingredientes",select.options[i].value);
-            }*/
 
             $.ajax({
                 method: "POST",

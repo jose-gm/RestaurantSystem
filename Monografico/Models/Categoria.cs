@@ -13,6 +13,7 @@ namespace Monografico.Models
     {
         [Key]
         public int IdCategoria { get; set; }
+        [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
         public string Imagen { get; set; }
         public virtual List<Producto> Productos { get; set; }

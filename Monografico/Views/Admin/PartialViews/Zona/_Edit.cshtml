@@ -22,12 +22,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Descripcion" class="control-label"></label>
-                <input id="DescripcionInput" asp-for="Descripcion" class="form-control" />
+                <input id="DescripcionInput" asp-for="Descripcion" class="form-control" required/>
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
             <input type="hidden" id="RequestVerificationToken"
                    name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
@@ -35,6 +35,7 @@
     </div>
 </div>
 
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
     $('#myModalLabel').html("@modalTitle");
 
@@ -63,7 +64,7 @@
                 success: function (data) {
                     $('#zona-datatable').DataTable().ajax.reload();
                     $('#myModal').modal('hide');
-                    toastr.success("Se a editado con exito");
+                    toastr.success("Actualizado con exito");
                 }
             });
         }

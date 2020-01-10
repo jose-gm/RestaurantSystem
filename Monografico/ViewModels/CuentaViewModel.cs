@@ -9,12 +9,13 @@ namespace Monografico.ViewModels
 {
     public class CuentaViewModel
     {
-        public int IdCuenta { get; set; }
+        public int IdUsuario { get; set; }
         public int IdMesa { get; set; }
-        public int IdOrden { get; set; }
         public decimal Total { get; set; }
-        public string Mesa { get; set; }
+        public int Mesa { get; set; }
+        public string Usuario { get; set; }
         public bool Activa { get; set; }
         public List<Categoria> Categorias { get; set; }
+        public List<Cuenta> Cuentas { get; set; }
     }
 }

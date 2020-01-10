@@ -1,27 +1,21 @@
 ﻿@model IEnumerable<Monografico.Models.AjusteInventario>
 @{
-    ViewData["Title"] = "AjusteInventario";
+    ViewData["Title"] = "Ajuste de inventario";
 }
 
 <div class="card">
     <div class="card-body">
-        <div class="row mb-2">
-            <div class="col-md-3">
-                <!-- Button trigger modal -->
-                @*<button type="button" class="btn btn-primary" onclick="abrirModalCrear();">
-                        Agregar Inventario
-                    </button>*@
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table id="ajusteinventario-datatable" class="table table-bordered">
+                    <table id="ajusteinventario-datatable" style="width:100%" class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.IdInventario)
-                                </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Descripcion)
                                 </th>
@@ -33,9 +27,6 @@
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Fecha)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Observacion)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Estado)
@@ -71,39 +62,31 @@
                     url: "@Url.Action("List","AjusteInventario")",
                     dataSrc: ''
                 },
-                columnDefs: [
-                    {
-                        targets: 0,
-                        visible: false
-                    }
-                ],
                 columns: [
-                   
-                    { data: 'idInventario' },
-                    { data: 'descripcion' },
-                    { data: 'cantidadAnterior' },
-                    { data: 'cantidadActual' },
+                    { data: 'descripcion', title: "Ítem", width: '20%' },
+                    { data: 'cantidadAnterior' , width: '12%'},
+                    { data: 'cantidadActual', width: '12%' },
                     {
                         data: 'fecha',
+                        width: '10%',
                         render: function (data, type, row) {
                             return moment(data).format("MM/DD/YYYY");
                         }
                     },
-                    { data: 'observacion' },
-                    { data: 'estado' },
+                    { data: 'estado', width: '10%' },
                     {
                         data: 'idAjuste',
+                        width: '10%',
                         render: function (data, type, row, meta) {
-                            return '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';
+                            return '<div class="btn-group">' +
+                                        '<button onclick="abrirModalEditar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                        '<button onclick="abrirModalBorrar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-times"></i></button>' +
+                                    '</div>';
                         }
                     }
                 ]
             });
         });
-
-        @*function abrirModalCrear() {
-            agregarCrear("@Url.Action("Create","AjusteInventario")");
-        }*@
 
         function abrirModalEditar(id) {
             agregarEditar(id, "@Url.Action("Edit","AjusteInventario")");

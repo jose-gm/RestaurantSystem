@@ -17,18 +17,13 @@
         <form id="form-editar" method="post" asp-antiforgery="false" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" required />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdZona" class="control-label" hidden></label>
-                <input asp-for="IdZona" class="form-control" hidden />
-                <span asp-validation-for="IdZona" class="text-danger"></span>
+                <label asp-for="Numero" class="control-label"></label>
+                <input asp-for="Numero" type="number" class="form-control" min="0" required />
+                <span asp-validation-for="Numero" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Asientos" class="control-label"></label>
-                <input asp-for="Asientos" class="form-control" />
+                <input asp-for="Asientos" type="number" class="form-control" min="0" />
                 <span asp-validation-for="Asientos" class="text-danger"></span>
             </div>
 
@@ -38,7 +33,11 @@
                 <span asp-validation-for="IdMesa" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label asp-for="IdZona" class="control-label"></label>
+                <select asp-for="IdZona" class="custom-select" asp-items="@ViewBag.Zonas" required></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
             <input type="hidden" id="RequestVerificationToken"
                    name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
@@ -46,6 +45,7 @@
     </div>
 </div>
 
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
     $('#myModalLabel').html("@modalTitle");
 
@@ -55,7 +55,7 @@
 
         if (formulario.checkValidity()) {
             var model = {
-               "Descripcion": document.getElementById("Descripcion").value,
+               "Numero": document.getElementById("Numero").value,
                 "IdZona": document.getElementById("IdZona").value,
                 "Asientos": document.getElementById("Asientos").value,
                 "IdMesa": document.getElementById("IdMesa").value
@@ -75,7 +75,7 @@
                 success: function (data) {
                     $('#mesa-datatable').DataTable().ajax.reload();
                     $('#myModal').modal('hide');
-                    toastr.success("Se a editado con exito");
+                    toastr.success("Actualizado con exito");
                 }
             });
         }
