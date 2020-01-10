@@ -1,0 +1,202 @@
+﻿@model Monografico.ViewModels.UsuarioViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+@{
+    ViewData["Title"] = "Editar Perfil";
+    Layout = "~/Views/Admin/PartialViews/Layout/_Adminlayout.cshtml";
+}
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6 offset-4">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-4 offset-md-4">
+                @if (Model.ImagenEncoded != null)
+                {
+                    var src = $"data:image/jpeg;base64,{Model.ImagenEncoded}";
+                    <img src="@src" height="230" width="240" />
+                }
+                else
+                {
+                    <img src="~/img/default_avatar.jpg" height="240" width="230" />
+                }
+
+
+            </div>
+        </div>
+        <form id="form-editar" enctype="multipart/form-data" method="post" asp-antiforgery="false" novalidate>
+            <div class="box-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input asp-for="ImagenEncoded" hidden />
+                <input asp-for="IdUsuario" hidden />
+                <div class="row">
+                    <div class="form-group col-md-4 offset-md-4">
+                        <div class="form-group">
+                            <label asp-for="Nombre" class="control-label"></label>
+                            <input asp-for="Nombre" class="form-control" />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4 offset-md-4">
+                        <div class="form-group">
+                            <label asp-for="Apellido" class="control-label"></label>
+                            <input asp-for="Apellido" class="form-control" />
+                            <span asp-validation-for="Apellido" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2 offset-md-4">
+                        <input asp-for="Sexo" class="form-check-input" type="radio" value="false">
+                        <label asp-for="Sexo" class="form-check-label">Hombre</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input asp-for="Sexo" class="form-check-input" type="radio" value="true">
+                        <label asp-for="Sexo" class="form-check-label">Mujer</label>
+                    </div>
+                    <span asp-validation-for="Sexo" class="text-danger"></span>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4 offset-md-4">
+                        <label asp-for="Telefono" class="control-label"></label>
+                        <input asp-for="Telefono" class="form-control" data-mask="000-000-0000" />
+                        <span asp-validation-for="Telefono" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4 offset-md-4">
+                        <label asp-for="Cedula" class="control-label"></label>
+                        <input asp-for="Cedula" class="form-control" data-mask="000-0000000-0" required />
+                        <span asp-validation-for="Cedula" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4 offset-md-4">
+                        <label asp-for="Direccion" class="control-label"></label>
+                        <input asp-for="Direccion" class="form-control" />
+                        <span asp-validation-for="Direccion" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4 offset-md-4">
+                        <label asp-for="Clave" class="control-label"></label>
+                        <input asp-for="Clave" class="form-control"  />
+                      
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4 offset-md-4">
+                        <label asp-for="Clavenueva" class="control-label"></label>
+                        <input asp-for="Clavenueva" class="form-control"  />
+                      
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4 offset-md-4">
+                        <label asp-for="NombreUsuario" class="control-label" hidden></label>
+                        <input asp-for="NombreUsuario" class="form-control" hidden />
+                        <span asp-validation-for="NombreUsuario" class="text-danger" hidden></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4 offset-md-4">
+                        <label asp-for="confirmarClave" class="control-label"></label>
+                        <input asp-for="confirmarClave" class="form-control"  />
+                      
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4 offset-md-4">
+                        <label class="control-label">Imagen</label>
+                        <div class="custom-file">
+                            <input asp-for="Imagen" class="custom-file-input">
+                            <label class="custom-file-label">Seleccionar imagen</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- box body -->
+            <div class="box-footer clearfix">
+                <div class="row col-md-4 offset-md-4">
+                    <div class="form-group">
+                        <input type="submit" value="Guardar" class="btn btn-primary" />
+                        <input type="hidden" id="RequestVerificationToken"
+                               name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section script {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
+    <script>
+         $(document).ready(() => {
+        $('.custom-file-input').on("change", function() {
+            var nombreAchivo = $(this).val().split("\\").pop();
+            $(this).next('.custom-file-label').html(nombreAchivo);
+        });
+
+    });
+    var formulario = document.getElementById("form-editar");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+        //alert(formulario.checkValidity());
+        if (formulario.checkValidity()) {
+            var archivos = document.getElementById("Imagen").files;
+            var formData = new FormData();
+            for (var i = 0; i != archivos.length; i++) {
+                formData.append("Imagen",archivos[i]);
+            }
+            formData.append("IdUsuario",document.getElementById("IdUsuario").value);
+            formData.append("Nombre",document.getElementById("Nombre").value);
+            formData.append("Apellido",document.getElementById("Apellido").value);
+            formData.append("Sexo",document.getElementById("Sexo").value);
+            formData.append("Cedula",document.getElementById("Cedula").value);
+            formData.append("Direccion",document.getElementById("Direccion").value);
+            formData.append("NombreUsuario",document.getElementById("NombreUsuario").value);
+            formData.append("Telefono",document.getElementById("Telefono").value);
+            formData.append("Clave",document.getElementById("Clave").value);
+            formData.append("Clavenueva",document.getElementById("Clavenueva").value);
+            formData.append("confirmarClave", document.getElementById("confirmarClave").value);
+            formData.append("ImagenEncoded",document.getElementById("ImagenEncoded").value);
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Edit","Home")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                },
+                data: formData,
+                contentType: false,
+                processData: false,
+                error: function (response) {
+                    if (response.responseJSON === false) {
+                    }
+                    else {
+                        toastr.error("Error al guardar");
+                    }
+                },
+                success: function () {
+                    location.reload();
+                    toastr.success("Guardado con exito");
+                }
+            });
+        }
+    });
+    </script>
+}

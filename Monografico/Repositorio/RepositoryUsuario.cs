@@ -26,7 +26,7 @@ namespace Monografico.Repositorio
 
         public async Task<IdentityResult> Create(UsuarioViewModel model)
         {
-            IdentityResult result = null;  
+            IdentityResult result = null;
             try
             {
                 var usuario = new Usuario()
@@ -47,9 +47,9 @@ namespace Monografico.Repositorio
                     if (await _roleManager.RoleExistsAsync(model.Rol))
                     {
                         await _userManager.AddToRoleAsync(usuario, model.Rol);
-                    }          
+                    }
                 }
-                    
+
             }
             catch (Exception)
             {
@@ -58,7 +58,7 @@ namespace Monografico.Repositorio
             }
             return result;
         }
-        
+
         public async Task<bool> Update(UsuarioViewModel model)
         {
             var paso = false;
@@ -81,7 +81,7 @@ namespace Monografico.Repositorio
                     var roleResult = await _userManager.RemoveFromRoleAsync(usuario, rol);
 
                     if (roleResult.Succeeded)
-                        await _userManager.AddToRoleAsync(usuario,model.Rol);
+                        await _userManager.AddToRoleAsync(usuario, model.Rol);
                 }
 
                 if (!string.IsNullOrEmpty(model.Clave))
@@ -89,7 +89,7 @@ namespace Monografico.Repositorio
                     var token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
                     await _userManager.ResetPasswordAsync(usuario, token, model.Clave);
                 }
-                
+
                 await _userManager.UpdateAsync(usuario);
             }
             catch (Exception)
@@ -99,7 +99,37 @@ namespace Monografico.Repositorio
             }
             return paso;
         }
-        
+
+        public async Task<bool> UpdateUsuario(UsuarioViewModel model)
+        {
+            var paso = false;
+            try
+            {
+                var usuario = await _userManager.FindByIdAsync(model.IdUsuario.ToString());
+                usuario.Nombre = model.Nombre;
+                usuario.Apellido = model.Apellido;
+                usuario.Sexo = model.Sexo;
+                usuario.Cedula = model.Cedula;
+                usuario.PhoneNumber = model.Telefono;
+                usuario.Imagen = (model.Imagen != null) ? model.Imagen.ToBase64String() : model.ImagenEncoded;
+                usuario.Direccion = model.Direccion;
+                usuario.UserName = model.NombreUsuario;
+
+                if (!string.IsNullOrEmpty(model.Clave))
+                {
+                    await _userManager.ChangePasswordAsync(usuario, model.Clave, model.Clavenueva);
+                }
+
+                await _userManager.UpdateAsync(usuario);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
+        }
+
         public async Task<Usuario> Find(int id)
         {
             Usuario usuario = null;
@@ -128,7 +158,7 @@ namespace Monografico.Repositorio
             }
             return usuario;
         }
-        
+
         public async Task<UsuarioViewModel> FindAsViewModel(int id)
         {
             UsuarioViewModel model = null;
@@ -158,7 +188,7 @@ namespace Monografico.Repositorio
             }
             return model;
         }
-        
+
         public async Task<bool> Remove(int id)
         {
             var paso = false;
@@ -179,7 +209,7 @@ namespace Monografico.Repositorio
 
                     if (result.Succeeded)
                         paso = true;
-                } */           
+                } */
             }
             catch (Exception)
             {
@@ -203,7 +233,7 @@ namespace Monografico.Repositorio
             }
             return list;
         }
-        
+
         public async Task<List<UsuarioViewModel>> GetListAsViewModel()
         {
             List<UsuarioViewModel> list = new List<UsuarioViewModel>();
@@ -213,7 +243,8 @@ namespace Monografico.Repositorio
 
                 foreach (var item in usurios)
                 {
-                    list.Add(new UsuarioViewModel() { 
+                    list.Add(new UsuarioViewModel()
+                    {
                         IdUsuario = item.Id,
                         Nombre = item.Nombre,
                         Apellido = item.Apellido,
@@ -260,7 +291,7 @@ namespace Monografico.Repositorio
                 var usuarios = await _userManager.GetUsersInRoleAsync("Administrador");
                 foreach (var usuario in usuarios)
                 {
-                    if(await _userManager.CheckPasswordAsync(usuario, password))
+                    if (await _userManager.CheckPasswordAsync(usuario, password))
                     {
                         paso = true;
                         break;
