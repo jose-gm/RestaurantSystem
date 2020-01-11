@@ -61,27 +61,27 @@ namespace Monografico.Controllers
         }
 
         // GET: Inventario/Edit/5
-        public async Task<IActionResult> Edit(int id)
-        {
-            return PartialView("~/Views/Admin/PartialViews/AjusteInventario/_Edit.cshtml", await repo.AjusteInventario.Find(id));
-        }
+        //public async Task<IActionResult> Edit(int id)
+        //{
+        //    return PartialView("~/Views/Admin/PartialViews/AjusteInventario/_Edit.cshtml", await repo.AjusteInventario.Find(id));
+        //}
 
-        // POST: Inventario/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([FromBody]AjusteInventario inventario)
-        {
-            try
-            {
-                // TODO: Add update logic here
-                await repo.AjusteInventario.Update(inventario);
-                return Ok();
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
+        //// POST: Inventario/Edit/5
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit([FromBody]AjusteInventario inventario)
+        //{
+        //    try
+        //    {
+        //        // TODO: Add update logic here
+        //        await repo.AjusteInventario.Update(inventario);
+        //        return Ok();
+        //    }
+        //    catch
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
         // GET: Inventario/Delete/5
         public async Task<IActionResult> Delete(int id)

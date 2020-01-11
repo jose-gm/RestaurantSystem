@@ -38,9 +38,20 @@ namespace Monografico.ViewModels
         public string ImagenEncoded { get; set; }
         [Required(ErrorMessage = "Introduzca una contraseña")]
         [MinLength(6, ErrorMessage = "La contraseña debe contener minimo 6 caracteres")]
-        [Display(Name = "Contraseña")]
+        [Display(Name = "Contraseña Actual")]
         [DataType(DataType.Password)]
         public string Clave { get; set; }
+        [Required(ErrorMessage = "Introduzca una contraseña")]
+        [MinLength(6, ErrorMessage = "La contraseña debe contener minimo 6 caracteres")]
+        [Display(Name = "Contraseña Nueva")]
+        [DataType(DataType.Password)]
+        public string Clavenueva { get; set; }
+        [Required(ErrorMessage = "Introduzca una contraseña")]
+        [MinLength(6, ErrorMessage = "La contraseña debe contener minimo 6 caracteres")]
+        [Display(Name = "Confirmar Contraseña")]
+        [DataType(DataType.Password)]
+        [Compare(otherProperty: "Clavenueva", ErrorMessage = "Las contraseñas no son iguales")]
+        public string confirmarClave { get; set; }
         [Required(ErrorMessage = "Seleccione un rol para el empleado")]
         public string Rol { get; set; }
     }

@@ -79,9 +79,25 @@ namespace Monografico.Repositorio
 
         }
 
-        public override Task<bool> Update(AjusteInventario entity)
+        public async override Task<bool> Update(AjusteInventario entity)
         {
-            return base.Update(entity);
+            bool paso = true;
+            try
+            {
+                var Inventario = _contexto.Inventario.Find(entity.IdInventario);
+                Inventario.Cantidad = entity.CantidadActual;
+                _contexto.Ajusteinventario.Update(entity);
+                await _contexto.SaveChangesAsync();
+                paso = true;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return paso;
         }
 
     }
