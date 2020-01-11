@@ -54,7 +54,7 @@
                     <div class="col-md-6">
                         <h3 style="display:inline;">@total</h3>
                         <br />
-                        <span>Total del dia</span>
+                        <span>Venta del dia</span>
                     </div>
                 </div>
             </div>
@@ -84,14 +84,14 @@
     </environment>
 
     <script>
-        var array = @Html.Raw(Json.Serialize(Model.MontoMensuales));
+        var array = @Html.Raw(Json.Serialize(Model.MontoSemana));
         var ctx = document.getElementById('myChart').getContext('2d');
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio','Julio','Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes','Sabado','Domingo'],
                 datasets: [{
-                    label: 'Monto total por mes',
+                    label: 'Monto total de la semana',
                     data: array,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
@@ -100,22 +100,9 @@
                         'rgba(75, 192, 192, 0.2)',
                         'rgba(153, 102, 255, 0.2)',
                         'rgba(255, 159, 64, 0.2)',
-
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
+                        'rgba(255, 99, 132, 0.2)'
                     ],
                     borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-
                         'rgba(255, 99, 132, 1)',
                         'rgba(54, 162, 235, 1)',
                         'rgba(255, 206, 86, 1)',

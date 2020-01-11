@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Monografico.Repositorio;
 using Monografico.ViewModels;
-using Rotativa.AspNetCore;
 
 namespace Monografico.Controllers
 {
@@ -98,7 +97,7 @@ namespace Monografico.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> FacturaAsPDF(int id)
         {
-            return new ViewAsPdf("~/Views/Admin/FacturaPdf.cshtml", await repo.Factura.FindAsViewModel(id));
+            return PartialView("~/Views/Admin/PartialViews/Factura/_Factura.cshtml", await repo.Factura.FindAsViewModel(id));
         }
 
         [Authorize(Roles = "Administrador")]

@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                <div class="table-responsive-md">
+                <div class="table-responsive">
                     <table id="factura-datatable" style="width:100%" class="table table-bordered">
                         <thead>
                             <tr>
@@ -52,11 +52,15 @@
 
 <!-- Modal -->
 <partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
+    
+    <!-- Modal -->
+<partial name="~/Views/Admin/PartialViews/_ModalProgress.cshtml" />
 
-<!-- Modal de confirmacion de eliminacion-->
-<partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
+<!-- Modal de factura-->
+<partial name="~/Views/Admin/PartialViews/Factura/_ModalFactura.cshtml" />
 
 @section script {
+    <script src="~/lib/printThis/printThis.min.js"></script>
     <script src="~/js/site.js"></script>
 
     <script>
@@ -89,21 +93,40 @@
                     {
                         data: 'idFactura',
                         render: function (data, type, row, meta) {
-                            return '<input onclick="ViewFacturaPDF(' + data + ')" class="btn btn-primary" type="button" value="Ver" />' +
-                                    '<input onclick="abrirModalBorrar(' + data + ')" class="btn btn-danger" type="button" value="Borrar" />';   
+                            return '<button onclick="abrirModalFactura(' + data + ')" class="btn btn-secondary"><i class="fas fa-eye"></i></button>';
                         }
                     }
                 ]
             });
         });
 
-        function ViewFacturaPDF(id) {
-            window.open("@Url.Action("FacturaAsPDF","Factura")"+"/"+id, "_blank");
+        function abrirModalFactura(id) {
+            @*window.open("@Url.Action("FacturaAsPDF","Factura")"+"/"+id, "_blank");*@
+            $('#modal-factura-body').load("@Url.Action("FacturaAsPDF","Factura")" + "/" + id, () => {
+                $('#modal-factura').modal({
+                    keyboard: false,
+                    backdrop: 'static'
+                });
+            });
         }
 
+        document.getElementById("printbtn").addEventListener('click', function () {
+            var $div = $('<div></div>');
+            $div.html(document.getElementById("modal-factura-body"));
+            $div.printThis();
+            $div.remove();
 
-        document.getElementById("botonEliminar").addEventListener('click', () => {
-            eliminar("@Url.Action("Delete","Factura")", "factura-datatable");
+            $('#modal-factura').modal('hide');
+
+            $('#modal-progress').modal('show');
+
+            setTimeout(function () {
+                $('#modal-progress').modal('hide');
+            }, 1000);
         });
+
+        @*document.getElementById("botonEliminar").addEventListener('click', () => {
+            eliminar("@Url.Action("Delete","Factura")", "factura-datatable");
+        });*@
     </script>
 }

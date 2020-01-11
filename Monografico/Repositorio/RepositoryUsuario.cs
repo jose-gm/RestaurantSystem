@@ -148,7 +148,6 @@ namespace Monografico.Repositorio
                     NombreUsuario = usuario.UserName,
                     UsuarioActual = usuario.UserName,
                     Rol = usuario.UsuarioRoles.FirstOrDefault().Role.Name
-
                 };
             }
             catch (Exception)

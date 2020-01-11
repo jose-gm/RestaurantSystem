@@ -5,6 +5,7 @@ using Monografico.Models;
 using Monografico.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -258,7 +259,40 @@ namespace Monografico.Repositorio
             return montos;
         }
 
+        public async Task<decimal[]> ListOfMontoPerWeek()
+        {
+            decimal[] montos = new decimal[7];
+            try
+            {
+                var list =  await _contexto.Factura.Where(x => GetWeekNumber(x.Fecha) == GetWeekNumber(DateTime.Today)).AsNoTracking().ToListAsync();
+                var a = list.GroupBy(x => x.Fecha.DayOfWeek)
+                            .Select(x => new { Monto = x.Sum(y => y.Monto), Dia = (int)x.Key })
+                            .OrderBy(x => (int)x.Dia)
+                            .ToList();
 
+
+                a.ForEach(x => montos[x.Dia] += x.Monto);
+                for (int i = 0; i < montos.Length - 1; i++)
+                {
+                    var r = montos[i];
+                    montos[i] = montos[i + 1];
+                    montos[i + 1] = r;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return montos;
+        }
+
+        public int GetWeekNumber(DateTime date)
+        {
+            CultureInfo ciCurr = CultureInfo.CurrentCulture;
+            int weekNum = ciCurr.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+            return weekNum;
+        }
     } 
 
     class Entry

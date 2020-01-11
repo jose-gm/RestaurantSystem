@@ -51,7 +51,7 @@ namespace Monografico.Controllers
             {
                 inventario = new Inventario()
                 {
-                    FechaEntrada = Convert.ToDateTime(Request.Form["FechaEntrada"]).Date,
+                    FechaEntrada = DateTime.Now.Date,
                     Cantidad = model.Cantidad,
                     Unidad = model.Unidad,
                     IdProducto = model.IdProducto

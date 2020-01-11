@@ -1,0 +1,94 @@
+﻿@model Monografico.ViewModels.FacturaViewModel
+@using System.Globalization;
+
+@{
+    NumberFormatInfo precision = new NumberFormatInfo();
+    precision.NumberDecimalDigits = 2;
+    var descuento = (Model.Descuento / 100) * Model.Monto;
+    var monto = Model.Monto;
+    var total = monto - descuento;
+    var facturaNo = "00" + Model.IdFactura;
+}
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 padding">
+        <div class="card">
+            <div class="card-header p-4" style="background-color:#fff;">
+                <div class="row justify-content-end">
+                    <div class="col-12 col-sm-2 col-md-2 col-lg-12 col-xl-12">
+                        <h5 class="mb-0">Factura No.: @facturaNo</h5>
+                        Fecha: @DateTime.Now.Date
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-sm-6 ">
+                        <h5 class="mb-3">Para:</h5>
+                        <h5 class="text-dark mb-1">Mesero: @Model.Usuario</h5>
+                        <h5 class="text-dark mb-1">Mesa: @Model.Mesa</h5>
+                    </div>
+                </div>
+                <div class="table-responsive-sm">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="center">#</th>
+                                <th>Producto</th>
+                                <th class="right">Precio</th>
+                                <th class="center">Cantidad</th>
+                                <th class="right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Ordenes)
+                            {
+                                <tr>
+                                    <td class="center">1</td>
+                                    <td class="left strong">@item.Descripcion</td>
+                                    <td class="left">@item.Precio</td>
+                                    <td class="right">@item.Cantidad</td>
+                                    <td class="center">@item.Total</td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-sm-5">
+                    </div>
+                    <div class="col-lg-4 col-sm-5 ml-auto">
+                        <table class="table table-clear">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong class="text-dark">Subtotal</strong>
+                                    </td>
+                                    <td>@monto.ToString("N", precision)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong class="text-dark">Descuento</strong>
+                                    </td>
+                                    <td>@descuento.ToString("N", precision)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong class="text-dark">Total</strong>
+                                    </td>
+                                    <td>
+                                        <strong class="text-dark">@total.ToString("N", precision)</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-white">
+                <p class="mb-0">Logo, direccion de la empresa</p>
+            </div>
+        </div>
+    </div>
+</div>

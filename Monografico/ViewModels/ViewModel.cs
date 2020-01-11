@@ -12,5 +12,6 @@ namespace Monografico.ViewModels
         public int CantidadIngrediente { get; set; }
         public decimal TotalDia { get; set; }
         public decimal[] MontoMensuales { get; set; }
+        public decimal[] MontoSemana { get; set; }
     }
 }
