@@ -99,6 +99,25 @@ namespace Monografico.Controllers
             return BadRequest(false);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPerfil(UsuarioViewModel usuario)
+        {
+            try
+            {
+                // TODO: Add update logic here
+                if (!(await repo.Usuario.UpdateUsuario(usuario)))
+                    return Ok();
+
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return BadRequest(false);
+        }
+
         // GET: Usuario/Delete/5
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int id)

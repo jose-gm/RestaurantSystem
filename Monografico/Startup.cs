@@ -112,7 +112,6 @@ namespace Monografico
                     name: "default",
                     template: "{controller=Admin}/{action=Index}/{id?}");
             });
-
         }
     }
 }

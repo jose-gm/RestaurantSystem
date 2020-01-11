@@ -11,7 +11,7 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador, Mesero")]
     public class AdminController : Controller
     {
        
@@ -167,6 +167,27 @@ namespace Monografico.Controllers
         public IActionResult Factura()
         {
             return View();
+        }
+
+        public async Task<IActionResult> EditPerfil()
+        {
+
+            var usuario = await repo.Usuario.GetUsuario(User);
+            UsuarioViewModel usuarioViewModel = new UsuarioViewModel()
+            {
+                Nombre = usuario.Nombre,
+                Apellido = usuario.Apellido,
+                Sexo = usuario.Sexo,
+                Telefono = usuario.PhoneNumber,
+                Cedula = usuario.Cedula,
+                Direccion = usuario.Direccion,
+                ImagenEncoded = usuario.Imagen,
+                NombreUsuario = usuario.UserName,
+                IdUsuario = usuario.Id
+
+
+            };
+            return View(usuarioViewModel);
         }
 
         [Authorize(Roles = "Administrador,Mesero")]
