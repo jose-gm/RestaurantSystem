@@ -139,23 +139,6 @@ namespace Monografico.Controllers
             }
         }
 
-        // POST: Ingrediente/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
         //GET:
         public async Task<JsonResult> List()
         {

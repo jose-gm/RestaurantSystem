@@ -81,7 +81,7 @@ namespace Monografico.Repositorio
                     {
                         IdCuenta = model.IdCuenta,
                         Enviado = false,
-                        Fecha = DateTime.Now.Date,
+                        Fecha = DateTime.Now,
                         Detalle = new List<OrdenDetalle>(),
                     };
                 }
@@ -178,20 +178,6 @@ namespace Monografico.Repositorio
                     Categorias = await _contexto.Categoria.Include(w => w.Productos).AsNoTracking().ToListAsync(),
                     Mesa = mesa.Numero
                 };
-
-                /*if(cuenta != null)
-                {
-                    model = new CuentaViewModel();
-                    var categorias = await _contexto.Categoria.Include(w => w.Productos).AsNoTracking().ToListAsync();
-                    var mesa = await _contexto.Mesa.FindAsync(idMesa);
-
-                    model.IdCuenta = cuenta.IdCuenta;
-                    model.IdMesa = cuenta.IdMesa;
-                    model.IdUsuario = cuenta.IdUsuario;
-                    model.Mesa = mesa.Numero;
-                    model.Categorias = categorias;
-                    model.Activa = cuenta.Activa;
-                }*/
             }
             catch (Exception)
             {
@@ -287,7 +273,8 @@ namespace Monografico.Repositorio
                             Precio = producto.Precio,
                             Total = inner.Cantidad * producto.Precio,
                             Enviado = item.Enviado,
-                            Mesa = cuenta.Mesa.Numero
+                            Mesa = cuenta.Mesa.Numero,
+                            Fecha = item.Fecha
                         });
                     }
                 }

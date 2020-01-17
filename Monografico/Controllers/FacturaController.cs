@@ -37,7 +37,8 @@ namespace Monografico.Controllers
                         var factura = await repo.Factura.FindOnlyFactura(model.IdCuenta);
                         factura.Mesa = model.Mesa;
                         factura.Ordenes = model.Ordenes;
-                        return PartialView("~/Views/Admin/PartialViews/Orden/_Factura.cshtml", factura);
+                        factura.Usuario = model.Usuario;
+                        return PartialView("~/Views/Admin/PartialViews/Orden/_Cuenta.cshtml", factura);
                     }
                     else
                         throw new Exception("No hay ordenes realizadas");
@@ -104,6 +105,18 @@ namespace Monografico.Controllers
         public async Task<JsonResult> List()
         {
             return Json(await repo.Factura.GetAllAsViewModel());
+        }
+        
+        [Authorize(Roles = "Administrador")]
+        public async Task<JsonResult> ListRange(DateTime desde, DateTime hasta)
+        {
+            return Json(await repo.Factura.GetAllAsViewModel(x => (x.Fecha >= desde) && (x.Fecha <= hasta) ));
+        }
+        
+        [Authorize(Roles = "Administrador")]
+        public async Task<JsonResult> ListProductoRange(int idProducto, DateTime desde, DateTime hasta)
+        {
+            return Json(await repo.Factura.GetAllProductos(idProducto ,x => (x.Fecha >= desde) && (x.Fecha <= hasta) ));
         }
     }
 }

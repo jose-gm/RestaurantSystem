@@ -97,28 +97,17 @@ namespace Monografico.Controllers
             
         }
 
-        // POST: Inventario/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, bool notData)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-                
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
         //GET:
         public async Task<JsonResult> List()
         {
             var a= Json(await repo.Inventario.GetListViewModel(x => true));
             return a;
+        }
+        
+        //GET:
+        public async Task<JsonResult> ListRange(DateTime desde, DateTime hasta)
+        {
+            return Json(await repo.Inventario.GetListViewModel(x => (x.FechaEntrada >= desde) && (x.FechaEntrada <= hasta)));
         }
     }
 }

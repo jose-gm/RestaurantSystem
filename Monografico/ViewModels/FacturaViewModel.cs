@@ -14,6 +14,8 @@ namespace Monografico.ViewModels
         public int IdMesa { get; set; }
         public decimal Monto { get; set; }
         public decimal Descuento { get; set; }
+        public decimal Itbis { get; set; }
+        public decimal PorcientoLey { get; set; }
         public int Mesa { get; set; }
         [Display(Name = "Empleado")]
         public string Usuario { get; set; }

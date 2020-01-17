@@ -1,27 +1,93 @@
 ﻿@model Monografico.ViewModels.FacturaViewModel
 
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label>Metodo de pago:</label>
+            <select id="metodo-pago" class="custom-select">
+                <option value="Efectivo">Efectivo</option>
+                <option value="Tarjeta">Tarjeta</option>
+            </select>
+        </div>
+    </div>
+</div>
 
-<h1>ComfirmarPago</h1>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Total:</label>
+            <input class="form-control" value="@Model.Monto" readonly />
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Pago</label>
+            <input id="pago" class="form-control" type="number" min="0" value="0.00" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label>Cambio:</label>
+            <input id="cambio" class="form-control" type="text" readonly />
+        </div>
+    </div>
+</div>
+
+<div id="tarjeta" class="row d-none">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Numero de tarjeta:</label>
+            <input class="form-control" type="text" maxlength="4" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Tipo de tarjeta:</label>
+            <select class="custom-select">
+                <option value="Visa">Visa</option>
+                <option value="Mastercard">Mastercard</option>
+            </select>
+        </div>
+    </div>
+</div>
 
 <button id="confirm-pago" class="btn btn-primary">Confirmar pago</button>
 
 <script>
-        $(document).ready(() => {
+    $(document).ready(() => {
 
+    });
+
+    document.getElementById("metodo-pago").addEventListener('change', function (e) {
+            console.log("wew");
+            var row = document.getElementById("tarjeta");
+            if (this.value === "Tarjeta")
+                row.classList.remove("d-none");
+            else
+                row.classList.add("d-none");
+    });
+
+    document.getElementById("pago").addEventListener('change', function () {
+        console.log("dex");
+        var monto = @Model.Monto;
+        document.getElementById("cambio").value = Number(this.value) - Number(monto);
+    });
+
+    document.getElementById("confirm-pago").addEventListener('click', function (e) {
+        $.ajax({
+            url: "@Url.Action("CambiarEstado","Factura")",
+            data: { id: @Model.IdFactura, idCuenta: @Model.IdCuenta },
+            error: function () {
+            },
+            success: function () {
+                setTimeout(function () {
+                    window.location.replace("@Url.Action("Index","Cuenta", new { idMesa = Model.IdMesa })");
+                }, 1000);
+            }
         });
-
-        document.getElementById("confirm-pago").addEventListener('click', function (e) {
-            $.ajax({
-                url: "@Url.Action("CambiarEstado","Factura")",
-                data: { id: @Model.IdFactura, idCuenta: @Model.IdCuenta },
-                error: function () {
-                },
-                success: function () {
-                    setTimeout(function () {
-                        window.location.replace("@Url.Action("Index","Cuenta", new { idMesa = Model.IdMesa })");
-                    }, 1000);
-
-                }
-            });
-        });
+    });
 </script>

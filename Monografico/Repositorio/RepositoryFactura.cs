@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,7 +29,9 @@ namespace Monografico.Repositorio
                 var factura = new Factura()
                 {
                     IdCuenta = model.IdCuenta,
-                    Fecha = DateTime.Now.Date,
+                    Fecha = DateTime.Now,
+                    Itbis = model.Itbis,
+                    PorcientoLey = model.PorcientoLey,
                     Descuento = (model.Descuento/100)*model.Monto,
                     Monto = model.Monto - ((model.Descuento / 100)*model.Monto),
                     Estado = "No pago",
@@ -68,6 +71,8 @@ namespace Monografico.Repositorio
                     IdFactura = factura.IdFactura,
                     IdCuenta = factura.IdCuenta ?? default(int),
                     IdMesa = factura.Cuenta.IdMesa,
+                    Itbis = factura.Itbis,
+                    PorcientoLey = factura.PorcientoLey,
                     Monto = factura.Monto,
                     Mesa = factura.Cuenta.Mesa.Numero,
                     Descuento = factura.Descuento,
@@ -112,6 +117,8 @@ namespace Monografico.Repositorio
                     IdMesa = factura.Cuenta.IdMesa,
                     Fecha = factura.Fecha,
                     Estado = factura.Estado,
+                    Itbis = factura.Itbis,
+                    PorcientoLey = factura.PorcientoLey,
                     Monto = factura.Monto,
                     Mesa = factura.Cuenta.Mesa.Numero,
                     Descuento = factura.Descuento,
@@ -155,6 +162,8 @@ namespace Monografico.Repositorio
                     IdFactura = factura.IdFactura,
                     IdCuenta = factura.IdCuenta ?? default(int),
                     Monto = factura.Monto,
+                    Itbis = factura.Itbis,
+                    PorcientoLey = factura.PorcientoLey,
                     Descuento = factura.Descuento,
                     Fecha = factura.Fecha,
                     Estado = factura.Estado,
@@ -208,11 +217,89 @@ namespace Monografico.Repositorio
                         IdMesa = items.Cuenta.IdMesa,
                         Fecha = items.Fecha,
                         Estado = items.Estado,
+                        Itbis = items.Itbis,
+                        PorcientoLey = items.PorcientoLey,
                         Monto = items.Monto,
                         Mesa = items.Cuenta.Mesa.Numero,
                         Descuento = items.Descuento,
                         Usuario = (usuario == null) ? "" : usuario.Nombre + " " + usuario.Apellido
                     });
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return list;
+        }
+        
+        public async Task<List<FacturaViewModel>> GetAllAsViewModel(Expression<Func<Factura, bool>> expression)
+        {
+            List<FacturaViewModel> list = new List<FacturaViewModel>();
+            try
+            {
+                var facturas = await _contexto.Factura.Include(x => x.Cuenta).ThenInclude(x => x.Mesa).Where(expression).AsNoTracking().ToListAsync();
+                
+                foreach (var items in facturas)
+                {
+                    var usuario = await _contexto.Usuario.FindAsync(items.Cuenta.IdUsuario);
+
+                    list.Add(new FacturaViewModel() {
+                        IdFactura = items.IdFactura,
+                        IdCuenta = items.IdCuenta ?? default(int),
+                        IdMesa = items.Cuenta.IdMesa,
+                        Fecha = items.Fecha,
+                        Estado = items.Estado,
+                        Monto = items.Monto,
+                        Itbis = items.Itbis,
+                        PorcientoLey = items.PorcientoLey,
+                        Mesa = items.Cuenta.Mesa.Numero,
+                        Descuento = items.Descuento,
+                        Usuario = (usuario == null) ? "" : usuario.Nombre + " " + usuario.Apellido
+                    });
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return list;
+        }
+        
+        public async Task<List<ProductoFacturaViewModel>> GetAllProductos(int idProducto, Expression<Func<Factura, bool>> expression)
+        {
+            List<ProductoFacturaViewModel> list = new List<ProductoFacturaViewModel>();
+            try
+            {
+                var facturas = await _contexto.Factura.Include(x => x.Detalle).Where(expression).AsNoTracking().ToListAsync();
+                
+                foreach (var items in facturas)
+                {
+                    foreach(var detalle in items.Detalle)
+                    {
+                        Producto producto;
+                        if (idProducto == 0)
+                            producto = await _contexto.Producto.FindAsync(detalle.IdProducto);
+                        else
+                        {
+                            if (detalle.IdProducto == idProducto)
+                                producto = await _contexto.Producto.FindAsync(detalle.IdProducto);
+                            else
+                                continue;
+                        }
+
+                        list.Add(new ProductoFacturaViewModel() { 
+                            IdProducto = producto.IdProducto,
+                            IdFactura = items.IdFactura,
+                            Descripcion = producto.Descripcion,
+                            Fecha = items.Fecha,
+                            Cantidad = detalle.Cantidad,
+                            Precio = producto.Precio,
+                            Total = detalle.Cantidad * producto.Precio
+                        });
+                    }
                 }
             }
             catch (Exception)
@@ -236,6 +323,56 @@ namespace Monografico.Repositorio
                 throw;
             }
             return list;
+        }
+
+        public async Task<List<Producto>> GetProductoMasVendidos()
+        {
+            List<Producto> list = null;
+            try
+            {
+                var detalle = await (from parent in _contexto.Factura.Where(x => x.Fecha.Year == DateTime.Today.Year)
+                        from child in parent.Detalle
+                        select child).ToListAsync();
+
+                var s = detalle.GroupBy(x => x.IdProducto).OrderByDescending(x => x.Sum(y => y.Cantidad)).Select(x => x.Key).Take(10).ToList();
+                list = new List<Producto>();
+                foreach (var item in s)
+                {
+                    list.Add(await _contexto.Producto.FindAsync(item));
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return list;
+        }
+        
+        public async Task<ReportesViewModel> GetProductoMasVendidosAsViewModel()
+        {
+            ReportesViewModel model = null;
+            try
+            {
+                var detalle = await (from parent in _contexto.Factura.Where(x => x.Fecha.Year == DateTime.Today.Year)
+                        from child in parent.Detalle
+                        select child).ToListAsync();
+
+                model = new ReportesViewModel();
+                model.Productos = new List<string>();
+                var s = detalle.GroupBy(x => x.IdProducto).OrderByDescending(x => x.Sum(y => y.Cantidad)).Select(x => new { Id = x.Key, Cantidad = x.Sum(y => y.Cantidad) }).Take(10).ToList();
+                model.ProductosId = s.Select(x => x.Cantidad).ToList();
+                foreach (var item in s)
+                {
+                    model.Productos.Add((await _contexto.Producto.FindAsync(item.Id)).Descripcion);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return model;
         }
 
         public async Task<decimal[]> ListOfMontoPerMonth()
@@ -293,10 +430,99 @@ namespace Monografico.Repositorio
             int weekNum = ciCurr.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
             return weekNum;
         }
-    } 
 
-    class Entry
-    {
-        public int Month { get; set; }
-    }
+        public async Task<int> HoraMasVendida()
+        {
+            var hora = 0;
+            try
+            {
+                var list = await _contexto.Factura.Where(x => x.Fecha.Year == DateTime.Today.Year).AsNoTracking().ToListAsync();
+                var a = list.GroupBy(x => x.Fecha.Hour)
+                            .Select(x => new { Hora = x.Key, Cantidad = x.Count()})
+                            .OrderByDescending(x => x.Cantidad)
+                            .ToList();
+                hora = a.FirstOrDefault().Hora;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return hora;
+        }
+        
+        public async Task<string> ZonaMayorVenta()
+        {
+            var zona = "";
+            try
+            {
+                var list = await _contexto.Factura.Where(x => x.Fecha.Year == DateTime.Today.Year)
+                                                    .Include(x => x.Cuenta)
+                                                    .ThenInclude(x => x.Mesa)
+                                                    .AsNoTracking()
+                                                    .ToListAsync();
+                var a = list.GroupBy(x => x.Cuenta.Mesa.IdZona)
+                            .Select(x => new { Monto = x.Sum(y => y.Monto), Zona = x.Key })
+                            .OrderByDescending(x => x.Monto)
+                            .ToList();
+                zona = ( await _contexto.Zona.FindAsync(a.FirstOrDefault().Zona)).Descripcion;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return zona;
+        }
+        
+        public async Task<string> MeseroMayorVenta()
+        {
+            var mesero = "";
+            try
+            {
+                var list = await _contexto.Factura.Where(x => x.Fecha.Year == DateTime.Today.Year)
+                                                    .Include(x => x.Cuenta)
+                                                    .AsNoTracking()
+                                                    .ToListAsync();
+                var a = list.GroupBy(x => x.Cuenta.IdUsuario)
+                            .Select(x => new { Monto = x.Sum(y => y.Monto), IdUsuario = x.Key })
+                            .OrderByDescending(x => x.Monto)
+                            .ToList();
+
+                var usuario = await _contexto.Usuario.FindAsync(a.FirstOrDefault().IdUsuario);
+                mesero = usuario.Nombre + " " + usuario.Apellido;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return mesero;
+        }
+        
+        public async Task<string> MesaMayorVenta()
+        {
+            var mesa = "";
+            try
+            {
+                var list = await _contexto.Factura.Where(x => x.Fecha.Year == DateTime.Today.Year)
+                                                    .Include(x => x.Cuenta)
+                                                    .ThenInclude(x => x.Mesa)
+                                                    .AsNoTracking()
+                                                    .ToListAsync();
+                var a = list.GroupBy(x => x.Cuenta.Mesa.IdMesa)
+                            .Select(x => new { Monto = x.Sum(y => y.Monto), IdMesa = x.Key })
+                            .OrderByDescending(x => x.Monto)
+                            .ToList();
+
+                mesa = (await _contexto.Mesa.FindAsync(a.FirstOrDefault().IdMesa)).Numero.ToString();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return mesa;
+        }
+    } 
 }

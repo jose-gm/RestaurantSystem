@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Monografico.ViewModels
 {
-    public class UsuarioViewModel
+    public class EditarPerfilViewModel
     {
         public int IdUsuario { get; set; }
         [Required(ErrorMessage = "Introduzca el nombre de usuario del empleado")]
@@ -24,7 +24,7 @@ namespace Monografico.ViewModels
         [StringLength(120)]
         public string Apellido { get; set; }
         public bool Sexo { get; set; }
-        [Required(ErrorMessage = "Introduzca la cédula del empleado")]
+        [Required(ErrorMessage = "Introduzca la cedula del empleado")]
         [RegularExpression(@"^[0-9]{3}[-][0-9]{7}[-]{1}[0-9]{1}$", ErrorMessage = "cédula invalido")]
         [StringLength(13)]
         [Display(Name = "Cédula")]
@@ -37,7 +37,6 @@ namespace Monografico.ViewModels
         public string Telefono { get; set; }
         public IFormFile Imagen { get; set; }
         public string ImagenEncoded { get; set; }
-        [Required(ErrorMessage = "Introduzca una contraseña")]
         [MinLength(6, ErrorMessage = "La contraseña debe contener minimo 6 caracteres")]
         [Display(Name = "Contraseña")]
         [DataType(DataType.Password)]
@@ -51,7 +50,5 @@ namespace Monografico.ViewModels
         [DataType(DataType.Password)]
         [Compare(otherProperty: "Clavenueva", ErrorMessage = "Las contraseñas no son iguales")]
         public string confirmarClave { get; set; }
-        [Required(ErrorMessage = "Seleccione un rol para el empleado")]
-        public string Rol { get; set; }
     }
 }

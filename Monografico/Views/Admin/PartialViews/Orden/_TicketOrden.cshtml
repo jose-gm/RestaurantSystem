@@ -7,40 +7,43 @@
 
 @if (ViewBag.OrdenCancelada)
 {
-    <div class="row justify-content-center">
-        <div class="col-md-12">
+    <div class="">
+        @*<div class="col-md-12">*@
             <h3><strong>Orden cancelada</strong></h3>
-        </div>
+        @*</div>*@
     </div>
 }
 
-<div class="row mb-3">
-    <div class="col-md-8">
-        <h6>Orden #: @Model.FirstOrDefault().IdOrden</h6>
-        <h6>Mesero: @ViewBag.Usuario</h6>
-        <h6>Mesa: @mesa</h6>
-        <h6>Fecha: @DateTime.Now</h6>
-    </div>
+<div style="text-align:center">
+    <span style="display:inline-block">Comanda</span>
 </div>
-<div class="row">
-    <div class="col-md-12">
-        <table class="table">
-            <thead>
+<div style="border-bottom: 1px dashed black;">
+    <p>
+        Orden #: @Model.FirstOrDefault().IdOrden <br />
+        Mesero: @ViewBag.Usuario <br />
+        Mesa: @mesa <br />
+        Fecha: @Model.FirstOrDefault().Fecha.ToString("MM/dd/yyyy") <br />
+        Hora: @Model.FirstOrDefault().Fecha.TimeOfDay.ToString(@"hh\:mm")
+    </p>
+</div>
+
+<div style="border-bottom: 1px dashed black">
+    <table style="border-collapse: separate; border-spacing: 1vh;">
+        <thead style="border-bottom: 1px dashed black">
+            <tr>
+                <th>cant</th>
+                <th>producto</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
                 <tr>
-                    <th>producto</th>
-                    <th>cantidad</th>
+                    <td>@item.Cantidad</td>
+                    <td>@item.Descripcion</td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.Descripcion</td>
-                        <td>@item.Cantidad</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
 </div>
 

@@ -19,5 +19,7 @@ namespace Monografico.ViewModels
         public string Unidad { get; set; }
         [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
+        public decimal Costo { get; set; }
+        public decimal Total { get; set; }
     }
 }

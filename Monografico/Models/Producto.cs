@@ -18,6 +18,7 @@ namespace Monografico.Models
         [StringLength(60)]
         public string Descripcion { get; set; }
         public Decimal Precio { get; set; }
+        public Decimal Costo { get; set; }
         public string Imagen { get; set; }
         public bool LlevaIngredientes { get; set; }
         public bool LlevaInventario { get; set; }

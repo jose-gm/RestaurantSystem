@@ -34,8 +34,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" required/>
+                <input asp-for="Descripcion" class="form-control" required />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Costo" class="control-label"></label>
+                <input asp-for="Costo" type="number" class="form-control" min="0" />
+                <span asp-validation-for="Costo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Precio" class="control-label"></label>
@@ -128,6 +133,7 @@
             formData.append("IdProducto",document.getElementById("IdProducto").value);
             formData.append("IdCategoria",document.getElementById("IdCategoria").value);
             formData.append("Descripcion",document.getElementById("Descripcion").value);
+            formData.append("Costo", document.getElementById("Costo").value);
             formData.append("Precio", document.getElementById("Precio").value);
             formData.append("ImagenEncoded", document.getElementById("ImagenEncoded").value);
             if(document.getElementById("LlevaIngredientesH").value == "True")
@@ -135,11 +141,13 @@
             else
                 formData.append("LlevaIngredientes", document.getElementById("LlevaIngredientes").checked);
 
-            if (document.getElementById("TieneInventarioH").value == "True")
+            if (document.getElementById("TieneInventarioH").value == "True") {
                 formData.append("TieneInventario", document.getElementById("TieneInventarioH").value);
+            }
             else {
                 formData.append("LlevaInventario", document.getElementById("LlevaInventario").checked);
-                formData.append("Unidad",document.getElementById("Unidad").value);
+                var unidad = (document.getElementById("Unidad").value) ? document.getElementById("Unidad").value : "viod";
+                formData.append("Unidad", unidad);
                 formData.append("Cantidad", document.getElementById("Cantidad").value);
                 formData.append("FechaEntrada", getActualDateUTC());
             }

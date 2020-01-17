@@ -14,6 +14,7 @@ namespace Monografico.ViewModels
         "IdCategoria," +
         "Descripcion," +
         "Precio," +
+        "Costo," +
         "Imagen," +
         "ImagenEncoded," +
         "LlevaIngredientes," +
@@ -32,6 +33,7 @@ namespace Monografico.ViewModels
         [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
         public Decimal Precio { get; set; }
+        public Decimal Costo { get; set; }
         [Display(Name = "categoría")]
         public string Categoria { get; set; }
         public IFormFile Imagen { get; set; }

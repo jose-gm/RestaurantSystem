@@ -30,13 +30,16 @@
                 {
                     <img src="~/img/default_avatar.jpg" height="240" width="230" />
                 }
-
-
             </div>
         </div>
         <form id="form-editar" enctype="multipart/form-data" method="post" asp-antiforgery="false" novalidate>
             <div class="box-body">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6 col-md-4 offset-md-4">
+                        <ul class="errors">
+                        </ul>
+                    </div>
+                </div>
                 <input asp-for="ImagenEncoded" hidden />
                 <input asp-for="IdUsuario" hidden />
                 <div class="row">
@@ -59,14 +62,13 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-md-2 offset-md-4">
-                        <input asp-for="Sexo" class="form-check-input" type="radio" value="false">
-                        <label asp-for="Sexo" class="form-check-label">Hombre</label>
+                        <input asp-for="Sexo" id="radioh" class="form-check-input" type="radio" value="false">
+                        <label for="radioh" class="form-check-label">Hombre</label>
                     </div>
                     <div class="col-md-2">
-                        <input asp-for="Sexo" class="form-check-input" type="radio" value="true">
-                        <label asp-for="Sexo" class="form-check-label">Mujer</label>
+                        <input asp-for="Sexo" id="radiom" class="form-check-input" type="radio" value="true">
+                        <label for="sexom" class="form-check-label">Mujer</label>
                     </div>
-                    <span asp-validation-for="Sexo" class="text-danger"></span>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-4 offset-md-4">
@@ -91,16 +93,16 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-md-4 offset-md-4">
-                        <label asp-for="Clave" class="control-label"></label>
+                        <label class="control-label">Contraseña actual</label>
                         <input asp-for="Clave" class="form-control"  />
-                      
+                        <span asp-validation-for="Clave" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-4 offset-md-4">
                         <label asp-for="Clavenueva" class="control-label"></label>
                         <input asp-for="Clavenueva" class="form-control"  />
-                      
+                        <span asp-validation-for="Clavenueva" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row">
@@ -114,7 +116,7 @@
                     <div class="form-group col-md-4 offset-md-4">
                         <label asp-for="confirmarClave" class="control-label"></label>
                         <input asp-for="confirmarClave" class="form-control"  />
-                      
+                        <span asp-validation-for="confirmarClave" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -146,12 +148,21 @@
     <script src="~/lib/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
     <script>
          $(document).ready(() => {
-        $('.custom-file-input').on("change", function() {
-            var nombreAchivo = $(this).val().split("\\").pop();
-            $(this).next('.custom-file-label').html(nombreAchivo);
+            $('.custom-file-input').on("change", function() {
+                var nombreAchivo = $(this).val().split("\\").pop();
+                $(this).next('.custom-file-label').html(nombreAchivo);
+            });
+
+         });
+
+        var sexo = false;
+        $('input[type=radio][name=Sexo]').change(function () {
+            if (this.value == 'false')
+                sexo = this.value;
+            else
+                sexo = this.value;
         });
 
-    });
     var formulario = document.getElementById("form-editar");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -164,8 +175,8 @@
             }
             formData.append("IdUsuario",document.getElementById("IdUsuario").value);
             formData.append("Nombre",document.getElementById("Nombre").value);
-            formData.append("Apellido",document.getElementById("Apellido").value);
-            formData.append("Sexo",document.getElementById("Sexo").value);
+            formData.append("Apellido", document.getElementById("Apellido").value);
+            formData.append("Sexo",sexo);
             formData.append("Cedula",document.getElementById("Cedula").value);
             formData.append("Direccion",document.getElementById("Direccion").value);
             formData.append("NombreUsuario",document.getElementById("NombreUsuario").value);
@@ -185,7 +196,20 @@
                 contentType: false,
                 processData: false,
                 error: function (response) {
-                    if (response.responseJSON === false) {
+                    console.log(response);
+                    if (response.responseJSON.response === false) {
+                        var errors = response.responseJSON.errors;
+                        if (errors.length > 0) {
+                            var ul = document.querySelector(".errors");
+                            ul.innerHTML = "";
+                            for (let i = 0; i < errors.length; i++) {
+                                var li = document.createElement("li");
+                                li.innerText = errors[i];
+                                li.setAttribute("style", "color:red");
+                                ul.appendChild(li);
+                            }
+                                
+                        }
                     }
                     else {
                         toastr.error("Error al guardar");

@@ -7,6 +7,7 @@
 
 <div class="card">
     <div class="card-body">
+        <button id="prueba" data-toggle="modal" data-target="#myModal">modal</button>
         @foreach (var item in Model)
         {
             <div class="row">
@@ -30,3 +31,94 @@
         }
     </div>
 </div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Formulario de @ViewData["Title"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modalBody" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Metodo de pago:</label>
+                            <select id="metodo-pago" class="custom-select">
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Tarjeta">Tarjeta</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Total:</label>
+                            <input class="form-control" value="1500.00" readonly />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Pago</label>
+                            <input id="pago" class="form-control" type="number" min="0" value="0.00" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Cambio:</label>
+                            <input id="cambio" class="form-control" type="text" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tarjeta" class="row d-none">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Numero de tarjeta:</label>
+                            <input class="form-control" type="text" maxlength="4" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Tipo de tarjeta:</label>
+                            <select class="custom-select">
+                                <option value="Visa">Visa</option>
+                                <option value="Mastercard">Mastercard</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script {
+    <script>
+        document.getElementById("metodo-pago").addEventListener('change', function (e) {
+            console.log("wew");
+            var row = document.getElementById("tarjeta");
+            if (this.value === "Tarjeta") {
+                row.classList.remove("d-none");
+            }
+            else {
+                row.classList.add("d-none");
+            }
+        });
+
+        document.getElementById("pago").addEventListener('change', function () {
+            console.log("dex");
+            var monto = 1500.00;
+            document.getElementById("cambio").value = Number(this.value) - Number(monto);
+ 
+        });
+    </script> 
+}

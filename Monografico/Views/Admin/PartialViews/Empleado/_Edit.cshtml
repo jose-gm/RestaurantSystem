@@ -36,18 +36,18 @@
             </div>
             <div class="form-group">
                 <div class="form-check form-check-inline">
-                    <input asp-for="Sexo" class="form-check-input" type="radio" value="false">
-                    <label asp-for="Sexo" class="form-check-label">Hombre</label>
+                    <input asp-for="Sexo" id="radioh" class="form-check-input" type="radio" value="false">
+                    <label for="radioh" class="form-check-label">Hombre</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input asp-for="Sexo" class="form-check-input" type="radio" value="true">
-                    <label asp-for="Sexo" class="form-check-label">Mujer</label>
+                    <input asp-for="Sexo" id="radiom" class="form-check-input" type="radio" value="true">
+                    <label for="sexom" class="form-check-label">Mujer</label>
                 </div>
                 <span asp-validation-for="Sexo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Cedula" class="control-label"></label>
-                <input asp-for="Cedula" class="form-control" />
+                <input asp-for="Cedula" class="form-control"  data-mask="000-0000000-0"/>
                 <span asp-validation-for="Cedula" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -93,6 +93,7 @@
 </div>
 
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script src="~/lib/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
 <script>
     $(document).ready(() => {
         $('.custom-file-input').on("change", function() {
@@ -101,6 +102,14 @@
         });
 
         $('#myModalLabel').html("@modalTitle");
+    });
+
+    var sexo;
+    $('input[type=radio][name=Sexo]').change(function () {
+        if (this.value == 'false')
+            sexo = this.value;
+        else
+            sexo = this.value;
     });
 
     var formulario = document.getElementById("form-editar");
@@ -117,7 +126,7 @@
             formData.append("ImagenEncoded",document.getElementById("ImagenEncoded").value);
             formData.append("Nombre",document.getElementById("Nombre").value);
             formData.append("Apellido",document.getElementById("Apellido").value);
-            formData.append("Sexo",document.getElementById("Sexo").value);
+            formData.append("Sexo",sexo);
             formData.append("Cedula",document.getElementById("Cedula").value);
             formData.append("Direccion",document.getElementById("Direccion").value);
             formData.append("Telefono",document.getElementById("Telefono").value);

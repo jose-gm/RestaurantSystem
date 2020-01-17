@@ -195,5 +195,16 @@ namespace Monografico.Controllers
         {
             return View(await repo.Zona.GetAllWithMesa());
         }
+
+        public async Task<IActionResult> Reportes()
+        {
+            var model = await repo.Factura.GetProductoMasVendidosAsViewModel();
+            model.MontoMensuales = await repo.Factura.ListOfMontoPerMonth();
+            model.HoraMasVendida = await repo.Factura.HoraMasVendida();
+            model.ZonaMayorVenta = await repo.Factura.ZonaMayorVenta();
+            model.MeseroMayorVenta = await repo.Factura.MeseroMayorVenta();
+            model.MesaroMayorVenta = await repo.Factura.MesaMayorVenta();
+            return View(model);
+        }
     }
 }

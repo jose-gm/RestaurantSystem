@@ -28,7 +28,7 @@ namespace Monografico.Repositorio
             List<InventarioViewModel> model = new List<InventarioViewModel>();
 
 
-            var a = await _contexto.Inventario.Include(x => x.Producto).Include(y => y.Ingrediente).ToListAsync();
+            var a = await _contexto.Inventario.Include(x => x.Producto).Include(y => y.Ingrediente).Where(expression).AsNoTracking().ToListAsync();
 
             foreach (var item in a)
             {
@@ -40,7 +40,9 @@ namespace Monografico.Repositorio
                     FechaEntrada = item.FechaEntrada,
                     Unidad = item.Unidad,
                     IdProducto = item.IdProducto ?? default(int),
-                    IdIngrediente = item.IdIngrediente ?? default(int)
+                    IdIngrediente = item.IdIngrediente ?? default(int),
+                    Costo = (item.Producto == null) ? item.Ingrediente.Costo : item.Producto.Costo,
+                    Total = (item.Producto == null) ? item.Ingrediente.Costo * item.Cantidad : item.Producto.Costo * item.Cantidad,
                 });
             }
 

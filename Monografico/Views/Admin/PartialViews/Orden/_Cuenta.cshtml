@@ -14,8 +14,8 @@
 <span>Fecha: @DateTime.Now.Date</span>
 <br />
 <h5 class="mb-3">Para:</h5>
-<h3 class="text-dark mb-1">Mesero: @Model.Usuario</h3>
-<h3 class="text-dark mb-1">Mesa: @Model.Mesa</h3>
+<h6 class="text-dark mb-1">Mesero: @Model.Usuario</h6>
+<h6 class="text-dark mb-1">Mesa: @Model.Mesa</h6>
 <br />
 <br />
 <table>
@@ -50,6 +50,18 @@
                 <strong class="text-dark">Subtotal</strong>
             </td>
             <td><strong>@monto.ToString("N", precision)</strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong class="text-dark">ITBIS</strong>
+            </td>
+            <td><strong>@Model.Itbis.ToString("N", precision)</strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong class="text-dark">% Ley</strong>
+            </td>
+            <td><strong>@Model.PorcientoLey.ToString("N", precision)</strong></td>
         </tr>
         <tr>
             <td>

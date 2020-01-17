@@ -6,18 +6,14 @@ using System.Threading.Tasks;
 
 namespace Monografico.ViewModels
 {
-    public class OrdenViewModel
+    public class ProductoFacturaViewModel
     {
-        public int IdCuenta { get; set; }
-        public int IdOrden { get; set; }
-        public int IdDetalle { get; set; }
         public int IdProducto { get; set; }
+        public int IdFactura { get; set; }
         public string Descripcion { get; set; }
-        public int Cantidad { get; set; }
-        public decimal Precio { get; set; }
-        public decimal Total { get; set; }
-        public bool Enviado { get; set; }
-        public int Mesa { get; set; }
         public DateTime Fecha { get; set; }
+        public int Cantidad { get; set; }
+        public Decimal Precio { get; set; }
+        public decimal Total { get; set; }
     }
 }

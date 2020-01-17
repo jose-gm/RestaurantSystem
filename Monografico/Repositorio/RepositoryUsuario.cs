@@ -100,9 +100,9 @@ namespace Monografico.Repositorio
             return paso;
         }
 
-        public async Task<bool> UpdateUsuario(UsuarioViewModel model)
+        public async Task<IdentityResult> UpdateUsuario(EditarPerfilViewModel model)
         {
-            var paso = false;
+            IdentityResult result = null;
             try
             {
                 var usuario = await _userManager.FindByIdAsync(model.IdUsuario.ToString());
@@ -115,19 +115,23 @@ namespace Monografico.Repositorio
                 usuario.Direccion = model.Direccion;
                 usuario.UserName = model.NombreUsuario;
 
-                if (!string.IsNullOrEmpty(model.Clave))
-                {
-                    await _userManager.ChangePasswordAsync(usuario, model.Clave, model.Clavenueva);
-                }
+                IdentityResult passResult = null;
+                if (!string.IsNullOrEmpty(model.Clave))                
+                    passResult = await _userManager.ChangePasswordAsync(usuario, model.Clave, model.Clavenueva);
+                
 
-                await _userManager.UpdateAsync(usuario);
+                if (passResult != null)
+                    result = (passResult.Succeeded) ? await _userManager.UpdateAsync(usuario) : passResult;               
+                else
+                    result = await _userManager.UpdateAsync(usuario);
+
             }
             catch (Exception)
             {
 
                 throw;
             }
-            return paso;
+            return result;
         }
 
         public async Task<Usuario> Find(int id)

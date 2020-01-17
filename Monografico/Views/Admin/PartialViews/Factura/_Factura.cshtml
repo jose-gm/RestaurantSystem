@@ -4,9 +4,7 @@
 @{
     NumberFormatInfo precision = new NumberFormatInfo();
     precision.NumberDecimalDigits = 2;
-    var descuento = (Model.Descuento / 100) * Model.Monto;
-    var monto = Model.Monto;
-    var total = monto - descuento;
+    decimal subtotal = 0;
     var facturaNo = "00" + Model.IdFactura;
 }
 
@@ -17,7 +15,7 @@
                 <div class="row justify-content-end">
                     <div class="col-12 col-sm-2 col-md-2 col-lg-12 col-xl-12">
                         <h5 class="mb-0">Factura No.: @facturaNo</h5>
-                        Fecha: @DateTime.Now.Date
+                        Fecha: @Model.Fecha
                     </div>
                 </div>
             </div>
@@ -43,6 +41,7 @@
                         <tbody>
                             @foreach (var item in Model.Ordenes)
                             {
+                                subtotal += item.Total;
                                 <tr>
                                     <td class="center">1</td>
                                     <td class="left strong">@item.Descripcion</td>
@@ -65,20 +64,32 @@
                                     <td>
                                         <strong class="text-dark">Subtotal</strong>
                                     </td>
-                                    <td>@monto.ToString("N", precision)</td>
+                                    <td>@subtotal.ToString("N", precision)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong class="text-dark">ITBIS</strong>
+                                    </td>
+                                    <td>@Model.Itbis.ToString("N", precision)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong class="text-dark">% Ley</strong>
+                                    </td>
+                                    <td>@Model.PorcientoLey.ToString("N", precision)</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <strong class="text-dark">Descuento</strong>
                                     </td>
-                                    <td>@descuento.ToString("N", precision)</td>
+                                    <td>@Model.Descuento.ToString("N", precision)</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <strong class="text-dark">Total</strong>
                                     </td>
                                     <td>
-                                        <strong class="text-dark">@total.ToString("N", precision)</strong>
+                                        <strong class="text-dark">@Model.Monto.ToString("N", precision)</strong>
                                     </td>
                                 </tr>
                             </tbody>

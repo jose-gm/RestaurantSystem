@@ -198,6 +198,14 @@ namespace Monografico.Controllers
             ViewBag.OrdenCancelada = false;
             return PartialView("~/Views/Admin/PartialViews/Orden/_TicketOrden.cshtml", await repo.Cuenta.GetListOrdenViewModels(id, x => x.Enviado == false));
         }
+        
+        public async Task<IActionResult> ReHacerTicketOrden([FromQuery]int id, [FromQuery(Name = "idOrden")]int idOrden)
+        {
+            var usuario = await repo.Usuario.GetUsuario(HttpContext.User);
+            ViewBag.Usuario = usuario.Nombre + " " + usuario.Apellido;
+            ViewBag.OrdenCancelada = false;
+            return PartialView("~/Views/Admin/PartialViews/Orden/_TicketOrden.cshtml", await repo.Cuenta.GetListOrdenViewModels(id, x => x.IdOrden == idOrden));
+        }
 
         public async Task<bool> OrdenesEnviadas(int idMesa)
         {

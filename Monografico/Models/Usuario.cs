@@ -16,8 +16,6 @@ namespace Monografico.Models
         public string Direccion { get; set; }
         public string Imagen { get; set; }
         public bool Desactivado { get; set; }
-        public List<ApplicationUserRole> UsuarioRoles { get; set; }
-
-       
+        public List<ApplicationUserRole> UsuarioRoles { get; set; }   
     }
 }

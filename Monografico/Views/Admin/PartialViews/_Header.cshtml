@@ -1,4 +1,11 @@
-﻿<header class="app-header navbar">
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<Usuario> manager
+
+@{ 
+    var usuario =  await manager.GetUserAsync(User);
+}
+
+<header class="app-header navbar">
     <!-- Header content here -->
     <a class="navbar-brand" href="#">
         <img src="https://coreui.io/docs/assets/brand/bootstrap-solid.svg" width="30" height="30" alt="">
@@ -10,25 +17,33 @@
         <li class="nav-item dropdown">
             <a class="nav-link nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                 @User.Identity.Name
-                <img class="img-avatar" src="~/img/tomioka.jpg" alt="admin@bootstrapmaster.com">
+                @if (string.IsNullOrEmpty(usuario.Imagen))
+                {
+                    <img class="img-avatar" style="object-fit:cover" src="~/img/default_avatar.jpg" alt="admin@bootstrapmaster.com">
+                }
+                else
+                {
+                    var src = $"data:image/jpeg;base64,{usuario.Imagen}";
+                    <img class="img-avatar" style="object-fit:cover" src="@src" alt="admin@bootstrapmaster.com">
+                }
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 @*<div class="dropdown-header text-center">
-            <strong>Account</strong>
-        </div>
-        <a class="dropdown-item" href="#">
-            <i class="fa fa-bell-o"></i> Updates
-            <span class="badge badge-info">42</span>
-        </a>
-        <div class="dropdown-header text-center">
-            <strong>Settings</strong>
-        </div>
-        <a class="dropdown-item" href="#">
-            <i class="fa fa-user"></i> Profile
-        </a>
-        <a class="dropdown-item" href="#">
-            <i class="fa fa-wrench"></i> Settings
-        </a>*@
+                        <strong>Account</strong>
+                    </div>
+                    <a class="dropdown-item" href="#">
+                        <i class="fa fa-bell-o"></i> Updates
+                        <span class="badge badge-info">42</span>
+                    </a>
+                    <div class="dropdown-header text-center">
+                        <strong>Settings</strong>
+                    </div>
+                    <a class="dropdown-item" href="#">
+                        <i class="fa fa-user"></i> Profile
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <i class="fa fa-wrench"></i> Settings
+                    </a>*@
                 <a class="dropdown-item" asp-action="EditPerfil" asp-controller="Admin">
                     <i class="fa fa-user-edit"></i> Perfil
                 </a>

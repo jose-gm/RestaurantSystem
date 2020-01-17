@@ -102,10 +102,28 @@
                             <div class="col-12">
                                 <div class="row justify-content-between">
                                     <div class="col-md-3">
-                                        <label>Total:</label>
+                                        <label>Subtotal:</label>
                                     </div>
                                     <div class="col-md-4">
-                                        <span id="total-span" class="ml-auto">0</span>
+                                        <span id="subtotal" class="ml-auto">0</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row justify-content-between">
+                                    <div class="col-md-3">
+                                        <label>ITBIS:</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span id="itbis" class="ml-auto">0</span>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-between">
+                                    <div class="col-md-3">
+                                        <label>% Ley:</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span id="porciento-ley" class="ml-auto">0</span>
                                     </div>
                                 </div>
 
@@ -120,6 +138,15 @@
                                                 <div class="input-group-text">%</div>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-between">
+                                    <div class="col-md-3">
+                                        <label>Total:</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span id="total-span" class="ml-auto">0</span>
                                     </div>
                                 </div>
                                 <hr />
@@ -247,7 +274,7 @@
 <partial name="~/Views/Admin/PartialViews/Orden/_ModalConfirmarPago.cshtml" />
 
 <!-- Modal de confirmacion de impresion de cuenta-->
-<partial name="~/Views/Admin/PartialViews/Orden/_ModalConfirmacionCuenta.cshtml" />
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalImprimirCuenta.cshtml" />
 
 <!-- Modal de confirmacion de eliminacion-->
 <partial name="~/Views/Admin/PartialViews/Orden/_ModalMensaje.cshtml" />
@@ -406,8 +433,18 @@
                 ordenes.push(data[i]);
             }
 
-            if (ordenes.length > 0) {
-                $('.imprimible').load("@Url.Action("TicketOrden","Cuenta")" + "/" + document.querySelector("span.cuenta-selected").dataset.id, () => {
+            if (ordenesEnviadas() > 0 && ordenes.length === 0) {
+                ordenes = [];
+                var d = table.rows().data().filter(function (data, index) {
+                    return data.enviado === true ? true : false;
+                });
+
+                for (let i = 0; i < d.length; i++) {
+                    ordenes.push(d[i]);
+                }
+
+                console.log(ordenes[ordenes.length-1]);
+                $('.imprimible').load("@Url.Action("ReHacerTicketOrden","Cuenta")" + "?id=" + document.querySelector("span.cuenta-selected").dataset.id + "&idOrden=" + ordenes[ordenes.length-1].idOrden, () => {
                     $('#myModal').modal({
                         keyboard: false,
                         backdrop: 'static'
@@ -415,10 +452,19 @@
                 });
             }
             else {
-                $("#myModal").modal('hide');
-                toastr.warning("No hay ordenes para enviar");
+                if (ordenes.length > 0) {
+                    $('.imprimible').load("@Url.Action("TicketOrden","Cuenta")" + "/" + document.querySelector("span.cuenta-selected").dataset.id, () => {
+                        $('#myModal').modal({
+                            keyboard: false,
+                            backdrop: 'static'
+                        });
+                    });
+                }
+                else {
+                    $("#myModal").modal('hide');
+                    toastr.warning("No hay ordenes para enviar");
+                }
             }
-
         });
 
         //Imprime las ordenes
@@ -473,11 +519,11 @@
                 return data.enviado === true ? true : false;
             });
 
-            var sum = table.cells(function (index, data, node) {
+            /*var sum = table.cells(function (index, data, node) {
                                 return table.row(index).data().enviado === true ? true : false;
                             }, 7, { search: 'applied' })
                                 .data()
-                                .sum().toFixed(2);
+                                .sum().toFixed(2);*/
 
             var ordenes = [];
             for (let i = 0; i < data.length; i++) {
@@ -487,7 +533,9 @@
             var model = {
                 "IdCuenta": document.querySelector("span.cuenta-selected").dataset.id,
                 "Mesa": "@Model.Mesa",
-                "Monto": sum,
+                "Monto": document.getElementById("total-span").innerText,
+                "Itbis": document.getElementById("itbis").innerText,
+                "PorcientoLey": document.getElementById("porciento-ley").innerText,
                 "Descuento": document.getElementById("descuento-inp").value,
                 "Ordenes": ordenes,
                 "Usuario": "@ViewBag.Usuario"
@@ -510,12 +558,12 @@
                     $div.printThis();
                     $div.remove();
 
-                    document.querySelector(".modal-cuenta-mensaje").classList.add("d-none");
-                    document.querySelector(".modal-cuenta-footer").classList.add("d-none");
-                    document.querySelector(".modal-cuenta-progress").classList.remove("d-none");
+                    $("#modal-cuenta").modal('hide');
+                     $('#modal-progress').modal('show');
 
                     setTimeout(function () {
-                        $("#modal-cuenta").modal('hide');
+                        //$("#modal-cuenta").modal('hide');
+                        $('#modal-progress').modal('hide');
 
                         var idCuenta = document.querySelector("span.cuenta-selected").dataset.id;
                         $('#modal-cp-body').load("@Url.Action("ConfirmarPago","Factura")" + "/" + idCuenta, () => {
@@ -660,9 +708,15 @@
          //Actualiza los totales y impuestos
         function actualizar() {
             var table = $('#datatable').DataTable();
-            var sum = table.column(7).data().sum().toFixed(2);
+            var subtotal = table.column(7).data().sum().toFixed(2);
+            var itbis = (subtotal * 0.18).toFixed(2);
+            var porcientoLey = (subtotal * 0.1).toFixed(2);
+            var total = (Number(subtotal) + Number(itbis) + Number(porcientoLey)).toFixed(2);
 
-            document.getElementById("total-span").innerHTML = sum;
+            document.getElementById("subtotal").innerHTML = subtotal;
+            document.getElementById("itbis").innerHTML = itbis;
+            document.getElementById("porciento-ley").innerHTML = porcientoLey;
+            document.getElementById("total-span").innerHTML = total;
         }
 
 

@@ -17,7 +17,12 @@ namespace Monografico.Models
         public DateTime Fecha { get; set; }
         public decimal Monto { get; set; }
         public decimal Descuento { get; set; }
+        public decimal Itbis { get; set; }
+        public decimal PorcientoLey { get; set; }
         public string Estado { get; set; }
+        public string MetodoPago { get; set; }
+        public string Tarjeta { get; set; }
+        public string TipoTarjeta { get; set; }
         public virtual List<FacturaDetalle> Detalle { get; set; }
         public virtual Cuenta Cuenta { get; set; }
     }

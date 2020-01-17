@@ -67,7 +67,8 @@ namespace Monografico.Controllers
                 Imagen = (model.Imagen != null) ? Convert.ToBase64String(image) : model.ImagenEncoded,
                 LlevaIngredientes = model.LlevaIngredientes,
                 LlevaInventario = (model.LlevaInventario) ? model.LlevaInventario : model.TieneInventario,
-                Inventario = (model.LlevaInventario) ? inventario : null
+                Inventario = (model.LlevaInventario) ? inventario : null,
+                Costo = model.Costo
             };
         }
 
@@ -79,7 +80,8 @@ namespace Monografico.Controllers
                 IdCategoria = model.IdCategoria,
                 Descripcion = model.Descripcion,
                 Precio = model.Precio,
-                ImagenEncoded = model.Imagen
+                ImagenEncoded = model.Imagen,
+                Costo = model.Costo
             };
         }
 
@@ -226,29 +228,21 @@ namespace Monografico.Controllers
             }
         }       
 
-        // POST: Producto/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
         //GET
         public async Task<IActionResult> Ingredientes(int id)
         {
             return PartialView("~/Views/Admin/PartialViews/Producto/_Ingredientes.cshtml", await repo.Producto.FindProductoDetalleViewModel(id));
         }
 
+        //GET:
+        public async Task<JsonResult> GetAll(string search)
+        {
+            if (!string.IsNullOrEmpty(search))
+                return Json(await repo.Producto.GetList(x => x.Descripcion.Contains(search)));
+            else
+                return Json(await repo.Producto.GetList(x => true));
+        }
+        
         //GET:
         public async Task<JsonResult> List()
         {

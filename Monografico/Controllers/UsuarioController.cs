@@ -101,21 +101,29 @@ namespace Monografico.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPerfil(UsuarioViewModel usuario)
+        public async Task<IActionResult> EditPerfil(EditarPerfilViewModel usuario)
         {
+            List<string> errors = new List<string>();
             try
             {
-                // TODO: Add update logic here
-                if (!(await repo.Usuario.UpdateUsuario(usuario)))
-                    return Ok();
+                if (ModelState.IsValid)
+                {
+                    // TODO: Add update logic here
+                    var result = await repo.Usuario.UpdateUsuario(usuario);
+                    if(result.Succeeded)
+                        return Ok();
 
+                    errors = new List<string>();
+                    foreach (var error in result.Errors)
+                        errors.Add(error.Description);
+                }
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return BadRequest(false);
+            return BadRequest(new { response = false, errors = errors });
         }
 
         // GET: Usuario/Delete/5
