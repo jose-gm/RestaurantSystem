@@ -39,6 +39,10 @@
       <Compile Remove="Migrations\20191204071548_Change2.Designer.cs" />
       <Compile Remove="Migrations\20191205011819_Change.cs" />
       <Compile Remove="Migrations\20191205011819_Change.Designer.cs" />
+      <Compile Remove="Migrations\20200119030833_Caja2.cs" />
+      <Compile Remove="Migrations\20200119030833_Caja2.Designer.cs" />
+      <Compile Remove="Migrations\20200119031147_Caja2.cs" />
+      <Compile Remove="Migrations\20200119031147_Caja2.Designer.cs" />
     </ItemGroup>
   
     <ItemGroup>

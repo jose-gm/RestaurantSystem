@@ -115,16 +115,25 @@ namespace Monografico.Repositorio
                 usuario.Direccion = model.Direccion;
                 usuario.UserName = model.NombreUsuario;
 
-                IdentityResult passResult = null;
-                if (!string.IsNullOrEmpty(model.Clave))                
-                    passResult = await _userManager.ChangePasswordAsync(usuario, model.Clave, model.Clavenueva);
-                
+                result = await _userManager.UpdateAsync(usuario);
+            }
+            catch (Exception)
+            {
 
-                if (passResult != null)
-                    result = (passResult.Succeeded) ? await _userManager.UpdateAsync(usuario) : passResult;               
-                else
-                    result = await _userManager.UpdateAsync(usuario);
+                throw;
+            }
+            return result;
+        }
+        
+        public async Task<IdentityResult> ActualizarClave(CambiarClaveViewModel model, ClaimsPrincipal user)
+        {
+            IdentityResult result = null;
+            try
+            {
+                var usuario = await GetUsuario(user);
 
+                result = await _userManager.ChangePasswordAsync(usuario, model.Clave, model.Clavenueva);
+              
             }
             catch (Exception)
             {
@@ -157,7 +166,6 @@ namespace Monografico.Repositorio
             }
             catch (Exception)
             {
-
                 throw;
             }
             return usuario;

@@ -25,6 +25,7 @@ namespace Monografico.Repositorio
         private RepositoryMesa _mesa;
         private RepositoryUsuario _usuario;
         private RepositoryRol _rol;
+        private RepositoryCaja _caja;
         private RepositoryAjusteInventario _ajusteinventario;
 
         public RepositoryWrapper(Contexto contexto, UserManager<Usuario> userManager, RoleManager<Rol> roleManager)
@@ -149,6 +150,16 @@ namespace Monografico.Repositorio
                 if (_mesa == null)
                     _mesa = new RepositoryMesa(_contexto);
                 return _mesa;
+            }
+        }
+        
+        public RepositoryCaja Caja
+        {
+            get
+            {
+                if (_caja == null)
+                    _caja = new RepositoryCaja(_contexto);
+                return _caja;
             }
         }
 

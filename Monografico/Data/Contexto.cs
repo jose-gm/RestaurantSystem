@@ -27,6 +27,9 @@ namespace Monografico.Data
         public DbSet<Factura> Factura { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
         public DbSet<Rol> Rol { get; set; }
+        public DbSet<AperturaCaja> AperturaCaja { get; set; }
+        public DbSet<Caja> Caja { get; set; }
+        public DbSet<CierreCaja> CierreCaja { get; set; }
         public DbSet<ApplicationUserRole> ApplicationUserRole { get; set; }
 
         public Contexto(DbContextOptions<Contexto> options) : base(options)

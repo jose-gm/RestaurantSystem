@@ -35,6 +35,9 @@ namespace Monografico.Controllers
 
             model.IdUsuario = usuario.Id;
             ViewBag.Usuario = usuario.Nombre + " " + usuario.Apellido;
+
+            ViewBag.AlterMenu = true;
+            model.IsCajaAbierta = await repo.Caja.IsCajaAbierta(usuario);
             return View("~/Views/Admin/Orden.cshtml",model);
         }
 

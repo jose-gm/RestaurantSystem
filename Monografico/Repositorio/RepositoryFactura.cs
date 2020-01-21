@@ -32,9 +32,12 @@ namespace Monografico.Repositorio
                     Fecha = DateTime.Now,
                     Itbis = model.Itbis,
                     PorcientoLey = model.PorcientoLey,
-                    Descuento = (model.Descuento/100)*model.Monto,
-                    Monto = model.Monto - ((model.Descuento / 100)*model.Monto),
-                    Estado = "No pago",
+                    Descuento = (model.Descuento / 100) * model.Monto,
+                    Monto = model.Monto - ((model.Descuento / 100) * model.Monto),
+                    MetodoPago = model.MetodoPago,
+                    Tarjeta = (model.MetodoPago.Equals("Tarjeta")) ? model.Tarjeta : null,
+                    TipoTarjeta = (model.MetodoPago.Equals("Tarjeta")) ? model.TipoTarjeta : null,
+                    Estado = "Pago",
                     Detalle = new List<FacturaDetalle>()
                 };
 
@@ -178,13 +181,16 @@ namespace Monografico.Repositorio
             return model;
         }
 
-        public async Task<bool> ChangeStatus(int id)
+        public async Task<bool> Update(PagoViewModel model)
         {
             var paso = false;
             try
             {
-                var factura = await _contexto.Factura.AsNoTracking().SingleOrDefaultAsync(w => w.IdFactura == id);
+                var factura = await _contexto.Factura.AsNoTracking().SingleOrDefaultAsync(w => w.IdFactura == model.IdFactura);
                 factura.Estado = "Pago";
+                factura.MetodoPago = model.MetodoPago;
+                factura.Tarjeta = model.Tarjeta;
+                factura.TipoTarjeta = model.TipoTarjeta;
 
                 _contexto.Factura.Update(factura);
 
@@ -375,6 +381,36 @@ namespace Monografico.Repositorio
             return model;
         }
 
+        public async Task<decimal> GetMontoVentasPorFecha(DateTime fecha)
+        {
+            decimal monto;
+            try
+            {
+                monto = _contexto.Factura.Where(x => ((x.Fecha >= fecha) && (x.Fecha <= DateTime.Today)) && x.MetodoPago.Equals("Efectivo")).AsNoTracking().Sum(x => x.Monto);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return monto;
+        }
+        
+        public async Task<decimal> GetMontoTarjetaPorFecha(DateTime fecha)
+        {
+            decimal monto;
+            try
+            {
+                monto = _contexto.Factura.Where(x => ((x.Fecha >= fecha) && (x.Fecha <= DateTime.Today)) && x.MetodoPago.Equals("Tarjeta")).AsNoTracking().Sum(x => x.Monto);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return monto;
+        }
+
         public async Task<decimal[]> ListOfMontoPerMonth()
         {
             decimal[] montos = new decimal[12];
@@ -441,7 +477,8 @@ namespace Monografico.Repositorio
                             .Select(x => new { Hora = x.Key, Cantidad = x.Count()})
                             .OrderByDescending(x => x.Cantidad)
                             .ToList();
-                hora = a.FirstOrDefault().Hora;
+
+                hora = (a.Count > 0) ? a.FirstOrDefault().Hora : 0;
             }
             catch (Exception)
             {
@@ -465,7 +502,9 @@ namespace Monografico.Repositorio
                             .Select(x => new { Monto = x.Sum(y => y.Monto), Zona = x.Key })
                             .OrderByDescending(x => x.Monto)
                             .ToList();
-                zona = ( await _contexto.Zona.FindAsync(a.FirstOrDefault().Zona)).Descripcion;
+
+                if(a.Count > 0)
+                    zona = ( await _contexto.Zona.FindAsync(a.FirstOrDefault().Zona)).Descripcion;
             }
             catch (Exception)
             {
@@ -489,8 +528,11 @@ namespace Monografico.Repositorio
                             .OrderByDescending(x => x.Monto)
                             .ToList();
 
-                var usuario = await _contexto.Usuario.FindAsync(a.FirstOrDefault().IdUsuario);
-                mesero = usuario.Nombre + " " + usuario.Apellido;
+                if(a.Count > 0)
+                {
+                    var usuario = await _contexto.Usuario.FindAsync(a.FirstOrDefault().IdUsuario);
+                    mesero = usuario.Nombre + " " + usuario.Apellido;
+                }               
             }
             catch (Exception)
             {
@@ -515,7 +557,8 @@ namespace Monografico.Repositorio
                             .OrderByDescending(x => x.Monto)
                             .ToList();
 
-                mesa = (await _contexto.Mesa.FindAsync(a.FirstOrDefault().IdMesa)).Numero.ToString();
+                if(a.Count > 0)
+                    mesa = (await _contexto.Mesa.FindAsync(a.FirstOrDefault().IdMesa)).Numero.ToString();
             }
             catch (Exception)
             {

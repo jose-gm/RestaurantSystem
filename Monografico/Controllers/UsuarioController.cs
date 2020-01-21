@@ -125,6 +125,32 @@ namespace Monografico.Controllers
 
             return BadRequest(new { response = false, errors = errors });
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> ActualizarClave(CambiarClaveViewModel model)
+        {
+            List<string> errors = new List<string>();
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    // TODO: Add update logic here
+                    var result = await repo.Usuario.ActualizarClave(model, HttpContext.User);
+                    if(result.Succeeded)
+                        return Ok();
+
+                    errors = new List<string>();
+                    foreach (var error in result.Errors)
+                        errors.Add(error.Description);
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return BadRequest(new { response = false, errors = errors });
+        }
 
         // GET: Usuario/Delete/5
         [Authorize(Roles = "Administrador")]

@@ -42,15 +42,6 @@ namespace Monografico.ViewModels
         [Display(Name = "Contraseña")]
         [DataType(DataType.Password)]
         public string Clave { get; set; }
-        [MinLength(6, ErrorMessage = "La contraseña debe contener minimo 6 caracteres")]
-        [Display(Name = "Contraseña nueva")]
-        [DataType(DataType.Password)]
-        public string Clavenueva { get; set; }
-        [MinLength(6, ErrorMessage = "La contraseña debe contener minimo 6 caracteres")]
-        [Display(Name = "Confirmar contraseña")]
-        [DataType(DataType.Password)]
-        [Compare(otherProperty: "Clavenueva", ErrorMessage = "Las contraseñas no son iguales")]
-        public string confirmarClave { get; set; }
         [Required(ErrorMessage = "Seleccione un rol para el empleado")]
         public string Rol { get; set; }
     }

@@ -32,7 +32,7 @@
     <div class="col-md-12">
         <div class="form-group">
             <label>Cambio:</label>
-            <input id="cambio" class="form-control" type="text" readonly />
+            <input id="cambio" class="form-control" type="text" value="0.00" readonly />
         </div>
     </div>
 </div>
@@ -41,13 +41,13 @@
     <div class="col-md-6">
         <div class="form-group">
             <label>Numero de tarjeta:</label>
-            <input class="form-control" type="text" maxlength="4" />
+            <input id="tarjeta" class="form-control" type="text" maxlength="4" />
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label>Tipo de tarjeta:</label>
-            <select class="custom-select">
+            <select id="tipo-tarjeta" class="custom-select">
                 <option value="Visa">Visa</option>
                 <option value="Mastercard">Mastercard</option>
             </select>
@@ -58,10 +58,6 @@
 <button id="confirm-pago" class="btn btn-primary">Confirmar pago</button>
 
 <script>
-    $(document).ready(() => {
-
-    });
-
     document.getElementById("metodo-pago").addEventListener('change', function (e) {
             console.log("wew");
             var row = document.getElementById("tarjeta");
@@ -77,10 +73,33 @@
         document.getElementById("cambio").value = Number(this.value) - Number(monto);
     });
 
-    document.getElementById("confirm-pago").addEventListener('click', function (e) {
+    document.getElementById("confirm-pago").addEventListener('click', function () {
+        var ordenes = @Html.Raw(Json.Serialize(Model.Ordenes));
+        console.log(ordenes);
+        var model = {
+            "IdFactura": @Model.IdFactura,
+            "IdCuenta": @Model.IdCuenta,
+            "IdMesa": @Model.IdMesa,
+            "Mesa": @Model.Mesa,
+            "Monto": @Model.Monto,
+            "Itbis": @Model.Itbis,
+            "PorcientoLey": @Model.PorcientoLey,
+            "Descuento": @Model.Descuento,
+            "Ordenes": ordenes,
+            "Usuario": "@Model.Usuario",
+            "MetodoPago": document.getElementById("metodo-pago").value,
+            "Pago": document.getElementById("pago").value,
+            "Tarjeta": document.getElementById("tarjeta").value,
+            "TipoTarjeta": document.getElementById("tipo-tarjeta").value
+        };
+
+        console.log(model);
+        
         $.ajax({
-            url: "@Url.Action("CambiarEstado","Factura")",
-            data: { id: @Model.IdFactura, idCuenta: @Model.IdCuenta },
+            method: 'POST',
+            url: "@Url.Action("Create","Factura")",
+            data: model,
+
             error: function () {
             },
             success: function () {

@@ -25,7 +25,13 @@ namespace Monografico.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] FacturaViewModel model)
+        public async Task<IActionResult> Cuenta([FromBody] FacturaViewModel model)
+        {
+            return PartialView("~/Views/Admin/PartialViews/Orden/_Cuenta.cshtml", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(FacturaViewModel model)
         {
             try
             {
@@ -33,12 +39,40 @@ namespace Monografico.Controllers
                 {
                     if (model.Ordenes.Count > 0)
                     {
-                        await repo.Factura.Create(model);
-                        var factura = await repo.Factura.FindOnlyFactura(model.IdCuenta);
+                        if ((await repo.Factura.Create(model)))
+                        {
+                            await repo.Cuenta.ChangeStatus(model.IdCuenta);
+                            var cuenta = await repo.Cuenta.FindWithOrdenes(model.IdCuenta);
+                            foreach (var orden in cuenta.Ordenes)
+                            {
+                                foreach (var item in orden.Detalle)
+                                {
+                                    var producto = await repo.Producto.FindWithChildren(item.IdProducto);
+                                    if (producto.Inventario != null)
+                                        await repo.Inventario.RestarInventario(producto.Inventario.IdInventario, item.Cantidad);
+
+                                    if (producto.Detalle.Count > 0)
+                                    {
+                                        foreach (var listItem in producto.Detalle)
+                                        {
+                                            var ingrediente = await repo.Ingrediente.FindWithInventarioAsync(listItem.IdIngrediente);
+                                            if (ingrediente.Inventario != null)
+                                            {
+                                                await repo.Inventario.RestarInventario(ingrediente.Inventario.IdInventario, listItem.Cantidad * item.Cantidad);
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                            return Ok();
+                        }
+                            
+                        /*var factura = await repo.Factura.FindOnlyFactura(model.IdCuenta);
                         factura.Mesa = model.Mesa;
                         factura.Ordenes = model.Ordenes;
-                        factura.Usuario = model.Usuario;
-                        return PartialView("~/Views/Admin/PartialViews/Orden/_Cuenta.cshtml", factura);
+                        factura.Usuario = model.Usuario;*/
+                        //return PartialView("~/Views/Admin/PartialViews/Orden/_Cuenta.cshtml", factura);
                     }
                     else
                         throw new Exception("No hay ordenes realizadas");
@@ -51,48 +85,10 @@ namespace Monografico.Controllers
             return BadRequest();
         }
 
-        public async Task<IActionResult> ConfirmarPago(int id)
+        [HttpPost]
+        public async Task<IActionResult> ConfirmarPago([FromBody]FacturaViewModel model)
         {      
-            return PartialView("~/Views/Admin/PartialViews/Orden/_ConfirmarPago.cshtml", await repo.Factura.Find(id,false));  
-        }
-        
-        public async Task<IActionResult> CambiarEstado(int id, int idCuenta)
-        {
-            try
-            {
-                await repo.Factura.ChangeStatus(id);
-                await repo.Cuenta.ChangeStatus(idCuenta);
-
-                var cuenta = await repo.Cuenta.FindWithOrdenes(idCuenta);
-                foreach (var orden in cuenta.Ordenes)
-                {
-                    foreach (var item in orden.Detalle)
-                    {
-                        var producto = await repo.Producto.FindWithChildren(item.IdProducto);
-                        if(producto.Inventario != null)                       
-                            await repo.Inventario.RestarInventario(producto.Inventario.IdInventario, item.Cantidad);
-
-                        if(producto.Detalle.Count > 0)
-                        {
-                            foreach (var listItem in producto.Detalle)
-                            {
-                                var ingrediente = await repo.Ingrediente.FindWithInventarioAsync(listItem.IdIngrediente);
-                                if(ingrediente.Inventario != null)
-                                {
-                                    await repo.Inventario.RestarInventario(ingrediente.Inventario.IdInventario, listItem.Cantidad * item.Cantidad);
-                                }
-                            }
-                        }
-                        
-                    }
-                }
-                return Ok();
-            }
-            catch (Exception)
-            {
-
-                return BadRequest();
-            }
+            return PartialView("~/Views/Admin/PartialViews/Orden/_ConfirmarPago.cshtml", model);  
         }
 
         [Authorize(Roles = "Administrador")]

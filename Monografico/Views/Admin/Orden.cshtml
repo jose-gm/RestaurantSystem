@@ -1,6 +1,7 @@
 ﻿@model Monografico.ViewModels.CuentaViewModel
 
 @{
+    ViewData["Orden"] = false;
     ViewData["Title"] = "Lista de mesas";
     var cuentaInicial = Model.Cuentas[0].IdCuenta;
 }
@@ -15,7 +16,6 @@
         <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
     </environment>
 }
-
 
 <div class="card">
     <div class="card-body">
@@ -267,6 +267,12 @@
 <!-- Modal de confirmacion de impresion-->
 <partial name="~/Views/Admin/PartialViews/Orden/_ModalComfirmacionImpresion.cshtml" />
     
+    <!-- Modal de confirmacion de impresion-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalAperturaCaja.cshtml" />
+
+    <!-- Modal de confirmacion de impresion-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalCierreCaja.cshtml" />
+    
     <!-- Modal de barra de progreso-->
 <partial name="~/Views/Admin/PartialViews/Orden/_ModalProgress.cshtml" />
 
@@ -298,6 +304,14 @@
         var table;
 
         $(document).ready(function () {
+            var isCajaAbierta = "@Model.IsCajaAbierta";
+            if (isCajaAbierta === "False")
+                $('.card').append('<div id="blocker" style="position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.2;filter: alpha(opacity = 50); background-color: gray"></div>');
+
+            //Escondiendo el menu de navegacion principal y mostrando el menu de navegacion alternativo
+            document.querySelector(".sidebar-nav-container").classList.add("d-none");
+            document.querySelector(".sidebar-nav-container-alt").classList.remove("d-none");
+
             //Datatable
             var _url = "@Url.Action("ListOfOrden","Cuenta")" + "/" + document.querySelector("span.cuenta-selected").dataset.id;
             table = $('#datatable').DataTable({
@@ -394,7 +408,10 @@
 
 
         });//document ready end
+    </script>
 
+    <script>
+       
         //Evento de seleccion de producto y lo agrega a la lista
         $('.productolink').click(function (e) {
             e.preventDefault();
@@ -532,6 +549,7 @@
 
             var model = {
                 "IdCuenta": document.querySelector("span.cuenta-selected").dataset.id,
+                "IdMesa": @Model.IdMesa,
                 "Mesa": "@Model.Mesa",
                 "Monto": document.getElementById("total-span").innerText,
                 "Itbis": document.getElementById("itbis").innerText,
@@ -543,7 +561,7 @@
 
             $.ajax({
                 method: "POST",
-                url: "@Url.Action("Create","Factura")",
+                url: "@Url.Action("Cuenta","Factura")",
                 data: JSON.stringify(model),
                 headers: {
                     "Content-type": "application/json"
@@ -562,16 +580,35 @@
                      $('#modal-progress').modal('show');
 
                     setTimeout(function () {
+                        console.log(model);
                         //$("#modal-cuenta").modal('hide');
                         $('#modal-progress').modal('hide');
 
-                        var idCuenta = document.querySelector("span.cuenta-selected").dataset.id;
-                        $('#modal-cp-body').load("@Url.Action("ConfirmarPago","Factura")" + "/" + idCuenta, () => {
+                        $.ajax({
+                            method: "POST",
+                            url: "@Url.Action("ConfirmarPago","Factura")",
+                            data: JSON.stringify(model),
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            error: function () {
+                            },
+                            success: function (response) {
+                                $('#modal-cp-body').html(response);
+                                $('#modal-cp').modal({
+                                    keyboard: false,
+                                    backdrop: 'static'
+                                });
+                            }
+                        });
+
+                        @*//var idCuenta = document.querySelector("span.cuenta-selected").dataset.id;
+                        $('#modal-cp-body').load("@Url.Action("ConfirmarPago","Factura")" + "?" + jQuery.param(model), () => {
                             $('#modal-cp').modal({
                                 keyboard: false,
                                 backdrop: 'static'
                             });
-                        });
+                        });*@
                     }, 1000);
                 }
             });
@@ -697,8 +734,10 @@
                 });
             });
         }
+    </script>
 
-        //Devuelve true o false si hay ordenes pendiente en una de las cuentas de la mesa actual
+    <script>
+         //Devuelve true o false si hay ordenes pendiente en una de las cuentas de la mesa actual
         async function hayOrdenesEnviadas() {
             var response = await fetch("@Url.Action("OrdenesEnviadas","Cuenta", new { idMesa = Model.IdMesa})");
             var data = await response.json();
@@ -806,12 +845,69 @@
             }).length;
             return lenght;
         }
-
     </script>
 
     <script>
+        //Abre el modal de apertura de caja
+        document.getElementById("apertura-caja-nav").addEventListener('click', function () {
+            var isCajaAbierta = "@Model.IsCajaAbierta";
+            if (isCajaAbierta === "False")
+                $('#modal-apertura').modal('show');
+            else
+                toastr.error("Ya se realizo la apertura de caja");
+        });
+
+        //Abre el modal de cierre de caja
+        document.getElementById("cierre-caja-nav").addEventListener('click', function () {
+            var isCajaAbierta = "@Model.IsCajaAbierta";
+            if (isCajaAbierta === "True") {
+                $('#modal-cierre-body').load("@Url.Action("CierreView","Caja")", () => {
+                    $('#modal-cierre').modal('show');
+                });
+            }
+            else
+                toastr.error("Debes realizar una apertura de caja");
+        });
+
+        //Formulario de paertura de caja
+        var form = document.getElementById("form-apertura");
+        form.addEventListener('submit', function (e) {
+            console.log("rewrewr");
+            e.preventDefault();
+            if (form.checkValidity()) {
+                var model = {
+                    IdUsurio: @Model.IdUsuario,
+                    Fecha: document.getElementById("apertura-fecha").value,
+                    MontoInicial: document.getElementById("apertura-montoI").value,
+                };
+
+                 $.ajax({
+                    method: 'POST',
+                     url: "@Url.Action("CreateApertura", "Caja")",
+                     data: model,
+                     error: function (response) {
+
+                     },
+                     success: function (response) {
+                         //toastr.success("Apertura realizada");
+                         $('#modal-apertura').modal('hide');
+
+                         $('#blocker').remove();
+                         clean();
+                         @*window.location.replace("@Url.Action("Index","Cuenta", new { idMesa = Model.IdMesa })");*@
+                         window.location.reload();
+                     }
+                });
+            }
+        });
+
+        function clean() {
+            document.getElementById("apertura-fecha").value = "";
+            document.getElementById("apertura-montoI").value = "0.00"
+        }
+
         $('#modal-autorizacion').on('hidden.bs.modal', function (e) {
             document.getElementById("admin-pass").value = "";
-        })
+        })      
     </script>
 }

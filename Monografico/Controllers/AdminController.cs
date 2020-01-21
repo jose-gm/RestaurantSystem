@@ -19,7 +19,8 @@ namespace Monografico.Controllers
 
         public AdminController(RepositoryWrapper _repo)
         {
-            repo = _repo;         
+            repo = _repo;
+            ViewBag.AlterMenu = false;
         }
 
         private decimal[] ListOfMontosPerWeek()
@@ -188,6 +189,11 @@ namespace Monografico.Controllers
 
             };
             return View(usuarioViewModel);
+        }
+        
+        public async Task<IActionResult> CambiarClave()
+        {
+            return View();
         }
 
         [Authorize(Roles = "Administrador,Mesero")]

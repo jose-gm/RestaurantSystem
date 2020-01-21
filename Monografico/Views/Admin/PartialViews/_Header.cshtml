@@ -28,24 +28,11 @@
                 }
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-                @*<div class="dropdown-header text-center">
-                        <strong>Account</strong>
-                    </div>
-                    <a class="dropdown-item" href="#">
-                        <i class="fa fa-bell-o"></i> Updates
-                        <span class="badge badge-info">42</span>
-                    </a>
-                    <div class="dropdown-header text-center">
-                        <strong>Settings</strong>
-                    </div>
-                    <a class="dropdown-item" href="#">
-                        <i class="fa fa-user"></i> Profile
-                    </a>
-                    <a class="dropdown-item" href="#">
-                        <i class="fa fa-wrench"></i> Settings
-                    </a>*@
                 <a class="dropdown-item" asp-action="EditPerfil" asp-controller="Admin">
                     <i class="fa fa-user-edit"></i> Perfil
+                </a>
+                <a class="dropdown-item" asp-action="CambiarClave" asp-controller="Admin">
+                    <i class="fa fa-key"></i> Cambiar contraseña
                 </a>
                 <a class="dropdown-item" asp-action="Logout" asp-controller="Home">
                     <i class="fa fa-lock"></i> Logout

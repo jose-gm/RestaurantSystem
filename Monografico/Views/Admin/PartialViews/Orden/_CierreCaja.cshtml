@@ -1,0 +1,378 @@
+﻿@model Monografico.ViewModels.CierreCajaViewModel
+
+@{
+    var montoTotal = Model.MontoInicial + Model.Ventas;
+
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <h4><strong>Entradas</strong></h4>
+        <hr />
+        <div class="row justify-content-between">
+            <div class="col-md-6">
+                <label>Monto inicial:</label>
+            </div>
+            <div class="col-md-6">
+                <span>@Model.MontoInicial</span>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+            <div class="col-md-6">
+                <label>Ventas:</label>
+            </div>
+            <div class="col-md-6">
+                <span>@Model.Ventas</span>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+            <div class="col-md-6">
+                <label>Tarjeta:</label>
+            </div>
+            <div class="col-md-6">
+                <span>@Model.Tarjeta</span>
+            </div>
+        </div>   
+    </div>
+
+    <div class="col-md-8">
+        <h4><strong>Saldo de Caja</strong></h4>
+        <hr />
+        <div class="row mb-1">
+            <div class=" col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <label>1</label>
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>X</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <input id="uno" class="form-control" type="number" value="0" min="0" />
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>=</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-5 col-xl-5">
+                <input id="uno-resultado" class="form-control resultado" type="text"  value="0" readonly />
+                @*<span id="uno-resultado" class="resultado">0</span>*@
+            </div>
+        </div>
+
+        <div class="row mb-1">
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <label>5</label>
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>X</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <input id="cinco" class="form-control" type="number" value="0" min="0" />
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>=</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-5 col-xl-5">
+                <input id="cinco-resultado" class="form-control resultado" type="text" value="0" readonly />
+                @*<span id="cinco-resultado" class="resultado">0</span>*@
+            </div>
+        </div>
+
+        <div class="row mb-1">
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <label>10</label>
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>X</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <input id="diez" class="form-control" type="number" value="0" min="0" />
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>=</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-5 col-xl-5">
+                <input id="diez-resultado" class="form-control resultado" type="text" value="0" readonly />
+                @*<span id="diez-resultado" class="resultado">0</span>*@
+            </div>
+        </div>
+
+        <div class="row mb-1">
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <label>25</label>
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>X</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <input id="venticinco" class="form-control" type="number" value="0" min="0" />
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>=</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-5 col-xl-5">
+                <input id="venticinco-resultado" class="form-control resultado" type="text" value="0" readonly />
+                @*<span id="venticinco-resultado" class="resultado">0</span>*@
+            </div>
+        </div>
+
+        <div class="row mb-1">
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <label>50</label>
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>X</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <input id="cincuenta" class="form-control" type="number" value="0" min="0" />
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>=</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-5 col-xl-5">
+                <input id="cincuenta-resultado" class="form-control resultado" type="text" value="0" readonly />
+                @*<span id="cincuenta-resultado" class="resultado">0</span>*@
+            </div>
+        </div>
+
+        <div class="row mb-1">
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <label>100</label>
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>X</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <input id="cien" class="form-control" type="number" value="0" min="0" />
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>=</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-5 col-xl-5">
+                <input id="cien-resultado" class="form-control resultado" type="text" value="0" readonly />
+                @*<span id="cien-resultado" class="resultado">0</span>*@
+            </div>
+        </div>
+
+        <div class="row mb-1">
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <label>200</label>
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>X</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <input id="doscientos" class="form-control" type="number" value="0" min="0" />
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>=</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-5 col-xl-5">
+                <input id="doscientos-resultado" class="form-control resultado" type="text" value="0" readonly />
+                @*<span id="doscientos-resultado" class="resultado">0</span>*@
+            </div>
+        </div>
+
+        <div class="row mb-1">
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <label>500</label>
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>X</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <input id="quinientos" class="form-control" type="number" value="0" min="0" />
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>=</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-5 col-xl-5">
+                <input id="quinientos-resultado" class="form-control resultado" type="text" value="0" readonly />
+                @*<span id="quinientos-resultado" class="resultado">0</span>*@
+            </div>
+        </div>
+
+        <div class="row mb-1">
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <label>1000</label>
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>X</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <input id="mil" class="form-control" type="number" value="0" min="0" />
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>=</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-5 col-xl-5">
+                <input id="mil-resultado" class="form-control resultado" type="text" value="0" readonly />
+                @*<span id="mil-resultado" class="resultado">0</span>*@
+            </div>
+        </div>
+
+        <div class="row mb-1">
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <label>2000</label>
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>X</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <input id="dosmil" class="form-control" type="number" value="0" min="0" />
+            </div>
+            <div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                <span>=</span>
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-5 col-xl-5">
+                <input id="dosmil-resultado" class="form-control resultado" type="text" value="0" readonly />
+                @*<span id="dosmil-resultado" class="resultado">0</span>*@
+            </div>
+        </div>
+        <hr />
+        <div class="row mb-1">
+            <div class="col-md-6">
+                <span>Total en caja:</span>
+            </div>
+            <div class="col-md-6">
+                <input id="total-caja" type="text"  class="form-control" value="@montoTotal" readonly />
+            </div>
+        </div>
+
+        <div class="row mb-1">
+            <div class="col-md-6">
+                <span>Total contabilizado:</span>
+            </div>
+            <div class="col-md-6">
+                <input id="total-contado" class="form-control" type="text" value="0.00" readonly />
+            </div>
+        </div>
+        
+        <div class="row mb-1">
+            <div class="col-md-6">
+                <span>Diferencia:</span>
+            </div>
+            <div class="col-md-6">
+                <input id="diferencia" class="form-control" value="0.00" readonly/>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h5><strong>Cuadre:</strong></h5>
+            </div>
+            <div class="col-md-6">
+                <span id="cuadre"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById("cierre-guardar").addEventListener('click', function () {
+        var model = {
+            MontoCaja: document.getElementById("total-caja").value,
+            TotalContado: document.getElementById("total-contado").value,
+            Diferencia: document.getElementById("diferencia").value,
+            Cuadre: document.getElementById("cuadre").innerText,
+            Fecha: getActualDateUTC()
+        };
+
+        $.ajax({
+            method: 'POST',
+            url: "@Url.Action("CreateCierre","Caja")",
+            data: model,
+            error: function () {
+
+            },
+            success: function () {
+                $('#modal-cierre').modal('hide');
+                cleanCierre();
+                window.location.reload();
+                console.log("entro");
+            }
+        });
+    });
+</script>
+
+<script>
+    document.getElementById("uno").addEventListener('change', function () {
+        document.getElementById("uno-resultado").value = Number(this.value);
+        actualizarCuadre();
+    });
+
+    document.getElementById("cinco").addEventListener('change', function () {
+        document.getElementById("cinco-resultado").value = Number(this.value) * 5;
+        actualizarCuadre();
+    });
+
+    document.getElementById("diez").addEventListener('change', function () {
+        document.getElementById("diez-resultado").value = Number(this.value) * 10;
+        actualizarCuadre();
+    });
+
+    document.getElementById("venticinco").addEventListener('change', function () {
+        document.getElementById("venticinco-resultado").value = Number(this.value) * 25;
+        actualizarCuadre();
+    });
+
+    document.getElementById("cincuenta").addEventListener('change', function () {
+        document.getElementById("cincuenta-resultado").value = Number(this.value) * 50;
+        actualizarCuadre();
+    });
+
+    document.getElementById("cien").addEventListener('change', function () {
+        document.getElementById("cien-resultado").value = Number(this.value) * 100;
+        actualizarCuadre();
+    });
+
+    document.getElementById("doscientos").addEventListener('change', function () {
+        document.getElementById("doscientos-resultado").value = Number(this.value) * 200;
+        actualizarCuadre();
+    });
+
+    document.getElementById("quinientos").addEventListener('change', function () {
+        document.getElementById("quinientos-resultado").value = Number(this.value) * 500;
+        actualizarCuadre();
+    });
+
+    document.getElementById("mil").addEventListener('change', function () {
+        document.getElementById("mil-resultado").value = Number(this.value) * 1000;
+        actualizarCuadre();
+    });
+
+    document.getElementById("dosmil").addEventListener('change', function () {
+        document.getElementById("dosmil-resultado").value = Number(this.value) * 2000;
+        actualizarCuadre();
+    });
+
+    function actualizarCuadre() {
+        var resultados = document.getElementsByClassName("resultado");
+        var t = 0;
+        for (var i = 0; i < resultados.length; i++) {
+            t += Number(resultados[i].value);
+        }
+        document.getElementById("total-contado").value = t;
+        var diferencia = Number(t) - Number(document.getElementById("total-caja").value)
+        document.getElementById("diferencia").value = diferencia;
+
+        var cuadre = document.getElementById("cuadre");
+        cuadre.style.fontWeight = "bold";
+        cuadre.style.fontSize = "1.5em";
+
+        if (diferencia >= 0) {     
+            cuadre.innerText = "POSITIVO";
+            cuadre.style.color = "green";      
+        }
+        else {
+            cuadre.innerText = "NEGATIVO";
+            cuadre.style.color = "red"; 
+        }
+    }
+
+    function cleanCierre() {
+        var inputs = document.querySelectorAll("input");
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].value = "0";
+        }
+    }
+</script>
