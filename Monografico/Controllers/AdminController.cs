@@ -212,5 +212,20 @@ namespace Monografico.Controllers
             model.MesaroMayorVenta = await repo.Factura.MesaMayorVenta();
             return View(model);
         }
+        
+        public async Task<IActionResult> ReporteProducto()
+        {
+            return View();
+        }
+        
+        public async Task<IActionResult> ReporteInventario()
+        {
+            return View();
+        }
+        
+        public async Task<IActionResult> ReporteFactura()
+        {
+            return View();
+        }
     }
 }

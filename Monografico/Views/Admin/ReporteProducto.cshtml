@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewData["Title"] = "Reporte de productos";
+}
+
+@section link {
+    <environment include="Development">
+        <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+        
+    </environment>
+    <environment include="Production">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+}
+
+
+<div class="card">
+
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Productos</label>
+                    <select class="select2-multiple form-control"></select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Desde:</label>
+                    <input id="producto-desde" class="form-control" type="date" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Hasta:</label>
+                    <input id="producto-hasta" class="form-control" type="date" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button id="pbuscarbtn" class="btn btn-primary mt-4">Buscar</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="producto-datatable" style="width:100%" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    No.
+                                </th>
+                                <th>
+                                    Descripcion
+                                </th>
+                                <th>
+                                    Fecha
+                                </th>
+                                <th>
+                                    Cantidad
+                                </th>
+                                <th>
+                                    Precio
+                                </th>
+                                <th>
+                                    Total
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <h4 id="prod-total"><strong>Total: </strong></h4><h4></h4>
+    </div>
+</div>
+
+@section script {
+    <environment include="Development">
+        <script src="~/lib/select2/js/select2.min.js"></script>
+       
+    </environment>
+    <environment include="Production">
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+        
+    </environment>
+    <script>
+        $(document).ready(() => {
+            $('.select2-multiple').select2({
+                theme: 'bootstrap4',
+                ajax: {
+                    url: "@Url.Action("GetAll","Producto")",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term
+                        };
+                        return query;
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.idProducto,
+                                    text: item.descripcion
+                                };
+                            }),
+                        };
+                    }
+                },
+                placeholder: 'Selecciona un producto',
+            });
+
+            //Inicializacion de tabla de reportes de productos
+            $('#producto-datatable').DataTable({
+                responsive: false,
+                searching: false,
+                ajax: {
+                    url: "@Url.Action("ListProductoRange","Factura")",
+                    data: function (d) {
+                        var selectlist = $('.select2-multiple').select2('data');
+                        var id = (selectlist[0]) ? selectlist[0].id : 0;
+                        return { idProducto: id ,desde: $('#producto-desde').val(), hasta: $('#producto-hasta').val() };
+                    },
+                    dataSrc: ''
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        text: "Imprimir",
+                        action: function (e, dt, node, config) {
+                            var selectlist = $('.select2-multiple').select2('data');
+                            var idProducto = (selectlist[0]) ? selectlist[0].id : 0;
+                            var desde = $('#producto-desde').val();
+                            var hasta = $('#producto-hasta').val();
+                            window.open("@Url.Action("ListProductoRangePDF","Factura")" + "?idProducto=" + idProducto + "&desde=" + desde + "&hasta=" + hasta, '_blank');
+                        }
+                    }
+                ],
+                initComplete: function (settings, json) {
+                    actualizarProducto();
+                },
+                columns: [
+                    {
+                        data: 'idFactura',
+                        render: function (data, type, row) {
+                            return "00" + data;
+                        }
+                    },
+                    { data: 'descripcion' },
+                    {
+                        data: 'fecha',
+                        render: function (data, type, row) {
+                            return moment(data).format("MM/DD/YYYY");
+                        }
+                    },
+                    { data: 'cantidad' },
+                    { data: 'precio', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) },
+                    { data: 'total', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) }
+                ]
+            });
+        });
+
+
+        document.getElementById("pbuscarbtn").addEventListener('click', function () {
+            $('#producto-datatable').DataTable().ajax.reload(actualizarProducto);
+        });
+
+        function actualizarProducto() {
+            var table = $('#producto-datatable').DataTable();
+            var sum = table.column(5).data().sum().toFixed(2);
+
+            var html = 'Total: '.bold() + sum;
+            $('#prod-total').html(html);
+        }
+    </script>
+}

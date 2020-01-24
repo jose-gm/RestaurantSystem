@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Monografico.Data;
 using Monografico.Models;
 using Monografico.Repositorio;
+using Rotativa.AspNetCore;
 
 namespace Monografico
 {
@@ -112,6 +113,8 @@ namespace Monografico
                     name: "default",
                     template: "{controller=Admin}/{action=Index}/{id?}");
             });
+
+            RotativaConfiguration.Setup(env);
         }
     }
 }

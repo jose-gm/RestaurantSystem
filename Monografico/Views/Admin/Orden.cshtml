@@ -308,9 +308,9 @@
             if (isCajaAbierta === "False")
                 $('.card').append('<div id="blocker" style="position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.2;filter: alpha(opacity = 50); background-color: gray"></div>');
 
-            //Escondiendo el menu de navegacion principal y mostrando el menu de navegacion alternativo
-            document.querySelector(".sidebar-nav-container").classList.add("d-none");
-            document.querySelector(".sidebar-nav-container-alt").classList.remove("d-none");
+            //Mostrando el boton de del menu de opciones
+            //document.querySelector(".aside-button").classList.add("d-none");
+            document.querySelector(".aside-button").classList.remove("d-none");
 
             //Datatable
             var _url = "@Url.Action("ListOfOrden","Cuenta")" + "/" + document.querySelector("span.cuenta-selected").dataset.id;

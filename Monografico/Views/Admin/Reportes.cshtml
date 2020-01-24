@@ -16,28 +16,6 @@
 }
 
 <div class="row">
-    <div class="col-8 col-sm-8 col-md-8 col-lg-8 col-xl-8">
-        <div class="card">
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="myChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-        <div class="card">
-            <div class="card-body">
-                <h3>Top 10 de productos del año</h3>
-                <div class="chart-container">
-                    <canvas id="chart-productos"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
     <div class="col-md-3">
         <div class="card card-accent-primary">
             <div class="card-body">
@@ -73,6 +51,29 @@
 </div>
 
 <div class="row">
+    <div class="col-8 col-sm-8 col-md-8 col-lg-8 col-xl-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+        <div class="card">
+            <div class="card-body">
+                <h3>Top 10 de productos del año</h3>
+                <div class="chart-container">
+                    <canvas id="chart-productos"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
@@ -259,7 +260,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>*@
 
 @section script {
     <environment include="Development">
@@ -271,7 +272,7 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
     </environment>
 
-    <script>
+    @*<script>
         $(document).ready(() => {
 
             $('.select2-multiple').select2({
@@ -433,7 +434,7 @@
             var html = 'Total: '.bold() + sum;
             $('#inv-total').html(html);
         }
-    </script>
+    </script>*@
 
     <script>
         var array = @Html.Raw(Json.Serialize(Model.MontoMensuales));

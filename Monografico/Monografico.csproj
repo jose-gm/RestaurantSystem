@@ -54,10 +54,35 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.6" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.2.0-beta" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.19" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\lib\Buttons-1.6.1\css\common.scss" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\css\mixins.scss" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.bootstrap.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.bootstrap.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.bootstrap4.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.bootstrap4.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.colVis.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.colVis.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.dataTables.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.dataTables.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.flash.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.flash.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.foundation.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.foundation.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.html5.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.html5.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.jqueryui.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.jqueryui.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.print.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.print.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.semanticui.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.semanticui.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\dataTables.buttons.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\dataTables.buttons.min.js" />
     <None Include="wwwroot\lib\datables-plugins\sum.js" />
     <None Include="wwwroot\lib\jQuery-Mask-Plugin-master\dist\jquery.mask.js" />
     <None Include="wwwroot\lib\jQuery-Mask-Plugin-master\dist\jquery.mask.min.js" />

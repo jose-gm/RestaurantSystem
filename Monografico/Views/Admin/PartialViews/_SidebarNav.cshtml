@@ -90,10 +90,32 @@
                     </li>
 
                     <!-- Reportes -->
-                    <li class="nav-item">
-                        <a class="nav-link" asp-action="Reportes" asp-controller="Admin">
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle">
                             <i class="nav-icon cui-chart-line"></i> Reportes
                         </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Reportes">
+                                    Reportes generales
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="ReporteProducto">
+                                    Reportes de productos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="ReporteInventario">
+                                    Reportes de inventarios
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="ReporteFactura">
+                                    Reportes de facturas
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 }
 
@@ -107,7 +129,7 @@
             </ul>
         </div>
         
-        <div class="sidebar-nav-container-alt d-none">
+        @*<div class="sidebar-nav-container-alt d-none">
             <ul class="nav">
                 <!-- Apertura de caja -->
                 <li class="nav-item">
@@ -123,7 +145,7 @@
                     </a>
                 </li>
             </ul>
-        </div>
+        </div>*@
     </nav>
     <button class="sidebar-minimizer brand-minimizer" type="button"></button>
 </div>

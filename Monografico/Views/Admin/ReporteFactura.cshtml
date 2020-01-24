@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewData["Title"] = "Reporte de factura";
+}
+
+<h1>ReporteFactura</h1>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Desde:</label>
+                    <input id="factura-desde" class="form-control" type="date" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Hasta:</label>
+                    <input id="factura-hasta" class="form-control" type="date" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <button id="fbuscarbtn" class="btn btn-primary mt-4">Buscar</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="factura-datatable" style="width:100%" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    No.
+                                </th>
+                                <th>
+                                    Fecha
+                                </th>
+                                <th>
+                                    Usuario
+                                </th>
+                                <th>
+                                    Monto
+                                </th>
+                                <th>
+                                    Estado
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <h4 id="total"><strong>Total: </strong></h4><h4></h4>
+    </div>
+</div>
+
+@section script {
+    <script>
+        $(document).ready(() => {
+        //Inicializacion de tabla de reportes de facturas
+            $('#factura-datatable').DataTable({
+                responsive: false,
+                searching: false,
+                ajax: {
+                    url: "@Url.Action("ListRange","Factura")",
+                    data: function (d) {
+                        return { desde: $('#factura-desde').val(), hasta: $('#factura-hasta').val() };
+                    },
+                    dataSrc: ''
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        text: "Imprimir",
+                        action: function (e, dt, node, config) {
+                            var desde = $('#factura-desde').val();
+                            var hasta = $('#factura-hasta').val();
+                            window.open("@Url.Action("ListRangePDF","Factura")" + "?desde=" + desde + "&hasta=" + hasta, '_blank');
+                        }
+                    }
+                ],
+                initComplete: function (settings, json) {
+                    actualizarFactura();
+                },
+                columns: [
+                    {
+                        data: 'idFactura',
+                        render: function (data, type, row) {
+                            return "00" + data;
+                        }
+                    },
+                    {
+                        data: 'fecha',
+                        render: function (data, type, row) {
+                            return moment(data).format("MM/DD/YYYY");
+                        }
+                    },
+                    { data: 'usuario' },
+                    { data: 'monto', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) },
+                    { data: 'estado' }
+                ]
+            });
+        });
+
+        document.getElementById("fbuscarbtn").addEventListener('click', function () {
+            $('#factura-datatable').DataTable().ajax.reload(actualizarFactura);
+        });
+
+        function actualizarFactura() {
+            var table = $('#factura-datatable').DataTable();
+            var sum = table.column(3).data().sum().toFixed(2);
+
+            var html = 'Total: '.bold() + sum;
+            $('#total').html(html);
+        }
+    </script>
+    
+}

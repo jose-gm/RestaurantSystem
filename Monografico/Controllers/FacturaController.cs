@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Monografico.Repositorio;
 using Monografico.ViewModels;
+using Rotativa.AspNetCore;
 
 namespace Monografico.Controllers
 {
@@ -110,9 +111,21 @@ namespace Monografico.Controllers
         }
         
         [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> ListRangePDF(DateTime desde, DateTime hasta)
+        {
+            return new ViewAsPdf("~/Views/Admin/ReportsPDF/FacturasPDF.cshtml", await repo.Factura.GetAllAsViewModel(x => (x.Fecha >= desde) && (x.Fecha <= hasta) ));
+        }
+        
+        [Authorize(Roles = "Administrador")]
         public async Task<JsonResult> ListProductoRange(int idProducto, DateTime desde, DateTime hasta)
         {
             return Json(await repo.Factura.GetAllProductos(idProducto ,x => (x.Fecha >= desde) && (x.Fecha <= hasta) ));
+        }
+        
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> ListProductoRangePDF(int idProducto, DateTime desde, DateTime hasta)
+        {
+            return new ViewAsPdf("~/Views/Admin/ReportsPDF/ProductosPDF.cshtml", await repo.Factura.GetAllProductos(idProducto, x => (x.Fecha >= desde) && (x.Fecha <= hasta)));
         }
     }
 }

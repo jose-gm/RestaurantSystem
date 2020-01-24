@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Monografico.Data;
 using Monografico.Models;
 using Monografico.Repositorio;
+using Rotativa.AspNetCore;
 
 namespace Monografico.Controllers
 {
@@ -108,6 +109,12 @@ namespace Monografico.Controllers
         public async Task<JsonResult> ListRange(DateTime desde, DateTime hasta)
         {
             return Json(await repo.Inventario.GetListViewModel(x => (x.FechaEntrada >= desde) && (x.FechaEntrada <= hasta)));
+        }
+        
+        //GET:
+        public async Task<IActionResult> ListRangePDF(DateTime desde, DateTime hasta)
+        {
+            return new ViewAsPdf("~/Views/Admin/ReportsPDF/InventariosPDF.cshtml", await repo.Inventario.GetListViewModel(x => (x.FechaEntrada >= desde) && (x.FechaEntrada <= hasta)));
         }
     }
 }

@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Monografico.ViewModels.InventarioViewModel>
+
+@{
+    Layout = "";
+    decimal total = 0;
+}
+
+<!DOCTYPE html>
+<html style="background-color:white;">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- CoreUI CSS -->
+    <environment include="Development">
+        <link href="~/lib/coreui-master/dist/css/coreui.min.css" rel="stylesheet" />
+        <link href="~/lib/coreui-icons-master/css/free.min.css" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link rel="stylesheet" href="https://unpkg.com/%40coreui/coreui/dist/css/coreui.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/%40coreui/icons/css/coreui-icons.min.css">
+    </environment>
+</head>
+<body>
+    <div class="container-fluid" style="background-color:white;">
+        <div class="row">
+            <div class="offset-xl-2 col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 padding">
+                <div class="card">
+                    <div class="card-header p-4" style="background-color:#fff;">
+                        <div class="row justify-content-end">
+                            <div class="col-12 col-sm-2 col-md-2 col-lg-12 col-xl-12">
+                                Desde: @DateTime.Now.Date
+                                Hasta: 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-sm-6 ">
+                            </div>
+                        </div>
+                        <div class="table-responsive-sm">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="center">#</th>
+                                        <th>Item</th>
+                                        <th class="right">Costo</th>
+                                        <th class="center">Cantidad</th>
+                                        <th class="right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="center">no</td>
+                                            <td class="left strong">@item.Descripcion</td>
+                                            <td class="left">@item.Costo</td>
+                                            <td class="right">@item.Cantidad</td>
+                                            <td class="center">@item.Total</td>
+                                        </tr>
+                                        total += item.Total;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr />
+                        <span>Total: @total</span>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <p class="mb-0">Logo, direccion de la empresa</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery first, then Popper.js, Bootstrap, then CoreUI  -->
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/popper.js/popper.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/lib/coreui-master/dist/js/coreui.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/%40coreui/coreui/dist/js/coreui.min.js"></script>
+    </environment>
+</body>
+</html>
