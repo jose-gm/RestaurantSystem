@@ -137,7 +137,7 @@ namespace Monografico.Repositorio
                         IdProducto = item.IdProducto,
                         IdCuenta = factura.IdCuenta ?? default(int),
                         Precio = item.Precio,
-                        Descripcion = producto.Descripcion,
+                        Descripcion = (producto == null) ? "Eliminado" : producto.Descripcion,
                         Cantidad = item.Cantidad,
                         Total = item.Cantidad * item.Precio
                     });
@@ -370,7 +370,8 @@ namespace Monografico.Repositorio
                 model.ProductosId = s.Select(x => x.Cantidad).ToList();
                 foreach (var item in s)
                 {
-                    model.Productos.Add((await _contexto.Producto.FindAsync(item.Id)).Descripcion);
+                    var producto = await _contexto.Producto.FindAsync(item.Id);
+                    model.Productos.Add((producto == null) ? "Eliminado" : producto.Descripcion);
                 }
             }
             catch (Exception)

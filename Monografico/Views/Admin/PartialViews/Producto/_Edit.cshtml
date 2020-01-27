@@ -143,6 +143,7 @@
 
             if (document.getElementById("TieneInventarioH").value == "True") {
                 formData.append("TieneInventario", document.getElementById("TieneInventarioH").value);
+                formData.append("Unidad", "void");
             }
             else {
                 formData.append("LlevaInventario", document.getElementById("LlevaInventario").checked);

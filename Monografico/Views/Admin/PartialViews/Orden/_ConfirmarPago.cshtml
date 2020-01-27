@@ -12,7 +12,7 @@
     </div>
 </div>
 
-<div class="row">
+<div id="efectivo" class="row">
     <div class="col-md-6">
         <div class="form-group">
             <label>Total:</label>
@@ -28,7 +28,7 @@
     </div>
 </div>
 
-<div class="row">
+<div id="efectivo-cambio" class="row">
     <div class="col-md-12">
         <div class="form-group">
             <label>Cambio:</label>
@@ -59,18 +59,27 @@
 
 <script>
     document.getElementById("metodo-pago").addEventListener('change', function (e) {
-            console.log("wew");
-            var row = document.getElementById("tarjeta");
-            if (this.value === "Tarjeta")
-                row.classList.remove("d-none");
-            else
-                row.classList.add("d-none");
+        var row = document.getElementById("tarjeta");
+        var rowEf = document.getElementById("efectivo-cambio");
+        var rowEfc = document.getElementById("efectivo");
+        if (this.value === "Tarjeta") {
+            row.classList.remove("d-none");
+            rowEf.classList.add("d-none");
+            rowEfc.classList.add("d-none");
+
+        }
+        else {
+            row.classList.add("d-none");
+            rowEf.classList.remove("d-none");
+            rowEfc.classList.remove("d-none");
+        }
     });
 
     document.getElementById("pago").addEventListener('change', function () {
         console.log("dex");
         var monto = @Model.Monto;
-        document.getElementById("cambio").value = Number(this.value) - Number(monto);
+        var cambio = Number(this.value) - Number(monto);
+        document.getElementById("cambio").value = cambio.toFixed(2);
     });
 
     document.getElementById("confirm-pago").addEventListener('click', function () {

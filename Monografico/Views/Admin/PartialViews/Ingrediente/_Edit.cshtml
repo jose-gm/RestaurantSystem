@@ -90,8 +90,10 @@
                 "Costo": document.getElementById("Costo").value
             };
 
-            if (document.getElementById("TieneInventarioH").value == "True")
+            if (document.getElementById("TieneInventarioH").value == "True") {
                 model.TieneInventario = document.getElementById("TieneInventarioH").value;
+                model.Unidad = "void";
+            }
             else {
                 model.LlevaInventario = document.getElementById("LlevaInventario").checked;
                 model.Unidad = document.getElementById("Unidad").value;

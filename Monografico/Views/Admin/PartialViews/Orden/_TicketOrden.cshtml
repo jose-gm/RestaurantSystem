@@ -14,36 +14,39 @@
     </div>
 }
 
-<div style="text-align:center">
-    <span style="display:inline-block">Comanda</span>
-</div>
-<div style="border-bottom: 1px dashed black;">
-    <p>
-        Orden #: @Model.FirstOrDefault().IdOrden <br />
-        Mesero: @ViewBag.Usuario <br />
-        Mesa: @mesa <br />
-        Fecha: @Model.FirstOrDefault().Fecha.ToString("MM/dd/yyyy") <br />
-        Hora: @Model.FirstOrDefault().Fecha.TimeOfDay.ToString(@"hh\:mm")
-    </p>
+<div style="width:200px">
+    <div style="text-align:center">
+        <span style="display:inline-block">Comanda</span>
+    </div>
+    <div style="border-bottom: 1px dashed black">
+        <p>
+            Orden #: @Model.FirstOrDefault().IdOrden <br />
+            Mesero: @ViewBag.Usuario <br />
+            Mesa: @mesa <br />
+            Fecha: @Model.FirstOrDefault().Fecha.ToString("MM/dd/yyyy") <br />
+            Hora: @Model.FirstOrDefault().Fecha.TimeOfDay.ToString(@"hh\:mm")
+        </p>
+    </div>
+
+    <div style="border-bottom: 1px dashed black">
+        <table style="border-collapse: separate; border-spacing: 1vh;">
+            <thead style="border-bottom: 1px dashed black">
+                <tr>
+                    <th>cant</th>
+                    <th>producto</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Cantidad</td>
+                        <td>@item.Descripcion</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<div style="border-bottom: 1px dashed black">
-    <table style="border-collapse: separate; border-spacing: 1vh;">
-        <thead style="border-bottom: 1px dashed black">
-            <tr>
-                <th>cant</th>
-                <th>producto</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Cantidad</td>
-                    <td>@item.Descripcion</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
 
