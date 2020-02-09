@@ -10,10 +10,11 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Monografico.Utils;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Monografico.Repositorio
 {
-    public class RepositoryUsuario
+    public class RepositoryUsuario : ISelectList
     {
         private readonly UserManager<Usuario> _userManager;
         private readonly RoleManager<Rol> _roleManager;
@@ -211,16 +212,6 @@ namespace Monografico.Repositorio
 
                 if (result.Succeeded)
                     paso = true;
-                //string role = usuario.UsuarioRoles.FirstOrDefault().Role.Name;
-                //var deleted = await _userManager.RemoveFromRoleAsync(usuario, role);
-
-                /*if (deleted.Succeeded)
-                {
-                    var result = await _userManager.DeleteAsync(usuario);
-
-                    if (result.Succeeded)
-                        paso = true;
-                } */
             }
             catch (Exception)
             {
@@ -315,6 +306,18 @@ namespace Monografico.Repositorio
                 throw;
             }
             return paso;
+        }
+
+        public async Task<SelectList> GetSelectList()
+        {
+            var list = new List<Usuario>() { new Usuario() };
+            list.AddRange(await _userManager.Users.Where(x => !x.Desactivado).ToListAsync());
+            return new SelectList(list, "Id", "Nombre");
+        }
+
+        public Task<SelectList> GetSelectList(object selected)
+        {
+            throw new NotImplementedException();
         }
     }
 }

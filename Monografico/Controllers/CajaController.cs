@@ -58,9 +58,15 @@ namespace Monografico.Controllers
             Usuario usuario = await repo.Usuario.GetUsuario(HttpContext.User);
             AperturaCaja apertura = await repo.Caja.GetAperturaCaja(usuario);
             model.MontoInicial = apertura.MontoInicial;
-            model.Ventas = await repo.Factura.GetMontoVentasPorFecha(apertura.Fecha);
+            model.Efectivo = await repo.Factura.GetMontoVentasPorFecha(apertura.Fecha);
             model.Tarjeta = await repo.Factura.GetMontoTarjetaPorFecha(apertura.Fecha);
+            model.Cheque = await repo.Factura.GetMontoChequePorFecha(apertura.Fecha);
             return PartialView("~/Views/Admin/PartialViews/Orden/_CierreCaja.cshtml",model);
+        }
+
+        public async Task<JsonResult> List(DateTime desde, DateTime hasta)
+        {
+            return Json(await repo.Caja.GetAllCajaViewModelAsync( x => (x.Fecha >= desde && x.Fecha <= hasta.AddDays(1))));
         }
     }
 }

@@ -60,6 +60,9 @@
         $(document).ready(() => {
             $('#inventario-datatable').DataTable({
                 responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
                 ajax: {
                     url: "@Url.Action("List","Inventario")",
                     dataSrc: ''
@@ -69,12 +72,13 @@
                     {
                         data: 'fechaEntrada',
                         title: 'Fecha entrada',
+                        className: 'text-right',
                         width: '8%',
                         render: function (data, type, row) {
                             return moment(data).format("MM/DD/YYYY");
                         }
                     },
-                    { data: 'cantidad', width: '6%' },
+                    { data: 'cantidad', width: '6%', className: 'text-right' },
                     { data: 'unidad', width: '6%'},
                     {
                         data: 'idInventario',

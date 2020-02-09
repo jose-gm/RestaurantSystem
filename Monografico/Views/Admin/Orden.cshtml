@@ -155,17 +155,18 @@
 
                         <!--Acciones-->
                         <div class="row">
-                            <div class="col-md-4 col-sm-4">
+                            <div class="col-md-3 col-sm-4">
                                 <button id="cancelarbtn" class="btn btn-danger"><i class="fas fa-trash-alt"></i>Cancelar</button>
                             </div>
-                            <div class="col-md-4 col-sm-4">
+                            <div class="col-md-3 col-sm-4">
                                 <button id="ordenarbtn" class="btn btn-secondary"><i class="fas fa-sticky-note"></i>Ordenar</button>
                             </div>
-                            <div class="col-md-4 col-sm-4">
-                                <button id="cuentabtn" class="btn btn-secondary">
-                                    <i class="fas fa-money-bill-alt"></i>Cuenta
-                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden></span>
-                                    <span class="sr-only">Loading...</span>
+                            <div class="col-md-3 col-sm-4">
+                                <button id="cuentaPrintbtn" class="btn btn-secondary"><i class="fas fa-print"></i>Cuenta</button>
+                            </div>
+                            <div class="col-md-3 col-sm-4">
+                                <button id="pagarbtn" class="btn btn-secondary">
+                                    <i class="fas fa-money-bill-alt"></i>Pagar
                                 </button>
                             </div>
                         </div>
@@ -302,6 +303,8 @@
 
     <script>
         var table;
+        var model;
+        var hasPrinted = false;
 
         $(document).ready(function () {
             var isCajaAbierta = "@Model.IsCajaAbierta";
@@ -325,6 +328,9 @@
                 paging: false,
                 autoWidth: false,
                 scrollY: 260,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
                 ajax: {
                     url: _url,
                     dataSrc: ''
@@ -349,19 +355,34 @@
                     { data: 'idDetalle' },
                     { data: 'idProducto' },
                     { data: 'descripcion' , width: "20%",responsivePriority: 1},
-                    { data: 'precio', width: "4%", responsivePriority: 4, render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) },
+                    {
+                        data: 'precio',
+                        width: "4%",
+                        className: 'text-right',
+                        responsivePriority: 4,
+                        render: $.fn.dataTable.render.number(',', '.', 2, '$'),
+                        className: 'text-right'
+                    },
                     {
                         data: {},
                         width: "2%",
+                        className: 'text-right',
                         responsivePriority: 3,
                         render: function (data, type, row, meta) {
                             if(data.enviado == false)
-                                return '<input class="cantidadInput" size="2" style="border:0; background-color: white;" disabled value="' + data.cantidad + '" /> ';
+                                return '<input class="cantidadInput text-right" size="2" style="border:0; background-color: white;" disabled value="' + data.cantidad + '" /> ';
                             else
                                 return data.cantidad;
                         }
                     },
-                    { data: 'total' , width: "6%", responsivePriority:5, render: $.fn.dataTable.render.number( ',', '.', 2, '$' )},
+                    {
+                        data: 'total',
+                        width: "6%",
+                        className: 'text-right',
+                        responsivePriority: 5,
+                        render: $.fn.dataTable.render.number(',', '.', 2, '$'),
+                        className: 'text-right'
+                    },
                     { data: 'enviado'},
                     {
                         data: {},
@@ -503,21 +524,9 @@
                 1000);
         });
 
-
         //Abre modal para imprimir cuenta
-        document.getElementById("cuentabtn").addEventListener('click', function (e) {
-            var table = $('#datatable').DataTable();
-
-            var data = table.rows().data().filter(function (data, index) {
-                return data.enviado === true ? true : false;
-            });
-
-            var ordenes = [];
-            for (let i = 0; i < data.length; i++) {
-                ordenes.push(data[i]);
-            }
-
-            if (ordenes.length > 0) {
+        document.getElementById("cuentaPrintbtn").addEventListener('click', function (e) {
+            if (ordenesEnviadas() > 0) {
                 $('#modal-cuenta').modal({
                     keyboard: false,
                     backdrop: 'static'
@@ -525,6 +534,29 @@
             } else {
                 $("#modal-cuenta").modal('hide');
                 toastr.warning("No hay ordenes realizadas");
+            }
+        });
+
+        document.getElementById("pagarbtn").addEventListener('click', function (e) {
+            if (hasPrinted) {
+                $.ajax({
+                    method: "POST",
+                    url: "@Url.Action("ConfirmarPago","Factura")",
+                    data: JSON.stringify(model),
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    error: function () {
+                    },
+                    success: function (response) {
+                        $('#modal-cp-body').html(response);
+                        $('#modal-cp').modal({
+                            keyboard: false
+                        });
+                    }
+                });
+            } else {
+                toastr.warning("Debe imprimir la cuenta del cliente primero");
             }
         });
 
@@ -547,7 +579,7 @@
                 ordenes.push(data[i]);
             }
 
-            var model = {
+            model = {
                 "IdCuenta": document.querySelector("span.cuenta-selected").dataset.id,
                 "IdMesa": @Model.IdMesa,
                 "Mesa": "@Model.Mesa",
@@ -575,40 +607,14 @@
                     $div.html(response);
                     $div.printThis();
                     $div.remove();
+                    hasPrinted = true;
 
                     $("#modal-cuenta").modal('hide');
                      $('#modal-progress').modal('show');
 
                     setTimeout(function () {
-                        console.log(model);
-                        //$("#modal-cuenta").modal('hide');
+                        //console.log(model);
                         $('#modal-progress').modal('hide');
-
-                        $.ajax({
-                            method: "POST",
-                            url: "@Url.Action("ConfirmarPago","Factura")",
-                            data: JSON.stringify(model),
-                            headers: {
-                                "Content-type": "application/json"
-                            },
-                            error: function () {
-                            },
-                            success: function (response) {
-                                $('#modal-cp-body').html(response);
-                                $('#modal-cp').modal({
-                                    keyboard: false,
-                                    backdrop: 'static'
-                                });
-                            }
-                        });
-
-                        @*//var idCuenta = document.querySelector("span.cuenta-selected").dataset.id;
-                        $('#modal-cp-body').load("@Url.Action("ConfirmarPago","Factura")" + "?" + jQuery.param(model), () => {
-                            $('#modal-cp').modal({
-                                keyboard: false,
-                                backdrop: 'static'
-                            });
-                        });*@
                     }, 1000);
                 }
             });

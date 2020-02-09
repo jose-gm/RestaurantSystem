@@ -175,7 +175,12 @@ namespace Monografico.Repositorio
                 {
                     IdMesa = idMesa,
                     Cuentas = cuentas,
-                    Categorias = await _contexto.Categoria.Include(w => w.Productos).AsNoTracking().ToListAsync(),
+                    Categorias = await _contexto.Categoria.Include(w => w.Productos).Select(x => new Categoria() { 
+                        IdCategoria = x.IdCategoria,
+                        Descripcion = x.Descripcion,
+                        Imagen = x.Imagen,
+                        Productos = x.Productos.Where(q => !q.Desactivado).ToList()
+                    }).AsNoTracking().ToListAsync(),
                     Mesa = mesa.Numero
                 };
             }

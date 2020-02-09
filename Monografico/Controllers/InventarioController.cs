@@ -101,8 +101,13 @@ namespace Monografico.Controllers
         //GET:
         public async Task<JsonResult> List()
         {
-            var a= Json(await repo.Inventario.GetListViewModel(x => true));
-            return a;
+            return Json(await repo.Inventario.GetListViewModel(x => (x.Producto != null) ? !x.Producto.Desactivado : true));
+        }
+        
+        //GET:
+        public async Task<IActionResult> ListPDF()
+        {
+            return new ViewAsPdf("~/Views/Admin/ReportsPDF/InventariosPDF.cshtml", await repo.Inventario.GetListViewModel(x => (x.Producto != null) ? !x.Producto.Desactivado : true)) { CustomSwitches = "--viewport-size 1000x1000" };
         }
         
         //GET:

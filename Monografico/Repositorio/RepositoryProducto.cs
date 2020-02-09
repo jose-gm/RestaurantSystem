@@ -82,6 +82,25 @@ namespace Monografico.Repositorio
             return paso;
         }
         
+        public async Task<bool> Deactivate(int id)
+        {
+            bool paso = false;
+            try
+            {
+                var entity = await _contexto.Producto.FindAsync(id);
+                entity.Desactivado = true;
+                _contexto.Producto.Update(entity);
+
+                await _contexto.SaveChangesAsync();
+                paso = true;
+
+                _contexto.Dispose();
+            }
+            catch (Exception)
+            { throw; }
+            return paso;
+        }
+        
         public async Task<bool> RemoveIngrediente(int id, int idDetalle)
         {
             bool paso = false;
@@ -176,7 +195,7 @@ namespace Monografico.Repositorio
             List<ProductoViewModel> list = null;
             try
             {
-                var productos = await _contexto.Producto.Include(x => x.Categoria).AsNoTracking().ToListAsync();
+                var productos = await _contexto.Producto.Include(x => x.Categoria).Where(x => !x.Desactivado).AsNoTracking().ToListAsync();
                 list = new List<ProductoViewModel>();
 
                 foreach (var item in productos)

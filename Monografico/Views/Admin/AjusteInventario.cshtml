@@ -55,16 +55,20 @@
         $(document).ready(() => {
             $('#ajusteinventario-datatable').DataTable({
                 responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
                 ajax: {
                     url: "@Url.Action("List","AjusteInventario")",
                     dataSrc: ''
                 },
                 columns: [
                     { data: 'descripcion', title: "Ítem", width: '20%' },
-                    { data: 'cantidadAnterior' , width: '12%'},
-                    { data: 'cantidadActual', width: '12%' },
+                    { data: 'cantidadAnterior' , width: '12%', className: 'text-right'},
+                    { data: 'cantidadActual', width: '12%', className: 'text-right' },
                     {
                         data: 'fecha',
+                        className: 'text-right',
                         width: '10%',
                         render: function (data, type, row) {
                             return moment(data).format("MM/DD/YYYY");

@@ -21,10 +21,12 @@ namespace Monografico.ViewModels
         public string Usuario { get; set; }
         public DateTime Fecha { get; set; }
         public string Estado { get; set; }
+        [Display(Name = "Metodo de pago")]
         public string MetodoPago { get; set; }
         public decimal Pago { get; set; }
         public string Tarjeta { get; set; }
         public string TipoTarjeta { get; set; }
+        public string Cheque { get; set; }
         public List<OrdenViewModel> Ordenes { get; set; }
     }
 }

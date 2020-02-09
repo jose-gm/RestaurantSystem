@@ -18,5 +18,6 @@ namespace Monografico.Models
         public decimal Monto { get; set; }
         public string Estado { get; set; }
         public virtual CierreCaja Cierre { get; set; }
+        public virtual AperturaCaja Apertura { get; set; }
     }
 }

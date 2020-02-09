@@ -75,6 +75,9 @@
         $(document).ready(() => {
             $('#empleado-datatable').DataTable({
                 responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
                 ajax: {
                     url: "@Url.Action("List", "Usuario")",
                     dataSrc: ''

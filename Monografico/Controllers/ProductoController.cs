@@ -219,7 +219,7 @@ namespace Monografico.Controllers
             try
             {
                 // TODO: Add delete logic here
-                await repo.Producto.RemoveWithInventario(id);
+                await repo.Producto.Deactivate(id);
                 return Ok();
             }
             catch

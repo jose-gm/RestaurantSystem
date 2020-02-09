@@ -7,41 +7,41 @@
             <select id="metodo-pago" class="custom-select">
                 <option value="Efectivo">Efectivo</option>
                 <option value="Tarjeta">Tarjeta</option>
+                <option value="Cheque">Cheque</option>
             </select>
         </div>
     </div>
 </div>
 
-<div id="efectivo" class="row">
-    <div class="col-md-6">
-        <div class="form-group">
-            <label>Total:</label>
-            <input class="form-control" value="@Model.Monto" readonly />
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="form-group">
-            <label>Pago</label>
-            <input id="pago" class="form-control" type="number" min="0" value="0.00" />
-        </div>
-    </div>
-</div>
-
-<div id="efectivo-cambio" class="row">
+<div class="row">
     <div class="col-md-12">
         <div class="form-group">
-            <label>Cambio:</label>
-            <input id="cambio" class="form-control" type="text" value="0.00" readonly />
+            <label>Total:</label>
+            <input class="form-control text-right" value="@Model.Monto" readonly />
         </div>
     </div>
 </div>
 
-<div id="tarjeta" class="row d-none">
+<div id="efectivo-elements" class="row">
     <div class="col-md-6">
         <div class="form-group">
-            <label>Numero de tarjeta:</label>
-            <input id="tarjeta" class="form-control" type="text" maxlength="4" />
+            <label>Pago:</label>
+            <input id="pago" class="form-control text-right" type="number" min="0" value="0.00" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Cambio:</label>
+            <input id="cambio" class="form-control text-right" type="text" value="0.00" readonly />
+        </div>
+    </div>
+</div>
+
+<div id="tarjeta-elements" class="row d-none">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Ultimos 4 digitos:</label>
+            <input id="tarjetainput" class="form-control" type="text" maxlength="4" />
         </div>
     </div>
     <div class="col-md-6">
@@ -55,23 +55,39 @@
     </div>
 </div>
 
+<div id="cheque-elements" class="row d-none">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label>Numero de cheque:</label>
+            <input id="chequeinput" class="form-control" placeholder="Numero de cheque" />
+        </div>
+    </div>
+</div>
+
+
 <button id="confirm-pago" class="btn btn-primary">Confirmar pago</button>
 
 <script>
     document.getElementById("metodo-pago").addEventListener('change', function (e) {
-        var row = document.getElementById("tarjeta");
-        var rowEf = document.getElementById("efectivo-cambio");
-        var rowEfc = document.getElementById("efectivo");
+        var row = document.getElementById("tarjeta-elements");
+        var rowEf = document.getElementById("efectivo-elements");
+        var rowChq = document.getElementById("cheque-elements");
         if (this.value === "Tarjeta") {
             row.classList.remove("d-none");
             rowEf.classList.add("d-none");
-            rowEfc.classList.add("d-none");
+            rowChq.classList.add("d-none");
 
         }
-        else {
+        if (this.value === "Efectivo") {
             row.classList.add("d-none");
             rowEf.classList.remove("d-none");
-            rowEfc.classList.remove("d-none");
+            rowChq.classList.add("d-none");
+        }
+
+        if (this.value === "Cheque") {
+            row.classList.add("d-none");
+            rowEf.classList.add("d-none");
+            rowChq.classList.remove("d-none");
         }
     });
 
@@ -98,12 +114,13 @@
             "Usuario": "@Model.Usuario",
             "MetodoPago": document.getElementById("metodo-pago").value,
             "Pago": document.getElementById("pago").value,
-            "Tarjeta": document.getElementById("tarjeta").value,
-            "TipoTarjeta": document.getElementById("tipo-tarjeta").value
+            "Tarjeta": document.getElementById("tarjetainput").value,
+            "TipoTarjeta": document.getElementById("tipo-tarjeta").value,
+            "Cheque": document.getElementById("chequeinput").value
         };
 
         console.log(model);
-        
+
         $.ajax({
             method: 'POST',
             url: "@Url.Action("Create","Factura")",

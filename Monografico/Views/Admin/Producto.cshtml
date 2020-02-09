@@ -93,6 +93,9 @@
         $(document).ready(() => {
             $('#producto-datatable').DataTable({
                 responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
                 ajax: {
                     url: "@Url.Action("List","Producto")",
                     dataSrc: ''
@@ -132,7 +135,7 @@
                             return text;
                         }
                     },
-                    { data: 'precio', responsivePriority: 5, width: "5%", render: $.fn.dataTable.render.number( ',', '.', 2, '$' )},
+                    { data: 'precio', responsivePriority: 5, width: "5%", render: $.fn.dataTable.render.number( ',', '.', 2, '$' ), className: 'text-right'},
                     {
                         data: {
                         },

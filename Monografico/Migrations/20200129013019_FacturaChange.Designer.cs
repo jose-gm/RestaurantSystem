@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Monografico.Data;
 
 namespace Monografico.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    [Migration("20200129013019_FacturaChange")]
+    partial class FacturaChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,8 +134,7 @@ namespace Monografico.Migrations
 
                     b.HasKey("IdAperturaCaja");
 
-                    b.HasIndex("IdCaja")
-                        .IsUnique();
+                    b.HasIndex("IdCaja");
 
                     b.ToTable("AperturaCaja");
                 });
@@ -191,21 +192,15 @@ namespace Monografico.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Cheque");
-
                     b.Property<string>("Cuadre");
 
                     b.Property<decimal>("Diferencia");
-
-                    b.Property<decimal>("Efectivo");
 
                     b.Property<DateTime>("Fecha");
 
                     b.Property<int>("IdCaja");
 
                     b.Property<decimal>("MontoCaja");
-
-                    b.Property<decimal>("Tarjeta");
 
                     b.Property<decimal>("TotalContado");
 
@@ -288,8 +283,6 @@ namespace Monografico.Migrations
                     b.HasKey("IdFacturaDetalle");
 
                     b.HasIndex("IdFactura");
-
-                    b.HasIndex("IdProducto");
 
                     b.ToTable("FacturaDetalle");
                 });
@@ -405,8 +398,6 @@ namespace Monografico.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Costo");
-
-                    b.Property<bool>("Desactivado");
 
                     b.Property<string>("Descripcion")
                         .HasMaxLength(60);
@@ -597,8 +588,8 @@ namespace Monografico.Migrations
             modelBuilder.Entity("Monografico.Models.AperturaCaja", b =>
                 {
                     b.HasOne("Monografico.Models.Caja", "Caja")
-                        .WithOne("Apertura")
-                        .HasForeignKey("Monografico.Models.AperturaCaja", "IdCaja")
+                        .WithMany()
+                        .HasForeignKey("IdCaja")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -643,11 +634,6 @@ namespace Monografico.Migrations
                     b.HasOne("Monografico.Models.Factura")
                         .WithMany("Detalle")
                         .HasForeignKey("IdFactura")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Monografico.Models.Producto", "Producto")
-                        .WithMany()
-                        .HasForeignKey("IdProducto")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

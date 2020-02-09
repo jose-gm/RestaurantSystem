@@ -10,7 +10,7 @@
                     <h1>@ViewData["Title"]</h1>
                 </div>
             </div>
-            <div class="row">
+            @*<div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Desde:</label>
@@ -26,7 +26,7 @@
                 <div class="col-md-4">
                     <button id="inbuscarbtn" class="btn btn-primary mt-4">Buscar</button>
                 </div>
-            </div>
+            </div>*@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
@@ -66,22 +66,21 @@
         $(document).ready(() => {
             $('#inventario-datatable').DataTable({
                 responsive: false,
-                searching: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
                 ajax: {
-                    url: "@Url.Action("ListRange","Inventario")",
-                    data: function (d) {
-                        return { desde: $('#inventario-desde').val(), hasta: $('#inventario-hasta').val() };
-                    },
+                    url: "@Url.Action("List","Inventario")",
                     dataSrc: ''
                 },
-                dom: 'Bfrtip',
+                dom: "<'row'<'col-sm-6'<'row'<'col-sm-6 p-0'l><'col-sm-6 p-0'B>>> <'col-sm-6'f>>" +
+                      "<'row'<'col-sm-12'tr>>" +
+                      "<'row'<'col-sm-5'i><'col-sm-7'p>>",
                 buttons: [
                     {
                         text: "Imprimir",
                         action: function (e, dt, node, config) {
-                            var desde = $('#inventario-desde').val();
-                            var hasta = $('#inventario-hasta').val();
-                            window.open("@Url.Action("ListRangePDF","Inventario")" + "?desde=" + desde + "&hasta=" + hasta, '_blank');
+                            window.open("@Url.Action("ListPDF","Inventario")", '_blank');
                         }
                     }
                 ],
@@ -92,26 +91,27 @@
                     { data: 'descripcion' },
                     {
                         data: 'fechaEntrada',
+                        className: 'text-right',
                         render: function (data, type, row) {
                             return moment(data).format("MM/DD/YYYY");
                         }
                     },
-                    { data: 'cantidad' },
-                    { data: 'costo', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) },
-                    { data: 'total', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) }
+                    { data: 'cantidad', className: 'text-right' },
+                    { data: 'costo', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ), className: 'text-right' },
+                    { data: 'total', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ), className: 'text-right' }
                 ]
             });
         });
 
-        document.getElementById("inbuscarbtn").addEventListener('click', function () {
+        /*document.getElementById("inbuscarbtn").addEventListener('click', function () {
             $('#inventario-datatable').DataTable().ajax.reload(actualizarInventario);
-        });
+        });*/
 
         function actualizarInventario() {
             var table = $('#inventario-datatable').DataTable();
             var sum = table.column(4).data().sum().toFixed(2);
 
-            var html = 'Total: '.bold() + sum;
+            var html = 'Total: '.bold() + formatMoney(sum);
             $('#inv-total').html(html);
         }
     </script>

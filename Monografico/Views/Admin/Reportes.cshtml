@@ -16,35 +16,38 @@
 }
 
 <div class="row">
-    <div class="col-md-3">
-        <div class="card card-accent-primary">
-            <div class="card-body">
-                <h5 class="card-title">Hora con mayor venta</h5>
-                <span class="card-text">@Model.HoraMasVendida:00</span>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Resultados del año</h4>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card card-accent-danger">
             <div class="card-body">
-                <h5 class="card-title">Zona que mas vende</h5>
-                <span class="card-text">@Model.ZonaMayorVenta</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card card-accent-warning">
-            <div class="card-body">
-                <h5 class="card-title">Mesero con mayor ventas</h5>
-                <span class="card-text">@Model.MeseroMayorVenta</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card card-accent-info">
-            <div class="card-body">
-                <h5 class="card-title">Mesa con mayor ventas</h5>
-                <span class="card-text">@Model.MesaroMayorVenta</span>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="callout callout-primary">
+                            <h5 class="card-title">Hora con mayor venta</h5>
+                            <span class="card-text">@Model.HoraMasVendida:00</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="callout callout-warning">
+                            <h5 class="card-title">Zona que mas vende</h5>
+                            <span class="card-text">@Model.ZonaMayorVenta</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="callout callout-danger">
+                            <h5 class="card-title">Empleado con mayor ventas</h5>
+                            <span class="card-text">@Model.MeseroMayorVenta</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="callout callout-secondary">
+                            <h5 class="card-title">Mesa con mayor ventas</h5>
+                            <span class="card-text">@Model.MesaroMayorVenta</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -73,194 +76,7 @@
 </div>
 
 
-@*<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h5>Reporte de productos</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Productos</label>
-                            <select class="select2-multiple form-control"></select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Desde:</label>
-                            <input id="producto-desde" class="form-control" type="date" />
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Hasta:</label>
-                            <input id="producto-hasta" class="form-control" type="date" />
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <button id="pbuscarbtn" class="btn btn-primary mt-4">Buscar</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table id="producto-datatable" style="width:100%" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            No.
-                                        </th>
-                                        <th>
-                                            Descripcion
-                                        </th>
-                                        <th>
-                                            Fecha
-                                        </th>
-                                        <th>
-                                            Cantidad
-                                        </th>
-                                        <th>
-                                            Precio
-                                        </th>
-                                        <th>
-                                            Total
-                                        </th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
 
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <h4 id="prod-total"><strong>Total: </strong></h4><h4></h4>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h5>Reporte de factura</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Desde:</label>
-                            <input id="factura-desde" class="form-control" type="date" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Hasta:</label>
-                            <input id="factura-hasta" class="form-control" type="date" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <button id="fbuscarbtn" class="btn btn-primary mt-4">Buscar</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table id="factura-datatable" style="width:100%" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            No.
-                                        </th>
-                                        <th>
-                                            Fecha
-                                        </th>
-                                        <th>
-                                            Usuario
-                                        </th>
-                                        <th>
-                                            Monto
-                                        </th>
-                                        <th>
-                                            Estado
-                                        </th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <h4 id="total"><strong>Total: </strong></h4><h4></h4>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h5>Reporte de Inventario</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Desde:</label>
-                            <input id="inventario-desde" class="form-control" type="date" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Hasta:</label>
-                            <input id="inventario-hasta" class="form-control" type="date" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <button id="inbuscarbtn" class="btn btn-primary mt-4">Buscar</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table id="inventario-datatable" style="width:100%" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            Descripcion
-                                        </th>
-                                        <th>
-                                            Fecha
-                                        </th>
-                                        <th>
-                                            Cantidad
-                                        </th>
-                                        <th>
-                                            Costo
-                                        </th>
-                                        <th>
-                                            Total
-                                        </th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <h4 id="inv-total"><strong>Total: </strong></h4><h4></h4>
-            </div>
-        </div>
-    </div>
-</div>*@
 
 @section script {
     <environment include="Development">
@@ -271,170 +87,6 @@
         <script src="~https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
     </environment>
-
-    @*<script>
-        $(document).ready(() => {
-
-            $('.select2-multiple').select2({
-                theme: 'bootstrap4',
-                ajax: {
-                    url: "@Url.Action("GetAll","Producto")",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        var query = {
-                            search: params.term
-                        };
-                        return query;
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: $.map(data, function (item) {
-                                return {
-                                    id: item.idProducto,
-                                    text: item.descripcion
-                                };
-                            }),
-                        };
-                    }
-                },
-                placeholder: 'Selecciona un producto',
-            });
-
-            //Inicializacion de tabla de reportes de productos
-            $('#producto-datatable').DataTable({
-                responsive: false,
-                searching: false,
-                ajax: {
-                    url: "@Url.Action("ListProductoRange","Factura")",
-                    data: function (d) {
-                        var selectlist = $('.select2-multiple').select2('data');
-                        var id = (selectlist[0]) ? selectlist[0].id : 0;
-                        return { idProducto: id ,desde: $('#producto-desde').val(), hasta: $('#producto-hasta').val() };
-                    },
-                    dataSrc: ''
-                },
-                initComplete: function (settings, json) {
-                    actualizarProducto();
-                },
-                columns: [
-                    {
-                        data: 'idFactura',
-                        render: function (data, type, row) {
-                            return "00" + data;
-                        }
-                    },
-                    { data: 'descripcion' },
-                    {
-                        data: 'fecha',
-                        render: function (data, type, row) {
-                            return moment(data).format("MM/DD/YYYY");
-                        }
-                    },
-                    { data: 'cantidad' },
-                    { data: 'precio', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) },
-                    { data: 'total', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) }
-                ]
-            });
-
-            //Inicializacion de tabla de reportes de facturas
-            $('#factura-datatable').DataTable({
-                responsive: false,
-                searching: false,
-                ajax: {
-                    url: "@Url.Action("ListRange","Factura")",
-                    data: function (d) {
-                        return { desde: $('#factura-desde').val(), hasta: $('#factura-hasta').val() };
-                    },
-                    dataSrc: ''
-                },
-                initComplete: function (settings, json) {
-                    actualizarFactura();
-                },
-                columns: [
-                    {
-                        data: 'idFactura',
-                        render: function (data, type, row) {
-                            return "00" + data;
-                        }
-                    },
-                    {
-                        data: 'fecha',
-                        render: function (data, type, row) {
-                            return moment(data).format("MM/DD/YYYY");
-                        }
-                    },
-                    { data: 'usuario' },
-                    { data: 'monto', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) },
-                    { data: 'estado' }
-                ]
-            });
-
-            //Inicializacion de tabla de reportes de inventario
-            $('#inventario-datatable').DataTable({
-                responsive: false,
-                searching: false,
-                ajax: {
-                    url: "@Url.Action("ListRange","Inventario")",
-                    data: function (d) {
-                        return { desde: $('#inventario-desde').val(), hasta: $('#inventario-hasta').val() };
-                    },
-                    dataSrc: ''
-                },
-                initComplete: function (settings, json) {
-                    actualizarInventario();
-                },
-                columns: [
-                    { data: 'descripcion' },
-                    {
-                        data: 'fechaEntrada',
-                        render: function (data, type, row) {
-                            return moment(data).format("MM/DD/YYYY");
-                        }
-                    },
-                    { data: 'cantidad' },
-                    { data: 'costo', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) },
-                    { data: 'total', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) }
-                ]
-            });
-        });
-
-        document.getElementById("pbuscarbtn").addEventListener('click', function () {
-            $('#producto-datatable').DataTable().ajax.reload(actualizarProducto);
-        });
-
-        document.getElementById("fbuscarbtn").addEventListener('click', function () {
-            $('#factura-datatable').DataTable().ajax.reload(actualizarFactura);
-        });
-
-        document.getElementById("inbuscarbtn").addEventListener('click', function () {
-            $('#inventario-datatable').DataTable().ajax.reload(actualizarInventario);
-        });
-
-        function actualizarProducto() {
-            var table = $('#producto-datatable').DataTable();
-            var sum = table.column(5).data().sum().toFixed(2);
-
-            var html = 'Total: '.bold() + sum;
-            $('#prod-total').html(html);
-        }
-
-        function actualizarFactura() {
-            var table = $('#factura-datatable').DataTable();
-            var sum = table.column(3).data().sum().toFixed(2);
-
-            var html = 'Total: '.bold() + sum;
-            $('#total').html(html);
-        }
-
-        function actualizarInventario() {
-            var table = $('#inventario-datatable').DataTable();
-            var sum = table.column(4).data().sum().toFixed(2);
-
-            var html = 'Total: '.bold() + sum;
-            $('#inv-total').html(html);
-        }
-    </script>*@
 
     <script>
         var array = @Html.Raw(Json.Serialize(Model.MontoMensuales));

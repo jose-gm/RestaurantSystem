@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Reporte de productos";
+    ViewData["Title"] = "Reporte de ventas";
 }
 
 @section link {
@@ -28,7 +28,8 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Productos</label>
-                    <select class="select2-multiple form-control"></select>
+                    <select class="select2-multiple form-control">
+                    </select>
                 </div>
             </div>
             <div class="col-md-3">
@@ -54,7 +55,7 @@
                         <thead>
                             <tr>
                                 <th>
-                                    No.
+                                    No. Factura
                                 </th>
                                 <th>
                                     Descripcion
@@ -64,6 +65,9 @@
                                 </th>
                                 <th>
                                     Cantidad
+                                </th>
+                                <th>
+                                    Costo
                                 </th>
                                 <th>
                                     Precio
@@ -81,6 +85,7 @@
     </div>
     <div class="card-footer">
         <h4 id="prod-total"><strong>Total: </strong></h4><h4></h4>
+        <h4 id="ganancia"><strong>Ganancia: </strong></h4><h4></h4>
     </div>
 </div>
 
@@ -97,6 +102,9 @@
         $(document).ready(() => {
             $('.select2-multiple').select2({
                 theme: 'bootstrap4',
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
                 ajax: {
                     url: "@Url.Action("GetAll","Producto")",
                     dataType: 'json',
@@ -165,7 +173,8 @@
                         }
                     },
                     { data: 'cantidad' },
-                    { data: 'precio', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) },
+                    { data: 'costo', render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+                    { data: 'precio', render: $.fn.dataTable.render.number(',', '.', 2, '$') },
                     { data: 'total', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) }
                 ]
             });
@@ -178,10 +187,14 @@
 
         function actualizarProducto() {
             var table = $('#producto-datatable').DataTable();
-            var sum = table.column(5).data().sum().toFixed(2);
+            var total = table.column(6).data().sum().toFixed(2);
+            var costoTotal = table.column(4).data().sum().toFixed(2);
+            var ganancia = (total - costoTotal).toFixed(2);
 
-            var html = 'Total: '.bold() + sum;
+            var html = 'Total: '.bold() + formatMoney(total);
+            var htmlganancia = 'Ganancia: '.bold() + formatMoney(ganancia);
             $('#prod-total').html(html);
+            $('#ganancia').html(htmlganancia);
         }
     </script>
 }

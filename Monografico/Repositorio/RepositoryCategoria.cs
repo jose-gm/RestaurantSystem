@@ -59,6 +59,7 @@ namespace Monografico.Repositorio
             try
             {
                 categoria = await _contexto.Categoria.Include(x => x.Productos).AsNoTracking().SingleOrDefaultAsync(x => x.IdCategoria == id);
+                categoria.Productos.RemoveAll(x => !x.Desactivado);
             }
             catch (Exception)
             {

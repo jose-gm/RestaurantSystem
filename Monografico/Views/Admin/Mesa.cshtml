@@ -69,6 +69,9 @@
         $(document).ready(() => {
             $('#mesa-datatable').DataTable({
                 responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
                 ajax: {
                     url: "@Url.Action("List","Mesa")",
                     dataSrc: ''
@@ -82,8 +85,8 @@
                 columns: [
                     { data: 'idMesa' },
                     { data: 'zona.descripcion' },
-                    { data: 'numero' },
-                    { data: 'asientos' },
+                    { data: 'numero', className: 'text-right' },
+                    { data: 'asientos', className: 'text-right' },
 
                     {
                         data: 'idMesa',

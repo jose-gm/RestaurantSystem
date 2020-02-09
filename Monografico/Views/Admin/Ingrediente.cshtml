@@ -70,6 +70,9 @@
         $(document).ready(() => {
             $('#ingrediente-datatable').DataTable({
                 responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
                 ajax: {
                     url: "@Url.Action("List","Ingrediente")",
                     dataSrc: ''
@@ -83,7 +86,7 @@
                 columns: [
                     { data: 'idIngrediente' },
                     { data: 'descripcion', width: '30%' },
-                    { data: 'costo', width: '12%', render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+                    { data: 'costo', width: '12%', render: $.fn.dataTable.render.number(',', '.', 2, '$'), className: 'text-right' },
                     {
                         data: 'llevaInventario',
                         title: "¿Tiene Inventario?",

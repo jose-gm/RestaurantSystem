@@ -37,6 +37,7 @@ namespace Monografico.Repositorio
                     MetodoPago = model.MetodoPago,
                     Tarjeta = (model.MetodoPago.Equals("Tarjeta")) ? model.Tarjeta : null,
                     TipoTarjeta = (model.MetodoPago.Equals("Tarjeta")) ? model.TipoTarjeta : null,
+                    Cheque = (model.MetodoPago.Equals("Cheque")) ? model.Cheque : null,
                     Estado = "Pago",
                     Detalle = new List<FacturaDetalle>()
                 };
@@ -227,6 +228,10 @@ namespace Monografico.Repositorio
                         PorcientoLey = items.PorcientoLey,
                         Monto = items.Monto,
                         Mesa = items.Cuenta.Mesa.Numero,
+                        MetodoPago = items.MetodoPago,
+                        Tarjeta = items.Tarjeta,
+                        Cheque = items.Cheque,
+                        TipoTarjeta = items.TipoTarjeta,
                         Descuento = items.Descuento,
                         Usuario = (usuario == null) ? "" : usuario.Nombre + " " + usuario.Apellido
                     });
@@ -256,13 +261,13 @@ namespace Monografico.Repositorio
                         IdCuenta = items.IdCuenta ?? default(int),
                         IdMesa = items.Cuenta.IdMesa,
                         Fecha = items.Fecha,
-                        Estado = items.Estado,
                         Monto = items.Monto,
                         Itbis = items.Itbis,
                         PorcientoLey = items.PorcientoLey,
                         Mesa = items.Cuenta.Mesa.Numero,
                         Descuento = items.Descuento,
-                        Usuario = (usuario == null) ? "" : usuario.Nombre + " " + usuario.Apellido
+                        Usuario = (usuario == null) ? "" : usuario.Nombre + " " + usuario.Apellido,
+                        MetodoPago = items.MetodoPago
                     });
                 }
             }
@@ -273,7 +278,7 @@ namespace Monografico.Repositorio
             }
             return list;
         }
-        
+       
         public async Task<List<ProductoFacturaViewModel>> GetAllProductos(int idProducto, Expression<Func<Factura, bool>> expression)
         {
             List<ProductoFacturaViewModel> list = new List<ProductoFacturaViewModel>();
@@ -302,6 +307,7 @@ namespace Monografico.Repositorio
                             Descripcion = producto.Descripcion,
                             Fecha = items.Fecha,
                             Cantidad = detalle.Cantidad,
+                            Costo = producto.Costo,
                             Precio = producto.Precio,
                             Total = detalle.Cantidad * producto.Precio
                         });
@@ -387,7 +393,7 @@ namespace Monografico.Repositorio
             decimal monto;
             try
             {
-                monto = _contexto.Factura.Where(x => ((x.Fecha >= fecha) && (x.Fecha <= DateTime.Today)) && x.MetodoPago.Equals("Efectivo")).AsNoTracking().Sum(x => x.Monto);
+                monto = _contexto.Factura.Where(x => ((x.Fecha >= fecha) && (x.Fecha <= DateTime.Today.AddDays(1))) && x.MetodoPago.Equals("Efectivo")).AsNoTracking().Sum(x => x.Monto);
             }
             catch (Exception)
             {
@@ -402,7 +408,22 @@ namespace Monografico.Repositorio
             decimal monto;
             try
             {
-                monto = _contexto.Factura.Where(x => ((x.Fecha >= fecha) && (x.Fecha <= DateTime.Today)) && x.MetodoPago.Equals("Tarjeta")).AsNoTracking().Sum(x => x.Monto);
+                monto = _contexto.Factura.Where(x => ((x.Fecha >= fecha) && (x.Fecha <= DateTime.Today.AddDays(1))) && x.MetodoPago.Equals("Tarjeta")).AsNoTracking().Sum(x => x.Monto);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return monto;
+        }
+        
+        public async Task<decimal> GetMontoChequePorFecha(DateTime fecha)
+        {
+            decimal monto;
+            try
+            {
+                monto = _contexto.Factura.Where(x => ((x.Fecha >= fecha) && (x.Fecha <= DateTime.Today.AddDays(1))) && x.MetodoPago.Equals("Cheque")).AsNoTracking().Sum(x => x.Monto);
             }
             catch (Exception)
             {

@@ -17,5 +17,6 @@ namespace Monografico.Models
         public int IdProducto { get; set; }
         public int Cantidad { get; set; }
         public decimal Precio { get; set; }
+        public virtual Producto Producto { get; set; }
     }
 }

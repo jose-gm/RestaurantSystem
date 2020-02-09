@@ -49,7 +49,6 @@ namespace Monografico.Repositorio
             return model;
         }
 
-
         public async override Task<Inventario> Find(int id)
         {
             return await _contexto.Inventario.Include(x => x.Producto).Include(x => x.Ingrediente).AsNoTracking().SingleOrDefaultAsync(x => x.IdInventario == id);

@@ -96,7 +96,7 @@ namespace Monografico.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (User.IsInRole("Mesero"))
+            if (User.IsInRole("Mesero") || User.IsInRole("Cajero"))
                 return RedirectToAction("SeleccionMesa", "Admin");
 
             var productos = await repo.Producto.GetList(x => true);
@@ -225,6 +225,13 @@ namespace Monografico.Controllers
         
         public async Task<IActionResult> ReporteFactura()
         {
+            ViewBag.Usuarios = await repo.Usuario.GetSelectList();
+            return View();
+        }
+        
+        public async Task<IActionResult> ReporteCaja()
+        {
+            ViewBag.Usuarios = await repo.Usuario.GetSelectList();
             return View();
         }
     }

@@ -23,55 +23,108 @@
         <link rel="stylesheet" href="https://unpkg.com/%40coreui/coreui/dist/css/coreui.min.css">
         <link rel="stylesheet" href="https://unpkg.com/%40coreui/icons/css/coreui-icons.min.css">
     </environment>
+    <link href="~/css/invoice.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="container-fluid" style="background-color:white;">
-        <div class="row">
-            <div class="offset-xl-2 col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 padding">
-                <div class="card">
-                    <div class="card-header p-4" style="background-color:#fff;">
-                        <div class="row justify-content-end">
-                            <div class="col-12 col-sm-2 col-md-2 col-lg-12 col-xl-12">
-                                Desde: @DateTime.Now.Date
-                                Hasta:
-                            </div>
+    <div class="receipt-content">
+        <div class="container bootstrap snippet">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="invoice-wrapper">
+                        <div class="intro">
+                            <img src="~/img/LogoWIT.png" width="80" height="80" alt="">
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row mb-4">
-                            <div class="col-sm-6 ">
-                            </div>
+                        <div class="payment-info">
+                            <span>Reporte de facturas</span>
+                            @*<strong>434334343</strong>*@ <br />
+                            <span>Fecha: @DateTime.Now.Date</span>
                         </div>
-                        <div class="table-responsive-sm">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th class="center">No.</th>
-                                        <th>Fecha</th>
-                                        <th class="right">Usuario</th>
-                                        <th class="center">Monto</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model)
-                                    {
-                                        var no = "00" + item.IdFactura;
+
+                        @*<div class="payment-details">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <span>Client</span>
+                                        <strong>
+                                            Andres felipe posada
+                                        </strong>
+                                        <p>
+                                            989 5th Avenue <br>
+                                            City of monterrey <br>
+                                            55839 <br>
+                                            USA <br>
+                                            <a href="#">
+                                                jonnydeff@gmail.com
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-6 text-right">
+                                        <span>Payment To</span>
+                                        <strong>
+                                            Juan fernando arias
+                                        </strong>
+                                        <p>
+                                            344 9th Avenue <br>
+                                            San Francisco <br>
+                                            99383 <br>
+                                            USA <br>
+                                            <a href="#">
+                                                juanfer@gmail.com
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        <div class="line-items">
+                            <div class="headers clearfix">
+                            </div>
+                            <div class="items">
+                                <table class="table table-borderless">
+                                    <thead class="headers clearfix">
                                         <tr>
-                                            <td class="center">@no</td>
-                                            <td class="">@item.Fecha</td>
-                                            <td class="left strong">@item.Usuario</td>
-                                            <td class="left">@item.Monto</td>
+                                            <th>No. Factura</th>
+                                            <th>Fecha</th>
+                                            <th>Usuario</th>
+                                            <th>Monto</th>
                                         </tr>
-                                        total += item.Monto;
-                                    }
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            var no = "00" + item.IdFactura;
+                                            <tr>
+                                                <td>@no</td>
+                                                <td>@item.Fecha</td>
+                                                <td>@item.Usuario</td>
+                                                <td>@item.Monto</td>
+                                            </tr>
+                                            total += item.Monto;
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="total text-right">
+                                @*<p class="extra-notes">
+                                        <strong>Extra Notes</strong>
+                                        Please send all items at the same time to shipping address by next week.
+                                        Thanks a lot.
+                                    </p>*@
+                                <div class="field">
+                                    Total <span>@string.Concat("RD", string.Format("{0:C}",total))</span>
+                                </div>
+                            </div>
+
+                            @*<div class="print">
+                                    <a href="#">
+                                        <i class="fa fa-print"></i>
+                                        Print this receipt
+                                    </a>
+                                </div>*@
                         </div>
-                        <hr />
-                        <span>Total: @total</span>
                     </div>
-                    <div class="card-footer bg-white">
-                        <p class="mb-0">Logo, direccion de la empresa</p>
+
+                    <div class="footer">
+                        Copyright © 2014. company name
                     </div>
                 </div>
             </div>
@@ -84,12 +137,14 @@
         <script src="~/lib/popper.js/popper.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/lib/coreui-master/dist/js/coreui.min.js"></script>
+        <script src="~/js/site.js"></script>
     </environment>
     <environment include="Production">
         <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/%40coreui/coreui/dist/js/coreui.min.js"></script>
+        <script src="~/js/site.js"></script>
     </environment>
 </body>
 </html>

@@ -23,6 +23,7 @@ namespace Monografico.Models
         public string MetodoPago { get; set; }
         public string Tarjeta { get; set; }
         public string TipoTarjeta { get; set; }
+        public string Cheque { get; set; }
         public virtual List<FacturaDetalle> Detalle { get; set; }
         public virtual Cuenta Cuenta { get; set; }
     }

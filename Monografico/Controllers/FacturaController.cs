@@ -105,27 +105,30 @@ namespace Monografico.Controllers
         }
         
         [Authorize(Roles = "Administrador")]
-        public async Task<JsonResult> ListRange(DateTime desde, DateTime hasta)
+        public async Task<JsonResult> ListRange(int idUsuario, DateTime desde, DateTime hasta)
         {
-            return Json(await repo.Factura.GetAllAsViewModel(x => (x.Fecha >= desde) && (x.Fecha <= hasta) ));
+            if (idUsuario > 0)
+                return Json(await repo.Factura.GetAllAsViewModel(x => x.Cuenta.IdUsuario == idUsuario && (x.Fecha >= desde && x.Fecha <= hasta.AddDays(1))));
+            else
+                return Json(await repo.Factura.GetAllAsViewModel(x => x.Fecha >= desde && x.Fecha <= hasta.AddDays(1)));
         }
         
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> ListRangePDF(DateTime desde, DateTime hasta)
         {
-            return new ViewAsPdf("~/Views/Admin/ReportsPDF/FacturasPDF.cshtml", await repo.Factura.GetAllAsViewModel(x => (x.Fecha >= desde) && (x.Fecha <= hasta) ));
+            return new ViewAsPdf("~/Views/Admin/ReportsPDF/FacturasPDF.cshtml", await repo.Factura.GetAllAsViewModel(x => (x.Fecha >= desde) && (x.Fecha <= hasta.AddDays(1))));
         }
         
         [Authorize(Roles = "Administrador")]
         public async Task<JsonResult> ListProductoRange(int idProducto, DateTime desde, DateTime hasta)
         {
-            return Json(await repo.Factura.GetAllProductos(idProducto ,x => (x.Fecha >= desde) && (x.Fecha <= hasta) ));
+            return Json(await repo.Factura.GetAllProductos(idProducto ,x => (x.Fecha >= desde) && (x.Fecha <= hasta.AddDays(1))));
         }
         
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> ListProductoRangePDF(int idProducto, DateTime desde, DateTime hasta)
         {
-            return new ViewAsPdf("~/Views/Admin/ReportsPDF/ProductosPDF.cshtml", await repo.Factura.GetAllProductos(idProducto, x => (x.Fecha >= desde) && (x.Fecha <= hasta)));
+            return new ViewAsPdf("~/Views/Admin/ReportsPDF/ProductosPDF.cshtml", await repo.Factura.GetAllProductos(idProducto, x => (x.Fecha >= desde) && (x.Fecha <= hasta.AddDays(1))));
         }
     }
 }

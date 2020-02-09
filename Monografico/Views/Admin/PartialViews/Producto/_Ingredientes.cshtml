@@ -74,6 +74,9 @@
         $('.select2-multiple').select2({
             dropdownParent: $('#myModal-lg'),
             theme: 'bootstrap4',
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+            },
             ajax: {
                 url: "@Url.Action("GetAll","Ingrediente")",
                 dataType: 'json',

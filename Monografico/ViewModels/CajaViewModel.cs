@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace Monografico.ViewModels
 {
-    public class CierreCajaViewModel
+    public class CajaViewModel
     {
+        public DateTime FechaApertura { get; set; }
+        public string FechaCierre { get; set; }
+        public string Usuario { get; set; }
         public decimal MontoInicial { get; set; }
         public decimal Efectivo { get; set; }
         public decimal Tarjeta { get; set; }
         public decimal Cheque { get; set; }
-        public decimal MontoCaja { get; set; }
-        public decimal TotalContado { get; set; }
         public decimal Diferencia { get; set; }
+        public string Estado { get; set; }
         public string Cuadre { get; set; }
     }
 }

@@ -28,5 +28,6 @@ namespace Monografico.Models
         public virtual Categoria Categoria { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<ProductoDetalle> Detalle { get; set; }
+        public bool Desactivado { get; set; }
     }
 }

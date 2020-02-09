@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Monografico.ViewModels.FacturaViewModel>
 
 @{
-    ViewData["Title"] = "Facturas";
+    ViewData["Title"] = "Consulta de facturas";
 }
 
 @section link {
@@ -25,16 +25,16 @@
                                     @Html.DisplayNameFor(model => model.IdFactura)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Fecha)
+                                    @Html.DisplayNameFor(model => model.Usuario)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Usuario)
+                                    @Html.DisplayNameFor(model => model.Fecha)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Monto)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Estado)
+                                    @Html.DisplayNameFor(model => model.MetodoPago)
                                 </th>
 
                                 <th>
@@ -68,6 +68,9 @@
         $(document).ready(() => {
             $('#factura-datatable').DataTable({
                 responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
                 ajax: {
                     url: "@Url.Action("List","Factura")",
                     dataSrc: ''
@@ -80,15 +83,16 @@
                 ],
                 columns: [
                     { data: 'idFactura' },
+                    { data: 'usuario' },
                     {
                         data: 'fecha',
+                        className: 'text-right',
                         render: function (data, type, row) {
                             return moment(data).format("MM/DD/YYYY");
                         }
-                    },
-                    { data: 'usuario' },
-                    { data: 'monto', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ) },
-                    { data: 'estado' },
+                    },                    
+                    { data: 'monto', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ), className: 'text-right' },
+                    { data: 'metodoPago' },
 
                     {
                         data: 'idFactura',
