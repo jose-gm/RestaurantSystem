@@ -289,6 +289,7 @@
 <!-- Modal de impresion de orden-->
 <partial name="~/Views/Admin/PartialViews/Orden/_ModalTicket.cshtml" />
 
+
 @section script {
     <environment include="Development">
         <script src="~/lib/printThis/printThis.min.js"></script>
@@ -365,12 +366,16 @@
                     },
                     {
                         data: {},
-                        width: "2%",
+                        width: "8%",
                         className: 'text-right',
                         responsivePriority: 3,
                         render: function (data, type, row, meta) {
+                            
+                            
                             if(data.enviado == false)
-                                return '<input class="cantidadInput text-right" size="2" style="border:0; background-color: white;" disabled value="' + data.cantidad + '" /> ';
+                                return '<button id="btnmenos" class="btn btn-danger btn-sm"><i class="fas fa-minus"></i></button>' +
+                                    '<input class="cantidadInput text-center" size="2" style="border:0; background-color: white;" readonly value="' + data.cantidad + '" /> ' +
+                                    '<button id="btnmas" class="btn btn-danger btn-sm"><i class="fas fa-plus"></i></button>';
                             else
                                 return data.cantidad;
                         }
@@ -407,6 +412,60 @@
                 var iddetalle = table.cell(cellIndex.row, 2).data();
 
                 var cantidadCell = table.cell(cellIndex.row, 6).nodes().to$().find('input').val();
+                var precio = table.cell(cellIndex.row, 5).data();
+                table.cell(cellIndex.row, 7).data(cantidadCell * precio).draw();
+                actualizar();
+
+                 $.ajax({
+                    url: "@Url.Action("UpdateOrden","Cuenta")",
+                    data: { idOrden: idorden, idDetalle: iddetalle, cantidad: cantidadCell },
+                    error: function () {
+                    },
+                    success: function () {
+
+                    }
+                });
+            });
+
+            //Actualiza la columna de total de la tabla al precionar boton mas
+            $('#datatable tbody').on('click', '#btnmas', function () {
+                console.log("funciona");
+                var data = table.row($(this).parents('tr')).data();
+                var cellIndex = table.cell($(this).parents('td')).index();
+
+                var idorden = table.cell(cellIndex.row, 1).data();
+                var iddetalle = table.cell(cellIndex.row, 2).data();
+
+                var cantidadCell = table.cell(cellIndex.row, 6).nodes().to$().find('input').val();
+                table.cell(cellIndex.row, 6).nodes().to$().find('input').val(Number(cantidadCell) + 1);
+                cantidadCell = table.cell(cellIndex.row, 6).nodes().to$().find('input').val();
+                var precio = table.cell(cellIndex.row, 5).data();
+                table.cell(cellIndex.row, 7).data(cantidadCell * precio).draw();
+                actualizar();
+
+                 $.ajax({
+                    url: "@Url.Action("UpdateOrden","Cuenta")",
+                    data: { idOrden: idorden, idDetalle: iddetalle, cantidad: cantidadCell },
+                    error: function () {
+                    },
+                    success: function () {
+
+                    }
+                });
+            });
+
+            //Actualiza la columna de total de la tabla al precionar boton menos
+            $('#datatable tbody').on('click', '#btnmenos', function () {
+                
+                var data = table.row($(this).parents('tr')).data();
+                var cellIndex = table.cell($(this).parents('td')).index();
+
+                var idorden = table.cell(cellIndex.row, 1).data();
+                var iddetalle = table.cell(cellIndex.row, 2).data();
+
+                var cantidadCell = table.cell(cellIndex.row, 6).nodes().to$().find('input').val();
+                table.cell(cellIndex.row, 6).nodes().to$().find('input').val((cantidadCell <= 1) ? cantidadCell : Number(cantidadCell) - 1);
+                cantidadCell = table.cell(cellIndex.row, 6).nodes().to$().find('input').val();
                 var precio = table.cell(cellIndex.row, 5).data();
                 table.cell(cellIndex.row, 7).data(cantidadCell * precio).draw();
                 actualizar();
@@ -854,6 +913,34 @@
     </script>
 
     <script>
+        /*function disminuirCantidad(current) {
+            var parentNode = current.parentNode;
+            var childrens = parentNode.childNodes;
+
+            for (var i = 0; i < childrens.length; i++) {
+                if (childrens[i].tagName === "input") {
+                    var value = Number(childrens[i].value);
+                    childrens[i].value = (value <= 1) ? value : value - 1;
+                    break;
+                }
+            }
+        }
+
+        function aumentarCantidad(current) {
+            var parentNode = current.parentNode;
+            var childrens = parentNode.childNodes;
+
+            for (var i = 0; i < childrens.length; i++) {
+                if (childrens[i].tagName === "input") {
+                    var value = Number(childrens[i].value);
+                    console.log(value);
+                    childrens[i].value = value + 1;
+                    break;
+                }
+            }
+        }
+*/
+
         //Abre el modal de apertura de caja
         document.getElementById("apertura-caja-nav").addEventListener('click', function () {
             var isCajaAbierta = "@Model.IsCajaAbierta";
