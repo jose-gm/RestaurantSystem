@@ -80,6 +80,9 @@
                 "Cantidad": document.getElementById("Cantidad").value
             };
 
+            var unidad = (document.getElementById("Unidad").value) ? document.getElementById("Unidad").value : "viod";
+            model.Unidad = unidad;
+
             $.ajax({
                 method: "POST",
                 url: "@Url.Action("Create","Ingrediente")",
