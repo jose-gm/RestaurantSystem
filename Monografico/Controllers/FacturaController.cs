@@ -69,11 +69,6 @@ namespace Monografico.Controllers
                             return Ok();
                         }
                             
-                        /*var factura = await repo.Factura.FindOnlyFactura(model.IdCuenta);
-                        factura.Mesa = model.Mesa;
-                        factura.Ordenes = model.Ordenes;
-                        factura.Usuario = model.Usuario;*/
-                        //return PartialView("~/Views/Admin/PartialViews/Orden/_Cuenta.cshtml", factura);
                     }
                     else
                         throw new Exception("No hay ordenes realizadas");
