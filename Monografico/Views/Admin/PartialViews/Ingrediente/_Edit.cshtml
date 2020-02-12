@@ -96,7 +96,8 @@
             }
             else {
                 model.LlevaInventario = document.getElementById("LlevaInventario").checked;
-                model.Unidad = document.getElementById("Unidad").value;
+                var unidad = (document.getElementById("Unidad").value) ? document.getElementById("Unidad").value : "viod";
+                model.Unidad = unidad;
                 model.Cantidad = document.getElementById("Cantidad").value;
                 model.FechaEntrada = getActualDateUTC();
             }
