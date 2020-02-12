@@ -126,6 +126,23 @@ namespace Monografico.Controllers
             return BadRequest(new { response = false, errors = errors });
         }
         
+        public async Task<IActionResult> EliminarImagen()
+        {
+            try
+            {              
+                // TODO: Add update logic here
+                if((await repo.Usuario.RemoveImage(HttpContext.User)))
+                    return Ok();
+   
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return BadRequest(new { response = false});
+        }
+        
         [HttpPost]
         public async Task<IActionResult> ActualizarClave(CambiarClaveViewModel model)
         {

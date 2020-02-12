@@ -220,6 +220,26 @@ namespace Monografico.Repositorio
             }
             return paso;
         }
+        
+        public async Task<bool> RemoveImage(ClaimsPrincipal claims)
+        {
+            var paso = false;
+            try
+            {
+                var usuario = await _userManager.GetUserAsync(claims); ;
+                usuario.Imagen = null;
+                var result = await _userManager.UpdateAsync(usuario);
+
+                if (result.Succeeded)
+                    paso = true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return paso;
+        }
 
         public async Task<List<Usuario>> GetList()
         {

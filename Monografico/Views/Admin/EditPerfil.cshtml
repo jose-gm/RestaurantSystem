@@ -24,12 +24,18 @@
                 @if (Model.ImagenEncoded != null)
                 {
                     var src = $"data:image/jpeg;base64,{Model.ImagenEncoded}";
-                    <img class="img-thumbnail" src="@src" style="width:60%; height:100%" />
+                    <img id="perfil" class="img-thumbnail" src="@src" style="width:60%; height:100%" />
                 }
                 else
                 {
-                    <img class="img-thumbnail" src="~/img/default_avatar.jpg" style="width:60%; height:100%" />
+                    <img id="perfil" class="img-thumbnail" src="~/img/default_avatar.jpg" style="width:60%; height:100%" />
                 }
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <button id="eliminar" class="btn btn-danger">Eliminar imagen</button>
             </div>
         </div>
         <div class="row">
@@ -125,62 +131,79 @@
                 sexo = this.value;
         });
 
-    var formulario = document.getElementById("form-editar");
-    formulario.addEventListener('submit', (e) => {
-        e.preventDefault();
-        //alert(formulario.checkValidity());
-        if (formulario.checkValidity()) {
-            var archivos = document.getElementById("Imagen").files;
-            var formData = new FormData();
-            for (var i = 0; i != archivos.length; i++) {
-                formData.append("Imagen",archivos[i]);
+        var formulario = document.getElementById("form-editar");
+        formulario.addEventListener('submit', (e) => {
+            e.preventDefault();
+            //alert(formulario.checkValidity());
+            if (formulario.checkValidity()) {
+                var archivos = document.getElementById("Imagen").files;
+                var formData = new FormData();
+                for (var i = 0; i != archivos.length; i++) {
+                    formData.append("Imagen",archivos[i]);
+                }
+                formData.append("IdUsuario",document.getElementById("IdUsuario").value);
+                formData.append("Nombre",document.getElementById("Nombre").value);
+                formData.append("Apellido", document.getElementById("Apellido").value);
+                formData.append("Sexo",sexo);
+                formData.append("Cedula",document.getElementById("Cedula").value);
+                formData.append("Direccion",document.getElementById("Direccion").value);
+                formData.append("NombreUsuario",document.getElementById("NombreUsuario").value);
+                formData.append("Telefono",document.getElementById("Telefono").value);
+                formData.append("ImagenEncoded",document.getElementById("ImagenEncoded").value);
+
+                $.ajax({
+                    method: "POST",
+                    url: "@Url.Action("EditPerfil","Usuario")",
+                    headers: {
+                        "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    },
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    error: function (response) {
+                        console.log(response);
+                        if (response.responseJSON.response === false) {
+                            var errors = response.responseJSON.errors;
+                            if (errors.length > 0) {
+                                var ul = document.querySelector(".errors");
+                                ul.innerHTML = "";
+                                for (let i = 0; i < errors.length; i++) {
+                                    var li = document.createElement("li");
+                                    li.innerText = errors[i];
+                                    li.setAttribute("style", "color:red");
+                                    ul.appendChild(li);
+                                }
+                                
+                            }
+                        }
+                        else {
+                            toastr.error("Error al guardar");
+                        }
+                    },
+                    success: function () {
+                        document.querySelector(".errors").innerHTML = "";
+                        location.reload();
+                        toastr.success("Guardado con exito");
+                    }
+                });
             }
-            formData.append("IdUsuario",document.getElementById("IdUsuario").value);
-            formData.append("Nombre",document.getElementById("Nombre").value);
-            formData.append("Apellido", document.getElementById("Apellido").value);
-            formData.append("Sexo",sexo);
-            formData.append("Cedula",document.getElementById("Cedula").value);
-            formData.append("Direccion",document.getElementById("Direccion").value);
-            formData.append("NombreUsuario",document.getElementById("NombreUsuario").value);
-            formData.append("Telefono",document.getElementById("Telefono").value);
-            formData.append("ImagenEncoded",document.getElementById("ImagenEncoded").value);
+        });
+
+        document.getElementById("eliminar").addEventListener('click', function () {
 
             $.ajax({
-                method: "POST",
-                url: "@Url.Action("EditPerfil","Usuario")",
+                method: "GET",
+                url: "@Url.Action("EliminarImagen","Usuario")",
                 headers: {
-                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
                 },
-                data: formData,
-                contentType: false,
-                processData: false,
-                error: function (response) {
-                    console.log(response);
-                    if (response.responseJSON.response === false) {
-                        var errors = response.responseJSON.errors;
-                        if (errors.length > 0) {
-                            var ul = document.querySelector(".errors");
-                            ul.innerHTML = "";
-                            for (let i = 0; i < errors.length; i++) {
-                                var li = document.createElement("li");
-                                li.innerText = errors[i];
-                                li.setAttribute("style", "color:red");
-                                ul.appendChild(li);
-                            }
-                                
-                        }
-                    }
-                    else {
-                        toastr.error("Error al guardar");
-                    }
+                error: function () {
                 },
-                success: function () {
-                    document.querySelector(".errors").innerHTML = "";
-                    location.reload();
-                    toastr.success("Guardado con exito");
+                success: function (response) {
+                    document.getElementById("perfil").src = "../img/default_avatar.jpg";
+                    document.querySelector(".img-avatar").src = "../img/default_avatar.jpg";
                 }
             });
-        }
-    });
+        });
     </script>
 }
