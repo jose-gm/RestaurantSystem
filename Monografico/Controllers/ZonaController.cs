@@ -10,7 +10,7 @@ using Monografico.Repositorio;
 
 namespace Monografico.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Administrador, Host")]
     public class ZonaController : Controller
     {
         RepositoryWrapper repo;
@@ -20,18 +20,21 @@ namespace Monografico.Controllers
             repo = _repo;
         }
         // GET: Zona
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Index()
         {
             return View();
         }
 
         // GET: Zona/Details/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Details(int id)
         {
             return View();
         }
 
         // GET: Zona/Create
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Create()
         {
             return PartialView("~/Views/Admin/PartialViews/Zona/_Create.cshtml", new Zona());
@@ -40,6 +43,7 @@ namespace Monografico.Controllers
         // POST: Zona/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Create([FromBody]Zona zona)
         {
             try
@@ -58,6 +62,7 @@ namespace Monografico.Controllers
         }
 
         // GET: Zona/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id)
         {
             return PartialView("~/Views/Admin/PartialViews/Zona/_Edit.cshtml", await repo.Zona.Find(id));
@@ -66,6 +71,7 @@ namespace Monografico.Controllers
         // POST: Zona/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit([FromBody]Zona zona)
         {
             try
@@ -81,6 +87,7 @@ namespace Monografico.Controllers
         }
 
         // GET: Zona/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -104,6 +111,7 @@ namespace Monografico.Controllers
         // POST: Zona/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int id, IFormCollection collection)
         {
             try
@@ -118,9 +126,15 @@ namespace Monografico.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrador")]
         public async Task<JsonResult> List()
         {
             return Json(await repo.Zona.GetList(x => true));
+        }
+
+        public async Task<JsonResult> ListOfMesa(int zona)
+        {
+            return Json(await repo.Zona.GetAllMesas(x => (zona == 0) ? true : x.IdZona == zona));
         }
     }
 }

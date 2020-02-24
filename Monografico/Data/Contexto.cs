@@ -30,6 +30,8 @@ namespace Monografico.Data
         public DbSet<AperturaCaja> AperturaCaja { get; set; }
         public DbSet<Caja> Caja { get; set; }
         public DbSet<CierreCaja> CierreCaja { get; set; }
+        public DbSet<Itbis> Itbis { get; set; }
+        public DbSet<Configuracion> Configuracion { get; set; }
         public DbSet<ApplicationUserRole> ApplicationUserRole { get; set; }
 
         public Contexto(DbContextOptions<Contexto> options) : base(options)

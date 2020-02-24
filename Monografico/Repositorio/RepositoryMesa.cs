@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Monografico.Data;
 using Monografico.Models;
 using Monografico.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -87,6 +89,37 @@ namespace Monografico.Repositorio
             }
 
             return list;
+        }
+
+        public async Task<bool> ExistMesaOcupada()
+        {
+            try
+            {
+                var mesas = await _contexto.Mesa.Include(x => x.Cuentas).AsNoTracking().ToListAsync();
+                mesas.ForEach(b => b.Cuentas.RemoveAll(c => c.Activa == false));
+                var cuentas = await _contexto.Cuenta.Where(x => x.IdMesa == null && x.Activa == true).AsNoTracking().ToListAsync();
+                foreach (var item in mesas)
+                {
+                    if (item.Cuentas.Count > 0)
+                        return true;
+                }
+
+                if (cuentas.Count > 0)
+                    return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return false;
+        }
+
+        public async Task<SelectList> GetSelectListMesaDesocupadas(int idMesa)
+        {
+            var list = await _contexto.Mesa.Include(x => x.Cuentas).AsNoTracking().ToListAsync();
+            list.RemoveAll(x => x.Cuentas.Count > 0 && x.IdMesa != idMesa);
+            return new SelectList(list, "IdMesa", "Numero", idMesa);
         }
     }
 }

@@ -14,5 +14,7 @@ namespace Monografico.ViewModels
         public int Numero { get; set; }
         public int Asientos { get; set; }
         public Zona Zona { get; set; }
+        public string ZonaDescripcion { get; set; }
+        public string Estado { get; set; }
     }
 }

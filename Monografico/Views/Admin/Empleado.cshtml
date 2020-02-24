@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Monografico.ViewModels.UsuarioViewModel>
 
 @{
-    ViewData["Title"] = "Empleados";
+    ViewData["Title"] = "Usuarios";
     ViewData["Controller"] = "Empleado";
 }
 
@@ -20,7 +20,7 @@
             <div class="col-md-3">
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-primary" onclick="abrirModalCrear();">
-                    Agregar Empleado
+                    Agregar Usuario
                 </button>
             </div>
         </div>
@@ -110,7 +110,7 @@
                         render: function (data, type, row, meta) {
                             return '<div class="btn-group">' +
                                         '<button onclick="abrirModalEditar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
-                                        '<button onclick="abrirModalBorrar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-times"></i></button>' +
+                                        '<button onclick="abrirModalBorrar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-trash"></i></button>' +
                                     '</div>';
                         }
                     }

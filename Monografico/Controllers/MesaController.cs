@@ -126,5 +126,10 @@ namespace Monografico.Controllers
         {
             return Json(await repo.Mesa.GetAllAsViewModel());
         }
+        
+        public async Task<bool> HayMesasAbierta()
+        {
+            return await repo.Mesa.ExistMesaOcupada();
+        }
     }
 }

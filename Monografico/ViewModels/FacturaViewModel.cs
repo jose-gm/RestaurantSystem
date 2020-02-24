@@ -11,7 +11,7 @@ namespace Monografico.ViewModels
     {
         public int IdFactura { get; set; }
         public int IdCuenta { get; set; }
-        public int IdMesa { get; set; }
+        public int? IdMesa { get; set; }
         public decimal Monto { get; set; }
         public decimal Descuento { get; set; }
         public decimal Itbis { get; set; }

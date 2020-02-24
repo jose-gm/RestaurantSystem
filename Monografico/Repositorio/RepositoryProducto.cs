@@ -37,14 +37,9 @@ namespace Monografico.Repositorio
         {
             var producto =  _contexto.Producto.Include(w => w.Detalle).SingleOrDefault(q => q.IdProducto == id);
             var model = new ProductoDetalleViewModel();
-    /*        if(producto.Detalle != null)
-            {
-                foreach (var item in producto.Detalle)
-                {
-                    model.Ingredientes.Add(_contexto.Ingrediente.Include(x => x.Inventario).SingleOrDefault(c => c.IdIngrediente == item.IdIngrediente));
-                }
-            }*/
+
             model.IdProducto = producto.IdProducto;
+            model.DescripcionProducto = producto.Descripcion;
 
             return model;
         }
@@ -195,12 +190,13 @@ namespace Monografico.Repositorio
             List<ProductoViewModel> list = null;
             try
             {
-                var productos = await _contexto.Producto.Include(x => x.Categoria).Where(x => !x.Desactivado).AsNoTracking().ToListAsync();
+                var productos = await _contexto.Producto.Include(x => x.Categoria).Include(x => x.Itbis).Where(x => !x.Desactivado).AsNoTracking().ToListAsync();
                 list = new List<ProductoViewModel>();
 
                 foreach (var item in productos)
                 {
-                    list.Add(new ProductoViewModel() { 
+                    list.Add(new ProductoViewModel()
+                    {
                         IdProducto = item.IdProducto,
                         IdCategoria = item.IdCategoria,
                         Descripcion = item.Descripcion,
@@ -208,8 +204,9 @@ namespace Monografico.Repositorio
                         LlevaIngredientes = item.LlevaIngredientes,
                         LlevaInventario = item.LlevaInventario,
                         ImagenEncoded = item.Imagen,
-                        Categoria = item.Categoria.Descripcion
-                    });
+                        Categoria = item.Categoria.Descripcion,
+                        itbis = (item.Itbis == null) ? 0 : item.Itbis.Valor
+                    }); ;
                 }
                 
             }

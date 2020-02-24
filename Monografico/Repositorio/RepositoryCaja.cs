@@ -108,7 +108,7 @@ namespace Monografico.Repositorio
             {
                 apertura = await _contexto.AperturaCaja
                                     .Include(x => x.Caja)
-                                    .Where(x => (x.IdUsurio == usuario.Id) && (x.Caja.Estado.Equals("Abierta")))
+                                    .Where(x => (x.Caja.Estado.Equals("Abierta")))
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync();
             }

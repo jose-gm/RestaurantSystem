@@ -15,7 +15,9 @@ namespace Monografico.Models
         [Key]
         public int IdProducto { get; set; }
         public int? IdCategoria { get; set; }
+        public int? IdItbis { get; set; }
         [StringLength(60)]
+        [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
         public Decimal Precio { get; set; }
         public Decimal Costo { get; set; }
@@ -26,6 +28,8 @@ namespace Monografico.Models
         public virtual Inventario Inventario { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public virtual Categoria Categoria { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public virtual Itbis Itbis { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<ProductoDetalle> Detalle { get; set; }
         public bool Desactivado { get; set; }

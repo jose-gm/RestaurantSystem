@@ -62,6 +62,7 @@ namespace Monografico.Controllers
             {
                 IdProducto = model.IdProducto,
                 IdCategoria = model.IdCategoria,
+                IdItbis = (model.IdItbis == 0) ? null : model.IdItbis,
                 Descripcion = model.Descripcion,
                 Precio = model.Precio,
                 Imagen = (model.Imagen != null) ? Convert.ToBase64String(image) : model.ImagenEncoded,
@@ -89,6 +90,7 @@ namespace Monografico.Controllers
         public async Task<IActionResult> Create()
         {            
             ViewBag.Categorias = await repo.Categoria.GetSelectList();
+            ViewBag.Itbis = await repo.Itbis.GetSelectList();
             return PartialView("~/Views/Admin/PartialViews/Producto/_Create.cshtml", new ProductoViewModel());
         }
 
@@ -189,6 +191,7 @@ namespace Monografico.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             ViewBag.Categorias = await repo.Categoria.GetSelectList();
+            ViewBag.Itbis = await repo.Itbis.GetSelectList();
             return PartialView("~/Views/Admin/PartialViews/Producto/_Edit.cshtml", await repo.Producto.FindProductoViewModel(id));
         }
 

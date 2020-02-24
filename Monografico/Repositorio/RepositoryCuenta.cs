@@ -181,7 +181,36 @@ namespace Monografico.Repositorio
                         Imagen = x.Imagen,
                         Productos = x.Productos.Where(q => !q.Desactivado).ToList()
                     }).AsNoTracking().ToListAsync(),
-                    Mesa = mesa.Numero
+                    Mesa = (mesa == null) ? 0 : mesa.Numero
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return model;
+        }
+        
+        public async Task<CuentaViewModel> FindCuentaViewModel(int? idMesa)
+        {
+            CuentaViewModel model = null;
+            try
+            {
+                var cuentas = _contexto.Cuenta.Where(x => x.IdMesa == idMesa && x.Activa).AsNoTracking().ToList();
+                var mesa = await _contexto.Mesa.FindAsync(idMesa);
+
+                model = new CuentaViewModel()
+                {
+                    IdMesa = idMesa ?? default(int),
+                    Cuentas = cuentas,
+                    Categorias = await _contexto.Categoria.Include(w => w.Productos).Select(x => new Categoria() { 
+                        IdCategoria = x.IdCategoria,
+                        Descripcion = x.Descripcion,
+                        Imagen = x.Imagen,
+                        Productos = x.Productos.Where(q => !q.Desactivado).ToList()
+                    }).AsNoTracking().ToListAsync(),
+                    Mesa = (mesa == null) ? 0 : mesa.Numero
                 };
             }
             catch (Exception)
@@ -266,9 +295,9 @@ namespace Monografico.Repositorio
                 {
                     foreach(var inner in item.Detalle)
                     {
-                        var producto = await _contexto.Producto.FindAsync(inner.IdProducto);
-
-                        lista.Add(new OrdenViewModel() { 
+                        var producto = await _contexto.Producto.Include(x => x.Itbis).AsNoTracking().SingleOrDefaultAsync(x => x.IdProducto == inner.IdProducto);
+                        var itbis = (producto.Itbis == null) ? 0 : producto.Itbis.Valor;
+                        lista.Add(new OrdenViewModel() {
                             IdCuenta = cuenta.IdCuenta,
                             IdDetalle = inner.IdOrdenDetalle,
                             IdOrden = inner.IdOrden,
@@ -277,10 +306,12 @@ namespace Monografico.Repositorio
                             Descripcion = producto.Descripcion,
                             Precio = producto.Precio,
                             Total = inner.Cantidad * producto.Precio,
+                            Itbis = itbis,
+                            TotalItbis = (producto.Precio * inner.Cantidad) * ((decimal)itbis / (decimal)100.00),
                             Enviado = item.Enviado,
-                            Mesa = cuenta.Mesa.Numero,
+                            Mesa = (cuenta.Mesa == null) ? 0 : cuenta.Mesa.Numero,
                             Fecha = item.Fecha
-                        });
+                        }); ;
                     }
                 }
             }
@@ -292,7 +323,7 @@ namespace Monografico.Repositorio
             return lista;
         }
 
-        public async Task<bool> HayOrdenesPendiente(int idMesa)
+        public async Task<bool> HayOrdenesPendiente(int? idMesa)
         {
             try
             {

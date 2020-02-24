@@ -12,6 +12,7 @@ namespace Monografico.ViewModels
 {
     [Bind("IdProducto," +
         "IdCategoria," +
+        "IdItbis," +
         "Descripcion," +
         "Precio," +
         "Costo," +
@@ -29,6 +30,9 @@ namespace Monografico.ViewModels
         [Required(ErrorMessage = "Debe seleccionar una categoria")]
         [Display(Name = "Categoria")]
         public int? IdCategoria { get; set; }
+        [Required(ErrorMessage = "Debe seleccionar el ITBIS del producto")]
+        [Display(Name = "ITBIS")]
+        public int? IdItbis { get; set; }
         [Required(ErrorMessage = "Introduzca una descripcion para el producto")]
         [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
@@ -50,5 +54,6 @@ namespace Monografico.ViewModels
         [Required(ErrorMessage = "Introduzca la uniddad de medida del producto", AllowEmptyStrings = true)]
         public string Unidad { get; set; }
         public int Cantidad { get; set; }
+        public int itbis { get; set; }
     }
 }

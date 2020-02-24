@@ -217,6 +217,19 @@ namespace Monografico.Migrations
                     b.ToTable("CierreCaja");
                 });
 
+            modelBuilder.Entity("Monografico.Models.Configuracion", b =>
+                {
+                    b.Property<int>("IdConfiguracion")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("PorcientoLey");
+
+                    b.HasKey("IdConfiguracion");
+
+                    b.ToTable("Configuracion");
+                });
+
             modelBuilder.Entity("Monografico.Models.Cuenta", b =>
                 {
                     b.Property<int>("IdCuenta")
@@ -225,7 +238,7 @@ namespace Monografico.Migrations
 
                     b.Property<bool>("Activa");
 
-                    b.Property<int>("IdMesa");
+                    b.Property<int?>("IdMesa");
 
                     b.Property<int>("IdUsuario");
 
@@ -341,6 +354,19 @@ namespace Monografico.Migrations
                     b.ToTable("Inventario");
                 });
 
+            modelBuilder.Entity("Monografico.Models.Itbis", b =>
+                {
+                    b.Property<int>("IdItbis")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Valor");
+
+                    b.HasKey("IdItbis");
+
+                    b.ToTable("Itbis");
+                });
+
             modelBuilder.Entity("Monografico.Models.Mesa", b =>
                 {
                     b.Property<int>("IdMesa")
@@ -413,6 +439,8 @@ namespace Monografico.Migrations
 
                     b.Property<int?>("IdCategoria");
 
+                    b.Property<int?>("IdItbis");
+
                     b.Property<string>("Imagen");
 
                     b.Property<bool>("LlevaIngredientes");
@@ -424,6 +452,8 @@ namespace Monografico.Migrations
                     b.HasKey("IdProducto");
 
                     b.HasIndex("IdCategoria");
+
+                    b.HasIndex("IdItbis");
 
                     b.ToTable("Producto");
                 });
@@ -694,6 +724,10 @@ namespace Monografico.Migrations
                         .WithMany("Productos")
                         .HasForeignKey("IdCategoria")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Monografico.Models.Itbis", "Itbis")
+                        .WithMany()
+                        .HasForeignKey("IdItbis");
                 });
 
             modelBuilder.Entity("Monografico.Models.ProductoDetalle", b =>

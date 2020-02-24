@@ -68,5 +68,10 @@ namespace Monografico.Controllers
         {
             return Json(await repo.Caja.GetAllCajaViewModelAsync( x => (x.Fecha >= desde && x.Fecha <= hasta.AddDays(1))));
         }
+        
+        public async Task<bool> IsCajaAbierta()
+        {
+            return await repo.Caja.IsCajaAbierta();
+        }
     }
 }

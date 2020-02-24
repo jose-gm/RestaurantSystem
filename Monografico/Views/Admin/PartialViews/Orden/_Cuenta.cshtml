@@ -8,13 +8,14 @@
     var total = monto - descuento;*/
     decimal monto = 0;
     var cuenta = "00-" + Model.IdCuenta;
+    var mesa = (Model.Mesa == 0) ? "Delivery" : Model.Mesa.ToString();
 }
 
 <div style="width:200px">
     <h5>Cuenta No.: @cuenta</h5>
     <span>Fecha: @DateTime.Now.Date</span>
     <h6 class="text-dark mb-1">Mesero: @Model.Usuario</h6>
-    <h6 class="text-dark mb-1">Mesa: @Model.Mesa</h6>
+    <h6 class="text-dark mb-1">Mesa: @mesa</h6>
     <br />
     <table style="border-collapse: separate; border-spacing: 1vh;">
         <thead>

@@ -7,6 +7,11 @@
 
 <div class="card">
     <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <button id="deliverybtn" class="btn btn-success">Delivery</button>
+            </div>
+        </div>
         @foreach (var item in Model)
         {
             <div class="row">
@@ -16,14 +21,13 @@
                 @foreach (var mesa in item.Mesas)
                 {
                     <div class="col-6 col-md-4 col-sm-4 col-lg-2 col-xl-2">
-                        <a asp-action="Index" asp-controller="Cuenta" asp-route-idMesa="@mesa.IdMesa">
+                        <a href="#" class="mesa" data-idmesa="@mesa.IdMesa">
                             @if (mesa.Cuentas.Count > 0)
                             {
                                 <span class="badge badge-info mesa-info">Ocupado</span>
                             }
                             <img class="rounded d-block img-table" src="~/img/mesa.png" alt="icono de una mesa" />
                             <span class="text-black-50"><strong>@mesa.Numero</strong></span>
-                            <span class="text-black-50 ml-5"><strong>Asientos: @mesa.Asientos</strong></span>
                         </a>
                     </div>
                 }
@@ -31,3 +35,119 @@
         }
     </div>
 </div>
+
+<!-- Modal de apertura de caja-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalAperturaCaja.cshtml" />
+
+<!-- Modal de cierre de caja-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalCierreCaja.cshtml" />
+
+@section script {
+    <environment include="Development">
+        <script src="~/js/site.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="~/js/site.js"></script>
+    </environment>
+
+    <script>
+        //Verifica si se a realizado una apertura de caja.
+        var mesas = document.getElementsByClassName("mesa");
+        for (var i = 0; i < mesas.length; i++) {
+            mesas[i].addEventListener('click', function () {
+                var idmesa = this.dataset.idmesa;
+                fetch("@Url.Action("IsCajaAbierta","Caja")")
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d)
+                            window.location.href = "@Url.Action("Index","Cuenta")" + "?idMesa=" + idmesa;
+                        else
+                            toastr.error("Debe realizar una apertura de caja");
+                    });
+            });
+        }
+
+        document.getElementById("deliverybtn").addEventListener('click', function () {
+            fetch("@Url.Action("IsCajaAbierta","Caja")")
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d)
+                            window.location.href = "@Url.Action("Index","Cuenta")" + "?idMesa=" + 0;
+                        else
+                            toastr.error("Debe realizar una apertura de caja");
+                    });
+        });
+    </script>
+
+    <script>
+        var role = "@User.IsInRole("Mesero")";
+        if(role === "False")
+            document.querySelector(".aside-button").classList.remove("d-none");
+
+        //Abre el modal de apertura de caja
+        document.getElementById("apertura-caja-nav").addEventListener('click', function () {
+            var isCajaAbierta = "@ViewBag.IsCajaAbierta";
+            if (isCajaAbierta === "False")
+                $('#modal-apertura').modal('show');
+            else
+                toastr.error("Ya se realizo la apertura de caja");
+        });
+
+        //Abre el modal de cierre de caja
+        document.getElementById("cierre-caja-nav").addEventListener('click', function () {
+            fetch("@Url.Action("HayMesasAbierta","Mesa")")
+                .then(response => response.json())
+                .then(data => {
+                    if (data === true) {
+                        toastr.error("No puede realizar el cierre, hay mesas ocupadas o se esta procesando un delivery");
+                    }
+                    else {
+                        var isCajaAbierta = "@ViewBag.IsCajaAbierta";
+                        if (isCajaAbierta === "True") {
+                            $('#modal-cierre-body').load("@Url.Action("CierreView","Caja")", () => {
+                                $('#modal-cierre').modal('show');
+                            });
+                        }
+                        else
+                            toastr.error("Debes realizar una apertura de caja");
+                    }
+                });
+        });
+
+        //Formulario de paertura de caja
+        var form = document.getElementById("form-apertura");
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (form.checkValidity()) {
+                var model = {
+                    IdUsurio: @ViewBag.IdUsuario,
+                    Fecha: document.getElementById("apertura-fecha").value,
+                    MontoInicial: document.getElementById("apertura-montoI").value,
+                };
+
+                 $.ajax({
+                    method: 'POST',
+                     url: "@Url.Action("CreateApertura", "Caja")",
+                     data: model,
+                     error: function (response) {
+
+                     },
+                     success: function (response) {
+                         //toastr.success("Apertura realizada");
+                         $('#modal-apertura').modal('hide');
+
+                         $('#blocker').remove();
+                         clean();
+                         @*window.location.replace("@Url.Action("Index","Cuenta", new { idMesa = Model.IdMesa })");*@
+                         window.location.reload();
+                     }
+                });
+            }
+        });
+
+        function clean() {
+            document.getElementById("apertura-fecha").value = "";
+            document.getElementById("apertura-montoI").value = "0.00"
+        }
+    </script>
+}

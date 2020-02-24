@@ -11,7 +11,7 @@ using Monografico.ViewModels;
 
 namespace Monografico.Controllers
 {
-    [Authorize(Roles = "Administrador,Mesero")]
+    [Authorize(Roles = "Administrador,Mesero, Cajero")]
     public class CuentaController : Controller
     {
         RepositoryWrapper repo;
@@ -24,20 +24,32 @@ namespace Monografico.Controllers
         // GET: Orden
         public async Task<ActionResult> Index(int idMesa)
         {
+            var model = new CuentaViewModel();
             var usuario = await repo.Usuario.GetUsuario(HttpContext.User);
-            var model = await repo.Cuenta.FindCuentaViewModel(idMesa);
-
-            if(model.Cuentas.Count == 0)
-            {
-                await repo.Cuenta.Add(new Cuenta() { IdCuenta = 0, IdMesa = idMesa, IdUsuario = usuario.Id, Activa = true });
+            if(idMesa == 0)
+                model = await repo.Cuenta.FindCuentaViewModel(null);
+            else
                 model = await repo.Cuenta.FindCuentaViewModel(idMesa);
+            var isCajaAbierta = await repo.Caja.IsCajaAbierta();
+            if (model.Cuentas.Count == 0)
+            {
+                int? temp;
+                if (idMesa == 0)
+                    temp = null;
+                else
+                    temp = idMesa;
+                await repo.Cuenta.Add(new Cuenta() { IdCuenta = 0, IdMesa = temp, IdUsuario = usuario.Id, Activa = true });
+                model = await repo.Cuenta.FindCuentaViewModel(temp);
             }
 
             model.IdUsuario = usuario.Id;
             ViewBag.Usuario = usuario.Nombre + " " + usuario.Apellido;
 
+            ViewBag.Delivery = (idMesa == 0) ? true : false;
             ViewBag.AlterMenu = true;
-            model.IsCajaAbierta = await repo.Caja.IsCajaAbierta();
+            model.IsCajaAbierta = isCajaAbierta;
+            var config = await repo.Configuracion.Get();
+            ViewBag.PorcientoLey = (config == null) ? 0 : config.PorcientoLey;
             return View("~/Views/Admin/Orden.cshtml",model);
         }
 
@@ -131,7 +143,12 @@ namespace Monografico.Controllers
         {
             try
             {
-                var cuentas = await repo.Cuenta.GetList(x => x.IdMesa == idMesa && x.Activa);
+                int? temp = null;
+                if (idMesa == 0)
+                    temp = null;
+                else
+                    temp = idMesa;
+                var cuentas = await repo.Cuenta.GetList(x => x.IdMesa == temp && x.Activa);
                 if(await repo.Cuenta.RemoveAllAsync(cuentas))
                     return PartialView("~/Views/Admin/PartialViews/Orden/_TicketOrdenesCancelada.cshtml", cuentas);
             }
@@ -185,8 +202,13 @@ namespace Monografico.Controllers
         }
 
         public async Task<IActionResult> LoadCuentas(int idMesa)
-        {        
-            return PartialView("~/Views/Admin/PartialViews/Orden/_Cuentas.cshtml", await repo.Cuenta.GetList(x => x.IdMesa == idMesa && x.Activa));
+        {
+            int? temp = null;
+            if (idMesa == 0)
+                temp = null;
+            else
+                temp = idMesa;
+            return PartialView("~/Views/Admin/PartialViews/Orden/_Cuentas.cshtml", await repo.Cuenta.GetList(x => x.IdMesa == temp && x.Activa));
         }
 
         public async Task<JsonResult> ListOFOrden(int id)
@@ -209,10 +231,21 @@ namespace Monografico.Controllers
             ViewBag.OrdenCancelada = false;
             return PartialView("~/Views/Admin/PartialViews/Orden/_TicketOrden.cshtml", await repo.Cuenta.GetListOrdenViewModels(id, x => x.IdOrden == idOrden));
         }
+        
+        public async Task<IActionResult> DivisionCuenta(int idCuenta, int idMesa)
+        {
+            ViewBag.MesasDesocupadas = await repo.Mesa.GetSelectListMesaDesocupadas(idMesa);
+            return PartialView("~/Views/Admin/PartialViews/Orden/_DivisionCuenta.cshtml", await repo.Cuenta.GetListOrdenViewModels(idCuenta, x => true));
+        }
 
         public async Task<bool> OrdenesEnviadas(int idMesa)
         {
-            return await repo.Cuenta.HayOrdenesPendiente(idMesa);
+            int? temp = null;
+            if (idMesa == 0)
+                temp = null;
+            else
+                temp = idMesa;
+            return await repo.Cuenta.HayOrdenesPendiente(temp);
         }
     }
 }

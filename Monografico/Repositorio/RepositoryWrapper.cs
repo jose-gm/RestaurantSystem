@@ -26,6 +26,8 @@ namespace Monografico.Repositorio
         private RepositoryUsuario _usuario;
         private RepositoryRol _rol;
         private RepositoryCaja _caja;
+        private RepositoryItbis _itbis;
+        private RepositoryConfiguracion _configuracion;
         private RepositoryAjusteInventario _ajusteinventario;
 
         public RepositoryWrapper(Contexto contexto, UserManager<Usuario> userManager, RoleManager<Rol> roleManager)
@@ -160,6 +162,26 @@ namespace Monografico.Repositorio
                 if (_caja == null)
                     _caja = new RepositoryCaja(_contexto);
                 return _caja;
+            }
+        }
+        
+        public RepositoryItbis Itbis
+        {
+            get
+            {
+                if (_itbis == null)
+                    _itbis = new RepositoryItbis(_contexto);
+                return _itbis;
+            }
+        }
+        
+        public RepositoryConfiguracion Configuracion
+        {
+            get
+            {
+                if (_configuracion == null)
+                    _configuracion = new RepositoryConfiguracion(_contexto);
+                return _configuracion;
             }
         }
 

@@ -92,6 +92,7 @@ namespace Monografico.Repositorio
                 }
 
                 await _userManager.UpdateAsync(usuario);
+                paso = true;
             }
             catch (Exception)
             {
@@ -299,7 +300,6 @@ namespace Monografico.Repositorio
             }
             catch (Exception)
             {
-
                 throw;
             }
             return paso;

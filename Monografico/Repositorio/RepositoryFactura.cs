@@ -124,7 +124,7 @@ namespace Monografico.Repositorio
                     Itbis = factura.Itbis,
                     PorcientoLey = factura.PorcientoLey,
                     Monto = factura.Monto,
-                    Mesa = factura.Cuenta.Mesa.Numero,
+                    Mesa = (factura.Cuenta.Mesa == null)? 0 : factura.Cuenta.Mesa.Numero,
                     Descuento = factura.Descuento,
                     Usuario = (usuario == null) ? "" : usuario.Nombre + " " + usuario.Apellido,
                     Ordenes = new List<OrdenViewModel>()
@@ -227,7 +227,7 @@ namespace Monografico.Repositorio
                         Itbis = items.Itbis,
                         PorcientoLey = items.PorcientoLey,
                         Monto = items.Monto,
-                        Mesa = items.Cuenta.Mesa.Numero,
+                        Mesa = (items.Cuenta.Mesa == null) ? 0 : items.Cuenta.Mesa.Numero,
                         MetodoPago = items.MetodoPago,
                         Tarjeta = items.Tarjeta,
                         Cheque = items.Cheque,
@@ -264,7 +264,7 @@ namespace Monografico.Repositorio
                         Monto = items.Monto,
                         Itbis = items.Itbis,
                         PorcientoLey = items.PorcientoLey,
-                        Mesa = items.Cuenta.Mesa.Numero,
+                        Mesa = (items.Cuenta.Mesa == null) ? 0 : items.Cuenta.Mesa.Numero,
                         Descuento = items.Descuento,
                         Usuario = (usuario == null) ? "" : usuario.Nombre + " " + usuario.Apellido,
                         MetodoPago = items.MetodoPago

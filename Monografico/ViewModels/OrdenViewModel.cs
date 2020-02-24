@@ -16,6 +16,8 @@ namespace Monografico.ViewModels
         public int Cantidad { get; set; }
         public decimal Precio { get; set; }
         public decimal Total { get; set; }
+        public int Itbis { get; set; }
+        public decimal TotalItbis { get; set; }
         public bool Enviado { get; set; }
         public int Mesa { get; set; }
         public DateTime Fecha { get; set; }

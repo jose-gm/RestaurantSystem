@@ -70,7 +70,6 @@
     var formulario = document.getElementById("form-crear");
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
-        alert(formulario.checkValidity());
         if (formulario.checkValidity()) {
             var model = {
                 "IdInventario": document.getElementById("IdInventario").value,

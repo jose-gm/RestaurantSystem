@@ -1,0 +1,230 @@
+﻿@model IEnumerable<Monografico.ViewModels.OrdenViewModel>
+
+@{ 
+    var cuenta = "00-" + Model.FirstOrDefault().IdCuenta;
+    var x = 1;
+    var row = 0;
+}
+
+<div class="row">
+    <div class="col-md-5">
+        @*<div class="row mb-3">
+            <div class="col-md-12">
+                <span>Cuenta seleccionada: @cuenta</span>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-7">
+                <label>Añadir la cuenta a la siguiente mesa:</label>
+                <select class="custom-select" asp-items="@ViewBag.MesasDesocupadas">
+                    <option value="0">Delivery</option>
+                </select>
+            </div>
+        </div>*@
+
+        <div class="row">
+            <div class="col-md-12">
+                @*<h6 class="font-weight-bold mb-2">Selecciona los productos que va a quitar de la cuenta seleccionada</h6>*@
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Seleccionar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr class="@row">
+                                    <td style="width:30%">@item.Descripcion</td>
+                                    <td style="width:60%">
+                                        <button class="dbtn btn btn-secondary btn-sm" >-</button> 
+                                        <input id="cantTemp" class="cantTemp text-center" size="2" style="border:0; background-color: white;" readonly value="@item.Cantidad" /> 
+                                        <button class="abtn btn btn-secondary btn-sm" >+</button>
+                                    </td>
+                                    <td style="width:10%">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="producto-seleccionado custom-control-input" id="customCheck-@x">
+                                            <label class="custom-control-label" for="customCheck-@x"></label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                x++;
+                                row++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-1">
+        <button id="trasladarbtn" class="btn btn-secondary mt-auto mb-auto">></button>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-1 p-0">
+                <button id="agregarTempbtn" class="btn btn-success">+</button>
+            </div>
+            <div class="col-md-11">
+                <ul class="nav nav-tabs" id="cuentas-tab" style="overflow-x:scroll; white-space: nowrap; flex-wrap: nowrap" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#cuenta-1" role="tab" aria-controls="cuenta-1" aria-selected="true">Cuenta 1</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tab-content" id="cuentaTabContent" style="border: 0px;">
+                    <div class="tab-pane fade show active" id="cuenta-1" role="tabpanel" aria-labelledby="home-tab">
+                        <div id="tResp" class="table-responsive">
+                            <table id="tablaOrdenTemp" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-md-6">
+        <button class="btn btn-primary">Confirmar</button>
+    </div>
+</div>
+
+
+<script>
+    var cantidadesIniciales = [];
+    var inputCants = document.getElementsByClassName("cantTemp");
+    for (var i = 0; i < inputCants.length; i++) {
+        cantidadesIniciales.push(inputCants[i].value);
+    }
+
+    var disminuirBotones = document.getElementsByClassName("dbtn");
+
+    for (var i = 0; i < disminuirBotones.length; i++) {
+        disminuirBotones[i].addEventListener('click', function () {
+            var siblings = this.parentNode.children;
+            for (var j = 0; j < siblings.length; j++) {
+                if (siblings[j].classList.contains("cantTemp")) {
+                    var value = Number(siblings[j].value);
+                    value -= 1;
+                    if (value <= 0)
+                        value = 0;
+
+                    siblings[j].value = value;
+
+                    break;
+                }
+            }
+        });
+    }
+
+    var aumentarBotones = document.getElementsByClassName("abtn");
+
+    for (var i = 0; i < aumentarBotones.length; i++) {
+        aumentarBotones[i].addEventListener('click', function () {
+            var siblings = this.parentNode.children;
+            var row = Number(this.parentNode.parentNode.className);
+            console.log("row: " + row);
+            for (var j = 0; j < siblings.length; j++) {
+                if (siblings[j].classList.contains("cantTemp")) {
+                    var value = Number(siblings[j].value);
+                    value += 1;
+                    if (value >= cantidadesIniciales[row])
+                        value = cantidadesIniciales[row];
+
+                    siblings[j].value = value;
+
+                    break;
+                }
+            }
+        });
+    }
+</script>
+<script>
+    var flag = false;
+    document.getElementById("trasladarbtn").addEventListener('click', function () {
+        var ordenes = [];
+        var selects = document.getElementsByClassName("producto-seleccionado");
+        for (var i = 0; i < selects.length; i++) {
+            if (selects[i].checked) {
+                var tr = selects[i].parentNode.parentNode.parentNode;
+                var tdChilds = tr.children;
+                var orden = {};
+                //console.log(tr);
+                //console.log(tdChilds);
+                orden.producto = tdChilds[0].innerText;
+                orden.cantidad = tdChilds[1].children.namedItem("cantTemp").value;
+                orden.checkBox = selects[i];
+
+                ordenes.push(orden);
+                //console.log(ordenes);
+            }
+        }
+
+        var tablaTemp = document.querySelector(".tab-pane.active").children.namedItem("tResp").children.namedItem("tablaOrdenTemp");
+        var tbody = tablaTemp.querySelector("tbody");
+
+        
+
+        for (var i = 0; i < ordenes.length; i++) {
+            if (tbody.children.length > 0) {
+                var trs = tbody.getElementsByTagName("tr");
+
+                for (var e = 0; e < trs.length; e++) {
+                    if (trs[e].getElementsByClassName("productotd")[0].innerText === ordenes[i].producto) {
+                        var cantidad = Number(trs[e].getElementsByClassName("cantidadtd")[0].innerText);
+                        cantidad += Number(ordenes[i].cantidad);
+                        trs[e].getElementsByClassName("cantidadtd")[0].innerText = cantidad;
+
+                        ordenes[i].checkBox.checked = false;
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!flag) {
+                var tr = document.createElement("tr");
+
+                var td = document.createElement("td");
+                td.classList.add("productotd");
+                td.innerText = ordenes[i].producto;
+                tr.appendChild(td);
+
+                var td2 = document.createElement("td");
+                td2.classList.add("cantidadtd");
+                td2.innerText = ordenes[i].cantidad;
+                tr.appendChild(td2);
+
+                tbody.appendChild(tr);
+                ordenes[i].checkBox.checked = false;
+            }
+
+            flag = false;
+        }
+
+        flag = false;
+    });
+</script>

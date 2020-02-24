@@ -13,7 +13,7 @@ namespace Monografico.ViewModels
     {
         public int IdUsuario { get; set; }
         [Required(ErrorMessage = "Introduzca el nombre de usuario del empleado")]
-        [Remote("IsUserNameInUse", "Usuario", AdditionalFields = "nombreUsuarioActual, isEdicion", ErrorMessage = "Este nombre de usuario no esta disponible")]
+        [Remote("IsUserNameInUse", "Usuario", AdditionalFields = "nombreUsuarioActual, isEdicion", HttpMethod = "GET", ErrorMessage = "Este nombre de usuario no esta disponible")]
         [Display(Name = "Nombre de usuario")]
         public string NombreUsuario { get; set; }
         public string UsuarioActual { get; set; }

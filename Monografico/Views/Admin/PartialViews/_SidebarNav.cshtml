@@ -17,7 +17,7 @@
                     <!-- Empleado -->
                     <li class="nav-item">
                         <a class="nav-link" asp-action="Empleado" asp-controller="Admin">
-                            <i class="nav-icon cui-user"></i> Empleados
+                            <i class="nav-icon cui-user"></i> Usuarios
                         </a>
                     </li>
 
@@ -122,18 +122,48 @@
                             </li>
                         </ul>
                     </li>
+    
+                    <!-- Configuracion -->
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle">
+                            <i class="nav-icon cui-settings"></i> Configuraciones
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Itbis">
+                                    ITBIS
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Configuracion">
+                                    Configuración
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 }
 
-                <!-- Ordenes -->
-                <li class="nav-item">
-                    <a class="nav-link" asp-action="SeleccionMesa" asp-controller="Admin">
-                        <i class="nav-icon cui-notes"></i> Ordenes
-                    </a>
-                </li>
-
+                @if (singInManager.IsSignedIn(User) && (User.IsInRole("Administrador") || User.IsInRole("Mesero") || User.IsInRole("Cajero")))
+                {
+                    <!-- Ordenes -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="SeleccionMesa" asp-controller="Admin">
+                            <i class="nav-icon cui-notes"></i> Ordenes
+                        </a>
+                    </li>
+                }
+                
+                @if (singInManager.IsSignedIn(User) && User.IsInRole("Host"))
+                {
+                    <!-- Listado de mesas -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="ListaMesas" asp-controller="Admin">
+                            <i class="nav-icon cui-rectangle"></i> Listado de mesas
+                        </a>
+                    </li>
+                }
             </ul>
-        </div>
-       
+        </div>  
     </nav>
     <button class="sidebar-minimizer brand-minimizer" type="button"></button>
 </div>

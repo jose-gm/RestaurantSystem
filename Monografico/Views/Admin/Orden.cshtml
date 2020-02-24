@@ -3,7 +3,7 @@
 @{
     ViewData["Orden"] = false;
     ViewData["Title"] = "Lista de mesas";
-    var cuentaInicial = Model.Cuentas[0].IdCuenta;
+    //var cuentaInicial = Model.Cuentas[0].IdCuenta;
 }
 
 @section link {
@@ -16,6 +16,12 @@
         <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
     </environment>
 }
+
+<!-- Modal de confirmacion de division de cuenta-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalMensajeCuenta.cshtml" />
+    
+    <!-- Modal de confirmacion de division de cuenta-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalDivisionCuenta.cshtml" />
 
 <div class="card">
     <div class="card-body">
@@ -34,7 +40,16 @@
                                 <a asp-action="SeleccionMesa" asp-controller="Admin" class="btn btn-secondary btn-block">Mesas</a>
                             </div>
                             <div class="col-md-6">
-                                <button id="liberar-mesa-btn" class="btn btn-secondary btn-block">Liberar mesa</button>
+                                <button id="liberar-mesa-btn" class="btn btn-secondary btn-block">
+                                    @if (ViewBag.Delivery == false)
+                                    {
+                                        <text>Liberar mesa</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Cancelar Delivery</text>
+                                    }
+                                </button>
                             </div>
                         </div>
 
@@ -48,7 +63,16 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label class="control-label">Mesa: </label>
-                                <span>@Model.Mesa</span>
+                                <span>
+                                    @if (Model.Mesa == 0)
+                                    {
+                                        <text>Delivery</text>
+                                    }
+                                    else
+                                    {
+                                        @Model.Mesa
+                                    }
+                                </span>
                             </div>
                         </div>
 
@@ -75,6 +99,9 @@
                                                     Producto
                                                 </th>
                                                 <th>
+                                                    ITBIS%
+                                                </th>
+                                                <th>
                                                     Precio
                                                 </th>
                                                 <th>
@@ -82,6 +109,9 @@
                                                 </th>
                                                 <th>
                                                     Total
+                                                </th>
+                                                <th>
+                                                    TotalItbis
                                                 </th>
                                                 <th>
                                                     Enviado
@@ -104,28 +134,32 @@
                                     <div class="col-md-3">
                                         <label>Subtotal:</label>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 text-right">
                                         <span id="subtotal" class="ml-auto">0</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="row justify-content-between">
-                                    <div class="col-md-3">
-                                        <label>ITBIS:</label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <span id="itbis" class="ml-auto">0</span>
                                     </div>
                                 </div>
 
                                 <div class="row justify-content-between">
                                     <div class="col-md-3">
-                                        <label>% Ley:</label>
+                                        <label>ITBIS:</label>
                                     </div>
-                                    <div class="col-md-4">
-                                        <span id="porciento-ley" class="ml-auto">0</span>
+                                    <div class="col-md-4 text-right">
+                                        <span id="itbis" class="ml-auto">0</span>
                                     </div>
                                 </div>
+
+                                @if (ViewBag.Delivery == false)
+                                {
+                                    <div class="row justify-content-between">
+                                        <div class="col-md-3">
+                                            <label>% Ley:</label>
+                                        </div>
+                                        <div class="col-md-4 text-right">
+                                            <span id="porciento-ley" class="ml-auto">0</span>
+                                        </div>
+                                    </div>
+                                }
+
 
                                 <div class="row justify-content-between">
                                     <div class="col-md-3">
@@ -133,7 +167,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="input-group input-group-sm">
-                                            <input id="descuento-inp" type="number" class="form-control" value="0" min="0" />
+                                            <input id="descuento-inp" type="number" class="form-control text-right" value="0" min="0" />
                                             <div class="input-group-append">
                                                 <div class="input-group-text">%</div>
                                             </div>
@@ -145,7 +179,7 @@
                                     <div class="col-md-3">
                                         <label>Total:</label>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 text-right">
                                         <span id="total-span" class="ml-auto">0</span>
                                     </div>
                                 </div>
@@ -267,14 +301,9 @@
 
 <!-- Modal de confirmacion de impresion-->
 <partial name="~/Views/Admin/PartialViews/Orden/_ModalComfirmacionImpresion.cshtml" />
-    
-    <!-- Modal de confirmacion de impresion-->
-<partial name="~/Views/Admin/PartialViews/Orden/_ModalAperturaCaja.cshtml" />
 
-    <!-- Modal de confirmacion de impresion-->
-<partial name="~/Views/Admin/PartialViews/Orden/_ModalCierreCaja.cshtml" />
-    
-    <!-- Modal de barra de progreso-->
+
+<!-- Modal de barra de progreso-->
 <partial name="~/Views/Admin/PartialViews/Orden/_ModalProgress.cshtml" />
 
 <!-- Modal de confirmacion de impresion de cuenta-->
@@ -285,6 +314,7 @@
 
 <!-- Modal de confirmacion de eliminacion-->
 <partial name="~/Views/Admin/PartialViews/Orden/_ModalMensaje.cshtml" />
+
 
 <!-- Modal de impresion de orden-->
 <partial name="~/Views/Admin/PartialViews/Orden/_ModalTicket.cshtml" />
@@ -303,6 +333,19 @@
     </environment>
 
     <script>
+        /*window.addEventListener('beforeunload', function (e) {
+            if (ordenesSinEnviar() > 0) {
+                e.preventDefault();
+                e.returnValue = null;
+                toastr.error("Posee ordenes sin procesar");
+            }
+            else {
+
+            }
+        });*/
+    </script>
+
+    <script>
         var table;
         var model;
         var hasPrinted = false;
@@ -314,7 +357,6 @@
 
             //Mostrando el boton de del menu de opciones
             //document.querySelector(".aside-button").classList.add("d-none");
-            document.querySelector(".aside-button").classList.remove("d-none");
 
             //Datatable
             var _url = "@Url.Action("ListOfOrden","Cuenta")" + "/" + document.querySelector("span.cuenta-selected").dataset.id;
@@ -342,11 +384,12 @@
                 createdRow: function (row, data, dataIndex) {
                     if (data.enviado == true) {
                         $(row).css('background-color', '#ff8080');
+                        $(row).css('color', '#ffffff');
                     }
                 },
                 columnDefs: [
                     {
-                        targets: [0,1,2,3,8],
+                        targets: [0,1,2,3,9,10],
                         visible: false
                     },
                 ],
@@ -355,10 +398,16 @@
                     { data: 'idOrden' },
                     { data: 'idDetalle' },
                     { data: 'idProducto' },
-                    { data: 'descripcion' , width: "20%",responsivePriority: 1},
+                    { data: 'descripcion', width: "15%", responsivePriority: 1 },
+                    {
+                        data: 'itbis',
+                        width: "1%",
+                        responsivePriority: 6,
+
+                    },
                     {
                         data: 'precio',
-                        width: "4%",
+                        width: "3%",
                         className: 'text-right',
                         responsivePriority: 4,
                         render: $.fn.dataTable.render.number(',', '.', 2, '$'),
@@ -366,12 +415,12 @@
                     },
                     {
                         data: {},
-                        width: "8%",
+                        width: "12%",
                         className: 'text-right',
                         responsivePriority: 3,
                         render: function (data, type, row, meta) {
-                            
-                            
+
+
                             if(data.enviado == false)
                                 return '<button id="btnmenos" class="btn btn-danger btn-sm"><i class="fas fa-minus"></i></button>' +
                                     '<input class="cantidadInput text-center" size="2" style="border:0; background-color: white;" readonly value="' + data.cantidad + '" /> ' +
@@ -382,11 +431,18 @@
                     },
                     {
                         data: 'total',
-                        width: "6%",
+                        width: "5%",
                         className: 'text-right',
                         responsivePriority: 5,
                         render: $.fn.dataTable.render.number(',', '.', 2, '$'),
                         className: 'text-right'
+                    },
+                    {
+                        data: 'totalItbis',
+                        width: "1%",
+                        className: 'text-right',
+                        className: 'text-right',
+                        render: $.fn.dataTable.render.number(',', '.', 2, '$')
                     },
                     { data: 'enviado'},
                     {
@@ -411,9 +467,11 @@
                 var idorden = table.cell(cellIndex.row, 1).data();
                 var iddetalle = table.cell(cellIndex.row, 2).data();
 
-                var cantidadCell = table.cell(cellIndex.row, 6).nodes().to$().find('input').val();
-                var precio = table.cell(cellIndex.row, 5).data();
-                table.cell(cellIndex.row, 7).data(cantidadCell * precio).draw();
+                var cantidadCell = table.cell(cellIndex.row, 7).nodes().to$().find('input').val();
+                var precio = table.cell(cellIndex.row, 6).data();
+                var itbis = table.cell(cellIndex.row, 5).data();
+                table.cell(cellIndex.row, 8).data(cantidadCell * precio).draw();
+                table.cell(cellIndex.row, 9).data((cantidadCell * precio) * (itbis/100)).draw();
                 actualizar();
 
                  $.ajax({
@@ -436,11 +494,13 @@
                 var idorden = table.cell(cellIndex.row, 1).data();
                 var iddetalle = table.cell(cellIndex.row, 2).data();
 
-                var cantidadCell = table.cell(cellIndex.row, 6).nodes().to$().find('input').val();
-                table.cell(cellIndex.row, 6).nodes().to$().find('input').val(Number(cantidadCell) + 1);
-                cantidadCell = table.cell(cellIndex.row, 6).nodes().to$().find('input').val();
-                var precio = table.cell(cellIndex.row, 5).data();
-                table.cell(cellIndex.row, 7).data(cantidadCell * precio).draw();
+                var cantidadCell = table.cell(cellIndex.row, 7).nodes().to$().find('input').val();
+                table.cell(cellIndex.row, 7).nodes().to$().find('input').val(Number(cantidadCell) + 1);
+                cantidadCell = table.cell(cellIndex.row, 7).nodes().to$().find('input').val();
+                var precio = table.cell(cellIndex.row, 6).data();
+                var itbis = table.cell(cellIndex.row, 5).data();
+                table.cell(cellIndex.row, 8).data(cantidadCell * precio).draw();
+                table.cell(cellIndex.row, 9).data((cantidadCell * precio) * (itbis/100)).draw();
                 actualizar();
 
                  $.ajax({
@@ -456,18 +516,19 @@
 
             //Actualiza la columna de total de la tabla al precionar boton menos
             $('#datatable tbody').on('click', '#btnmenos', function () {
-                
                 var data = table.row($(this).parents('tr')).data();
                 var cellIndex = table.cell($(this).parents('td')).index();
 
                 var idorden = table.cell(cellIndex.row, 1).data();
                 var iddetalle = table.cell(cellIndex.row, 2).data();
 
-                var cantidadCell = table.cell(cellIndex.row, 6).nodes().to$().find('input').val();
-                table.cell(cellIndex.row, 6).nodes().to$().find('input').val((cantidadCell <= 1) ? cantidadCell : Number(cantidadCell) - 1);
-                cantidadCell = table.cell(cellIndex.row, 6).nodes().to$().find('input').val();
-                var precio = table.cell(cellIndex.row, 5).data();
-                table.cell(cellIndex.row, 7).data(cantidadCell * precio).draw();
+                var cantidadCell = table.cell(cellIndex.row, 7).nodes().to$().find('input').val();
+                table.cell(cellIndex.row, 7).nodes().to$().find('input').val((cantidadCell <= 1) ? cantidadCell : Number(cantidadCell) - 1);
+                cantidadCell = table.cell(cellIndex.row, 7).nodes().to$().find('input').val();
+                var precio = table.cell(cellIndex.row, 6).data();
+                var itbis = table.cell(cellIndex.row, 5).data();
+                table.cell(cellIndex.row, 8).data(cantidadCell * precio).draw();
+                table.cell(cellIndex.row, 9).data((cantidadCell * precio) * (itbis/100)).draw();
                 actualizar();
 
                  $.ajax({
@@ -485,13 +546,11 @@
             $('.sidebar-toggler').click(function () {
                 table.columns.adjust().responsive.recalc();
             });
-
-
         });//document ready end
     </script>
 
     <script>
-       
+
         //Evento de seleccion de producto y lo agrega a la lista
         $('.productolink').click(function (e) {
             e.preventDefault();
@@ -586,10 +645,17 @@
         //Abre modal para imprimir cuenta
         document.getElementById("cuentaPrintbtn").addEventListener('click', function (e) {
             if (ordenesEnviadas() > 0) {
-                $('#modal-cuenta').modal({
-                    keyboard: false,
-                    backdrop: 'static'
-                });
+                if (ordenesSinEnviar() > 0) {
+                    console.log("ddasdas");
+                    $("#modal-cuenta").modal('hide');
+                    toastr.warning("Hay ordenes sin procesar");
+                }
+                else {
+                    $('#modal-cuenta').modal({
+                        keyboard: false,
+                        backdrop: 'static'
+                    });
+                }
             } else {
                 $("#modal-cuenta").modal('hide');
                 toastr.warning("No hay ordenes realizadas");
@@ -637,14 +703,14 @@
             for (let i = 0; i < data.length; i++) {
                 ordenes.push(data[i]);
             }
-
+            var delivery = "@ViewBag.Delivery";
             model = {
                 "IdCuenta": document.querySelector("span.cuenta-selected").dataset.id,
                 "IdMesa": @Model.IdMesa,
                 "Mesa": "@Model.Mesa",
                 "Monto": document.getElementById("total-span").innerText,
                 "Itbis": document.getElementById("itbis").innerText,
-                "PorcientoLey": document.getElementById("porciento-ley").innerText,
+                "PorcientoLey": (delivery === "True") ? 0 : document.getElementById("porciento-ley").innerText,
                 "Descuento": document.getElementById("descuento-inp").value,
                 "Ordenes": ordenes,
                 "Usuario": "@ViewBag.Usuario"
@@ -700,7 +766,7 @@
             if (isMesero === "True") {
                 console.log("mesero");
                 if (ordenesEnviadas() > 0) {
-                    modalAutorizacion(parent, "No tiene autorizacion para cancelar ordenes pendientes")
+                    modalAutorizacion(parent);
                 }
                 else {
                     abrirModalMensaje("Seguro que desea eliminar las ordenes?", "/img/delete.png");
@@ -708,28 +774,30 @@
             } else {
                 console.log("admin");
                 abrirModalMensaje("Seguro que desea cancelar la orden?", "/img/delete.png");
-            }   
+            }
         });
 
         //Abre el modal para cancelar la cuenta actual y desocupar la mesa
         document.getElementById("liberar-mesa-btn").addEventListener('click', async function (e) {
             parent = 2;
+            var delivery = "@ViewBag.Delivery";
+            var mensaje = (delivery === "True") ? "Seguro que desea cancelar el delivery?" : "Seguro que desea liberar la mesa?";
             var isMesero = "@User.IsInRole("Mesero")";
             if (isMesero === "True") {
-                console.log("mesero");
+                //console.log("mesero");
                 var data = await hayOrdenesEnviadas();
                 console.log(data);
                 if (data) {
-                    modalAutorizacion(parent, "No tiene autorizacion para liberar la mesa mientras hayan ordenes pendientes")
+                    modalAutorizacion(parent)
                 }
                 else {
-                    abrirModalMensaje("Seguro que desea liberar la mesa?", "/img/warning.png");
+                    abrirModalMensaje(mensaje, "/img/warning.png");
                 }
             }
             else {
-                console.log("admin");
-                abrirModalMensaje("Seguro que desea liberar la mesa?", "/img/warning.png");
-            }          
+                //console.log("admin");
+                abrirModalMensaje(mensaje, "/img/warning.png");
+            }
         });
 
         //Evento del boton eliminar del modal mensaje
@@ -768,13 +836,17 @@
             }
         });
 
-        //Abre el modal de autorizacion
-        function modalAutorizacion(parent, mensaje) {
-            if (parent == 1)
-                $("h4#mensaje-auth").text(mensaje);
-            else
-                $("h4#mensaje-auth").text(mensaje);
+        var tienePermiso = false;
+        //Evento clic en input de descuento
+        document.getElementById("descuento-inp").addEventListener('click', function () {
+            var isMesero = "@User.IsInRole("Mesero")";
+            if (isMesero === "True" && tienePermiso === false) {
+                modalAutorizacion(0);
+            }
+        });
 
+        //Abre el modal de autorizacion
+        function modalAutorizacion(parent) {
             $('#modal-autorizacion').modal({
                 keyboard: false,
                 backdrop: 'static'
@@ -786,15 +858,17 @@
                     url: "@Url.Action("VerifyPassword","Usuario")",
                     data: { "password": document.getElementById("admin-pass").value },
                     error: function () {
-                        $('#modal-autorizacion').modal('hide');                              
+                        $('#modal-autorizacion').modal('hide');
                         toastr.error("La contraseña no es valida");
                     },
                     success: function () {
                         $('#modal-autorizacion').modal('hide');
                         if(parent == 1)
                             abrirModalMensaje("Seguro que desea eliminar las ordenes?", "/img/delete.png");
-                        else
+                        if(parent == 2)
                             abrirModalMensaje("Seguro que desea liberar la mesa?", "/img/warning.png");
+
+                        tienePermiso = true;
                     }
                 });
             });
@@ -811,15 +885,19 @@
 
          //Actualiza los totales y impuestos
         function actualizar() {
+            var delivery = "@ViewBag.Delivery";
             var table = $('#datatable').DataTable();
-            var subtotal = table.column(7).data().sum().toFixed(2);
-            var itbis = (subtotal * 0.18).toFixed(2);
-            var porcientoLey = (subtotal * 0.1).toFixed(2);
+            var subtotal = table.column(8).data().sum().toFixed(2);
+            var itbis = table.column(9).data().sum().toFixed(2);
+            var porcientoLey = (delivery === "True") ? 0 : (subtotal * (@ViewBag.PorcientoLey/100)).toFixed(2);
             var total = (Number(subtotal) + Number(itbis) + Number(porcientoLey)).toFixed(2);
+            /*console.log("suntotal: " + subtotal + "  itbis: " + itbis + "  porciento: " + porcientoLey + "  total: " + total);
+            console.log(table.column(9).data());*/
 
             document.getElementById("subtotal").innerHTML = subtotal;
             document.getElementById("itbis").innerHTML = itbis;
-            document.getElementById("porciento-ley").innerHTML = porcientoLey;
+            if (delivery === "False")
+                document.getElementById("porciento-ley").innerHTML = porcientoLey;
             document.getElementById("total-span").innerHTML = total;
         }
 
@@ -910,70 +988,20 @@
             }).length;
             return lenght;
         }
+
+        //Devuelve la cantidad de ordenes en la cuenta que esta seleccionada
+        function ordenesSinEnviar() {
+            var table = $('#datatable').DataTable();
+            var lenght = table.rows().data().filter(function (data, index) {
+                return data.enviado === false ? true : false;
+            }).length;
+            return lenght;
+        }
     </script>
 
     <script>
-
-        //Abre el modal de apertura de caja
-        document.getElementById("apertura-caja-nav").addEventListener('click', function () {
-            var isCajaAbierta = "@Model.IsCajaAbierta";
-            if (isCajaAbierta === "False")
-                $('#modal-apertura').modal('show');
-            else
-                toastr.error("Ya se realizo la apertura de caja");
-        });
-
-        //Abre el modal de cierre de caja
-        document.getElementById("cierre-caja-nav").addEventListener('click', function () {
-            var isCajaAbierta = "@Model.IsCajaAbierta";
-            if (isCajaAbierta === "True") {
-                $('#modal-cierre-body').load("@Url.Action("CierreView","Caja")", () => {
-                    $('#modal-cierre').modal('show');
-                });
-            }
-            else
-                toastr.error("Debes realizar una apertura de caja");
-        });
-
-        //Formulario de paertura de caja
-        var form = document.getElementById("form-apertura");
-        form.addEventListener('submit', function (e) {
-            console.log("rewrewr");
-            e.preventDefault();
-            if (form.checkValidity()) {
-                var model = {
-                    IdUsurio: @Model.IdUsuario,
-                    Fecha: document.getElementById("apertura-fecha").value,
-                    MontoInicial: document.getElementById("apertura-montoI").value,
-                };
-
-                 $.ajax({
-                    method: 'POST',
-                     url: "@Url.Action("CreateApertura", "Caja")",
-                     data: model,
-                     error: function (response) {
-
-                     },
-                     success: function (response) {
-                         //toastr.success("Apertura realizada");
-                         $('#modal-apertura').modal('hide');
-
-                         $('#blocker').remove();
-                         clean();
-                         @*window.location.replace("@Url.Action("Index","Cuenta", new { idMesa = Model.IdMesa })");*@
-                         window.location.reload();
-                     }
-                });
-            }
-        });
-
-        function clean() {
-            document.getElementById("apertura-fecha").value = "";
-            document.getElementById("apertura-montoI").value = "0.00"
-        }
-
         $('#modal-autorizacion').on('hidden.bs.modal', function (e) {
             document.getElementById("admin-pass").value = "";
-        })      
+        })
     </script>
 }

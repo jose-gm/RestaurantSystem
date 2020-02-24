@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Monografico.Data;
 using Monografico.Models;
+using Monografico.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,6 +50,38 @@ namespace Monografico.Repositorio
                 throw;
             }
             return zona;
+        }
+        
+        public async Task<List<MesaViewModel>> GetAllMesas(Expression<Func<Zona, bool>> expression)
+        {
+            List<MesaViewModel> model = new List<MesaViewModel>();
+            try
+            {
+                var zonas = await _contexto.Zona.Include(x => x.Mesas).ThenInclude(x => x.Cuentas).Where(expression).AsNoTracking().ToListAsync();
+                zonas.ForEach(a => a.Mesas.ForEach(b => b.Cuentas.RemoveAll(c => c.Activa == false)));
+
+                foreach (var item in zonas)
+                {
+                    foreach (var mesa in item.Mesas)
+                    {
+                        model.Add(new MesaViewModel()
+                        {
+                            IdMesa = mesa.IdMesa,
+                            Asientos = mesa.Asientos,
+                            IdZona = item.IdZona,
+                            Numero = mesa.Numero,
+                            ZonaDescripcion = item.Descripcion,
+                            Estado = (mesa.Cuentas.Count > 0) ? "Ocupado" : "Libre"
+                        }); ;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return model;
         }
  
         public async Task<SelectList> GetSelectList()

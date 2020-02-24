@@ -14,6 +14,7 @@ namespace Monografico.ViewModels
         public int IdIngrediente { get; set; }
         public int Cantidad { get; set; }
         public string Descripcion { get; set; }
+        public string DescripcionProducto { get; set; }
         public string Unidad { get; set; }
         public decimal Costo { get; set; }
         //public List<Ingrediente> Ingredientes { get; set; }

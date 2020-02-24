@@ -99,8 +99,19 @@ namespace Monografico.Controllers
         }
 
         //GET:
-        public async Task<JsonResult> List()
+        public async Task<JsonResult> List(string filtro)
         {
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                if (filtro.Equals("") || filtro.Equals("todo"))
+                    return Json(await repo.Inventario.GetListViewModel(x => (x.Producto != null) ? !x.Producto.Desactivado : true));
+                if (filtro.Equals("producto"))
+                    return Json(await repo.Inventario.GetListViewModel(x => ((x.Producto != null) ? !x.Producto.Desactivado : true) && x.IdProducto > 0));
+                if (filtro.Equals("ingrediente"))
+                    return Json(await repo.Inventario.GetListViewModel(x => x.IdIngrediente > 0));
+            }
+            
+
             return Json(await repo.Inventario.GetListViewModel(x => (x.Producto != null) ? !x.Producto.Desactivado : true));
         }
         

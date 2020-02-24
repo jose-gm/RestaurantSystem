@@ -16,8 +16,5 @@ namespace Monografico.ViewModels
         public string Password { get; set; }
 
         public string ReturnUrl { get; set; }
-
-        [Display(Name = "Recordarme")]
-        public bool RememberMe { get; set; }
     }
 }

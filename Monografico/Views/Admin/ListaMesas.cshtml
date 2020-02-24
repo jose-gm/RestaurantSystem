@@ -1,0 +1,82 @@
+﻿
+@{
+    ViewData["Title"] = "Listado de mesas";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h1>@ViewData["Title"]</h1>
+        <br />
+        <div class="row">
+            <div class="col-md-2">
+                <label>Filtro: </label>
+                <select id="filtro" class="custom-select mb-2" asp-items="@ViewBag.Zonas">
+                    <option selected disabled value="0">Selecciona un filtro</option>
+                    <option value="0">Todo</option>
+                </select>
+            </div>
+        </div>   
+        <div class="table-responsive">
+            <table id="datatable" style="width:100%" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            Id
+                        </th>
+                        <th>
+                            Zona
+                        </th>
+                        <th>
+                            Numero
+                        </th>
+                        <th>
+                            Estado
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section script {
+    <script>
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {
+            $('#datatable').DataTable({
+                responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
+                ajax: {
+                    url: "@Url.Action("ListOfMesa","Zona")",
+                    data: function (d) {
+                        return { zona: document.getElementById("filtro").value };
+                    },
+                    dataSrc: ''
+                },
+                columnDefs: [
+                    {
+                        targets: [0],
+                        visible: false
+                    }
+                ],
+                columns: [
+                    { data: 'idMesa' },
+                    { data: 'zonaDescripcion' },
+                    { data: 'numero', className: 'text-right' },
+                    {
+                        data: 'estado',
+                        render: function (data, type, row, meta) {
+                            return '<h4><span class="badge badge-primary">' + data + '</span></h4>';
+                        }
+                    }
+                ]
+            });
+        });
+
+        document.getElementById("filtro").addEventListener('change', function () {
+            $('#datatable').DataTable().ajax.reload();
+        });
+    </script>
+}

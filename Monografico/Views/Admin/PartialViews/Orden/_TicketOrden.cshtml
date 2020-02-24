@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Monografico.ViewModels.OrdenViewModel>
 
 @{
-    var mesa = (@Model.FirstOrDefault() != null) ? @Model.FirstOrDefault().Mesa : 0;
+    var mesa = (@Model.FirstOrDefault().Mesa == 0) ? "Delivery" : @Model.FirstOrDefault().Mesa.ToString();
 }
 
 

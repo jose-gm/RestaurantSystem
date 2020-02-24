@@ -87,7 +87,7 @@ namespace Monografico.Controllers
                     ((await repo.Usuario.Exists(usuario.NombreUsuario)) && usuario.NombreUsuario.Equals(usuario.UsuarioActual)))
                 {
                     // TODO: Add update logic here
-                    if(!(await repo.Usuario.Update(usuario)))
+                    if((await repo.Usuario.Update(usuario)))
                         return Ok();
                 }
             }
@@ -193,7 +193,6 @@ namespace Monografico.Controllers
             return Json(await repo.Usuario.GetListAsViewModel());
         }
 
-        [AcceptVerbs("GET","POST")]
         public async Task<JsonResult> IsUserNameInUse(string nombreUsuario, string nombreUsuarioActual, bool isEdicion)
         {
             if (!isEdicion)

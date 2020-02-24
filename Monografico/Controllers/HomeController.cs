@@ -41,15 +41,17 @@ namespace Monografico.Controllers
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Usuario, model.Password, model.RememberMe, false);
+                var result = await _signInManager.PasswordSignInAsync(model.Usuario, model.Password, true, false);
 
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByNameAsync(model.Usuario);
-                    var esMesero = await _userManager.IsInRoleAsync(user, "Mesero");
+                    var rol = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 
-                    if (esMesero)
+                    if (rol.Equals("Mesero") || rol.Equals("Cajero"))
                         model.ReturnUrl = Url.Action("SeleccionMesa", "Admin");
+                    if (rol.Equals("Host"))
+                        model.ReturnUrl = Url.Action("ListaMesas", "Admin");
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return LocalRedirect(model.ReturnUrl);
