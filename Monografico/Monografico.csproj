@@ -47,6 +47,7 @@
   
     <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\css\login.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\tab.css" />
     </ItemGroup>
 
   <ItemGroup>

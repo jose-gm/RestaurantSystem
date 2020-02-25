@@ -6,6 +6,8 @@
     var row = 0;
 }
 
+    <link href="~/css/tab.css" rel="stylesheet" />
+
 <div class="row">
     <div class="col-md-5">
         @*<div class="row mb-3">
@@ -27,7 +29,7 @@
             <div class="col-md-12">
                 @*<h6 class="font-weight-bold mb-2">Selecciona los productos que va a quitar de la cuenta seleccionada</h6>*@
                 <div class="table-responsive">
-                    <table>
+                    <table id="ordenActual">
                         <thead>
                             <tr>
                                 <th>Producto</th>
@@ -39,13 +41,13 @@
                             @foreach (var item in Model)
                             {
                                 <tr class="@row">
-                                    <td style="width:30%">@item.Descripcion</td>
-                                    <td style="width:60%">
+                                    <td class="producto" style="width:30%">@item.Descripcion</td>
+                                    <td class="cantidad" style="width:60%">
                                         <button class="dbtn btn btn-secondary btn-sm" >-</button> 
                                         <input id="cantTemp" class="cantTemp text-center" size="2" style="border:0; background-color: white;" readonly value="@item.Cantidad" /> 
                                         <button class="abtn btn btn-secondary btn-sm" >+</button>
                                     </td>
-                                    <td style="width:10%">
+                                    <td class="select" style="width:10%">
                                         <div class="custom-control custom-checkbox">
                                             <input type="checkbox" class="producto-seleccionado custom-control-input" id="customCheck-@x">
                                             <label class="custom-control-label" for="customCheck-@x"></label>
@@ -64,6 +66,7 @@
 
     <div class="col-md-1">
         <button id="trasladarbtn" class="btn btn-secondary mt-auto mb-auto">></button>
+        <button id="retrocederbtn" class="btn btn-secondary mt-auto mb-auto"><<</button>
     </div>
     
     <div class="col-md-6">
@@ -74,7 +77,8 @@
             <div class="col-md-11">
                 <ul class="nav nav-tabs" id="cuentas-tab" style="overflow-x:scroll; white-space: nowrap; flex-wrap: nowrap" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#cuenta-1" role="tab" aria-controls="cuenta-1" aria-selected="true">Cuenta 1</a>
+                        <a class="nav-link active" id="cuenta-1-tab" data-toggle="tab" href="#cuenta-1" role="tab" aria-controls="cuenta-1" aria-selected="true">Cuenta 1</a>
+                        <span class="eliminar-tab">x</span>
                     </li>
                 </ul>
             </div>
@@ -83,7 +87,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="tab-content" id="cuentaTabContent" style="border: 0px;">
-                    <div class="tab-pane fade show active" id="cuenta-1" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="tab-pane fade show active" id="cuenta-1" role="tabpanel" aria-labelledby="cuenta-1-tab">
                         <div id="tResp" class="table-responsive">
                             <table id="tablaOrdenTemp" class="table">
                                 <thead>
@@ -146,7 +150,6 @@
         aumentarBotones[i].addEventListener('click', function () {
             var siblings = this.parentNode.children;
             var row = Number(this.parentNode.parentNode.className);
-            console.log("row: " + row);
             for (var j = 0; j < siblings.length; j++) {
                 if (siblings[j].classList.contains("cantTemp")) {
                     var value = Number(siblings[j].value);
@@ -163,6 +166,107 @@
     }
 </script>
 <script>
+    //document.getElementById("agregarTempbtn").addEventListener('click', function () {
+    //    var ulTab = document.getElementById("cuentas-tab");
+    //    var divTabContent = document.getElementById("cuentaTabContent");
+    //    var cuentaContador = divTabContent.children.length + 1;
+
+    //    var tabLink = ulTab.querySelector(".nav-link.active");
+    //    tabLink.classList.remove("active");
+    //    tabLink.removeAttribute("aria-selected");
+    //    tabLink.setAttribute("aria-selected", "false");
+
+    //    var pane = divTabContent.querySelector(".tab-pane.show.active");
+    //    pane.classList.remove("show");
+    //    pane.classList.remove("active");
+
+
+    //    var divPane = document.createElement("div");
+    //    divPane.classList.add("tab-pane");
+    //    divPane.classList.add("fade");
+    //    divPane.classList.add("show");
+    //    divPane.classList.add("active");
+    //    divPane.id = "cuenta-" + cuentaContador;
+    //    divPane.setAttribute("role", "tabpanel");
+    //    divPane.setAttribute("aria-labelledby", "cuenta-" + cuentaContador + "-tab");
+
+    //    var tableResp = document.createElement("div");
+    //    tableResp.classList.add("table-responsive");
+
+    //    var table = document.createElement("table");
+    //    table.classList.add("table");
+    //    var thead = document.createElement("thead");
+    //    var tbody = document.createElement("tbody");
+
+    //    var tr = document.createElement("tr");
+    //    var th = document.createElement("th");
+    //    var th2 = document.createElement("th");
+
+    //    th.innerText = "Producto";
+    //    th2.innerText = "Cantidad";
+
+    //    tr.appendChild(th);
+    //    tr.appendChild(th2);
+    //    thead.appendChild(tr);
+    //    table.appendChild(thead);
+    //    table.appendChild(tbody);
+    //    tableResp.appendChild(table);
+    //    divPane.appendChild(tableResp);
+    //    divTabContent.appendChild(divPane);
+
+
+    //    var li = document.createElement("li");
+    //    var anchor = document.createElement("a");
+
+    //    li.classList.add("nav-item");
+
+    //    anchor.id = "cuenta-" + cuentaContador + "-tab";
+    //    anchor.classList.add("nav-link");
+    //    anchor.classList.add("active");
+    //    anchor.href = "#cuenta-" + cuentaContador;
+    //    anchor.setAttribute("data-toogle", "tab");
+    //    anchor.setAttribute("aria-controls", "cuenta-" + cuentaContador);
+    //    anchor.setAttribute("aria-selected", "true");
+    //    anchor.innerText = "Cuenta " + cuentaContador;
+
+    //    li.appendChild(anchor);
+    //    ulTab.appendChild(li);
+    //});
+
+    document.getElementById("agregarTempbtn").addEventListener('click', function () {
+        var conteo = $('#cuentas-tab').children().length + 1;
+        $('#cuentas-tab').append('<li class="nav-item">' +
+                                    '<a class="nav-link" id="cuenta-' + conteo + '-tab" data-toggle="tab" href="#cuenta-' + conteo + '" role="tab" aria-controls="cuenta-' + conteo + '" aria-selected="true">Cuenta ' + conteo + '</a>' +
+                                    '<span class="eliminar-tab">x</span>' +
+                                '</li>');
+        $('#cuentaTabContent').append('<div class="tab-pane fade" id="cuenta-' + conteo + '" role="tabpanel" aria-labelledby="cuenta-' + conteo + '-tab">' +
+                                            '<div id="tResp" class="table-responsive">' +
+                                                '<table id="tablaOrdenTemp" class="table">' +
+                                                    '<thead>' +
+                                                        '<tr>' +
+                                                            '<th>Producto</th>' +
+                                                            '<th>Cantidad</th>' +
+                                                        '</tr>' +
+                                                    '</thead>' +
+                                                    '<tbody>'  +
+                                                    '</tbody>' +
+                                                '</table>' +
+                                            '</div>' +
+            '</div>');
+        $('.nav-tabs li:nth-child(' + conteo + ') a').click();
+    });
+
+    $("#cuentas-tab").on("click", ".eliminar-tab", function (e) {
+        if ($('#cuentas-tab').children().length > 1) {
+            var anchor = $(this).siblings('a');
+            $(anchor.attr('href')).remove();
+            $(this).parent().remove();
+            $("#cuentas-tab li").children('a').first().click();
+        }
+        
+    })
+</script>
+<script>
     var flag = false;
     document.getElementById("trasladarbtn").addEventListener('click', function () {
         var ordenes = [];
@@ -174,19 +278,23 @@
                 var orden = {};
                 //console.log(tr);
                 //console.log(tdChilds);
-                orden.producto = tdChilds[0].innerText;
-                orden.cantidad = tdChilds[1].children.namedItem("cantTemp").value;
-                orden.checkBox = selects[i];
+                if (Number(tdChilds[1].children.namedItem("cantTemp").value) > 0) {
+                    orden.producto = tdChilds[0].innerText;
+                    orden.cantidad = tdChilds[1].children.namedItem("cantTemp").value;
+                    orden.checkBox = selects[i];
+                    orden.cantidadInput = tdChilds[1].children.namedItem("cantTemp");
+                    orden.cantidadesIniciales = cantidadesIniciales;
+                    orden.index = i;
 
-                ordenes.push(orden);
-                //console.log(ordenes);
+                    ordenes.push(orden);
+                    //console.log(ordenes);
+                }
+                
             }
         }
 
         var tablaTemp = document.querySelector(".tab-pane.active").children.namedItem("tResp").children.namedItem("tablaOrdenTemp");
         var tbody = tablaTemp.querySelector("tbody");
-
-        
 
         for (var i = 0; i < ordenes.length; i++) {
             if (tbody.children.length > 0) {
@@ -219,12 +327,54 @@
                 tr.appendChild(td2);
 
                 tbody.appendChild(tr);
+
                 ordenes[i].checkBox.checked = false;
+                var diff = Number(ordenes[i].cantidadesIniciales[ordenes[i].index]) - Number(ordenes[i].cantidad);
+                ordenes[i].cantidadesIniciales[ordenes[i].index] = diff;
+                ordenes[i].cantidadInput.value = diff;
             }
 
             flag = false;
         }
 
         flag = false;
+    });
+
+    document.getElementById("retrocederbtn").addEventListener('click', function () {
+        var ordenes = [];
+        var tablaTemp = document.querySelector(".tab-pane.active").children.namedItem("tResp").children.namedItem("tablaOrdenTemp");
+        var tbody = tablaTemp.getElementsByTagName("tbody")[0];
+        //console.log(tbody);
+        if (tbody.children.length > 0) {
+            var trs = tbody.getElementsByTagName("tr");
+            //console.log(trs);
+            for (var e = 0; e < trs.length; e++) {
+                var orden = [];
+                orden.producto = trs[e].getElementsByClassName("productotd")[0].innerText;
+                //console.log(trs[e].getElementsByClassName("productotd")[0].innerText);
+                orden.cantidad = Number(trs[e].getElementsByClassName("cantidadtd")[0].innerText);
+
+                
+                ordenes.push(orden);
+                trs[e].remove();
+            }
+            //console.log(ordenes);
+
+            var tablaOrden = document.getElementById("ordenActual");
+            var tbodyOrden = tablaOrden.querySelector("tbody");
+
+            for (var i = 0; i < ordenes.length; i++) {
+                var trsOrden = tbodyOrden.getElementsByTagName("tr");
+
+                for (var j = 0; j < trsOrden.length; j++) {
+                    var row = Number(trsOrden[j].className);
+                    
+                    if (trsOrden[j].getElementsByClassName("producto")[0].innerText === ordenes[i].producto) {
+                        cantidadesIniciales[row] += Number(ordenes[i].cantidad);
+                        trsOrden[j].getElementsByClassName("cantidad")[0].getElementsByClassName("cantTemp")[0].value = cantidadesIniciales[row];
+                    }
+                }
+            }
+        }    
     });
 </script>
