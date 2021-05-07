@@ -1,0 +1,195 @@
+﻿@model Monografico.ViewModels.ReportesViewModel
+
+@{
+    ViewData["Title"] = "Reportes";
+}
+
+@section link {
+    <environment include="Development">
+        <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Resultados del año</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="callout callout-primary">
+                            <h5 class="card-title">Hora con mayor venta</h5>
+                            <span class="card-text">@Model.HoraMasVendida:00</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="callout callout-warning">
+                            <h5 class="card-title">Zona que mas vende</h5>
+                            <span class="card-text">@Model.ZonaMayorVenta</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="callout callout-danger">
+                            <h5 class="card-title">Empleado con mayor ventas</h5>
+                            <span class="card-text">@Model.MeseroMayorVenta</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="callout callout-secondary">
+                            <h5 class="card-title">Mesa con mayor ventas</h5>
+                            <span class="card-text">@Model.MesaroMayorVenta</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-8 col-sm-8 col-md-8 col-lg-8 col-xl-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+        <div class="card">
+            <div class="card-body">
+                <h3>Top 10 de productos del año</h3>
+                <div class="chart-container">
+                    <canvas id="chart-productos"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section script {
+    <environment include="Development">
+        <script src="~/lib/Chart.js/Chart.min.js"></script>
+        <script src="~/lib/select2/js/select2.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="~https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    </environment>
+
+    <script>
+        var array = @Html.Raw(Json.Serialize(Model.MontoMensuales));
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+                datasets: [{
+                    label: 'Ganancias del año',
+                    data: array,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+    <script>
+        var productos = @Html.Raw(Json.Serialize(Model.Productos));
+        var productosid = @Html.Raw(Json.Serialize(Model.ProductosId));
+        var ctx = document.getElementById('chart-productos').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: productos,
+                datasets: [{
+                    label: 'Top 10 de productos mas vendidos',
+                    data: productosid,
+                    backgroundColor: [
+                        'rgba(250, 55, 25, 0.7)',
+                        'rgba(25, 250, 85, 0.7)',
+                        'rgba(27, 95, 242, 0.7)',
+                        'rgba(242, 27, 235, 0.7)',
+                        'rgba(194, 52, 83, 0.7)',
+
+                        'rgba(173, 163, 165, 0.7)',
+                        'rgba(36, 34, 35, 0.7)',
+                        'rgba(255, 248, 59, 0.7)',
+                        'rgba(203, 237, 33, 0.7)',
+                        'rgba(153, 102, 255, 0.7)'
+
+                    ],
+                    borderColor: [
+                        'rgba(250, 55, 25, 0.7)',
+                        'rgba(25, 250, 85, 0.7)',
+                        'rgba(27, 95, 242, 0.7)',
+                        'rgba(242, 27, 235, 0.7)',
+                        'rgba(194, 52, 83, 0.7)',
+
+                        'rgba(173, 163, 165, 0.7)',
+                        'rgba(36, 34, 35, 0.7)',
+                        'rgba(255, 248, 59, 0.7)',
+                        'rgba(203, 237, 33, 0.7)',
+                        'rgba(153, 102, 255, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: true
+                }
+            }
+        });
+    </script>
+}

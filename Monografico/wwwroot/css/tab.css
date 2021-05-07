@@ -1,0 +1,20 @@
+﻿#cuentas-tab > li {
+    position: relative;
+}
+
+#cuentas-tab > li > a {
+    display: inline-block;
+}
+
+#cuentas-tab > li > span {
+    display: none;
+    cursor: pointer;
+    position: absolute;
+    right: 6px;
+    top: 8px;
+    color: red;
+}
+
+#cuentas-tab > li:hover > span {
+    display: inline-block;
+}

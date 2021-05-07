@@ -1,0 +1,79 @@
+﻿@model Monografico.Models.Configuracion
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+
+@{
+    ViewData["Title"] = "Configuración";
+}
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+
+<div class="card">
+    <div class="card-body">
+        <h1>@ViewData["Title"]</h1>
+        <br />
+        <div class="row">
+            <div class="col-md-12">
+                <form id="form" method="post" asp-antiforgery="false" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="PorcientoLey" class="control-label"></label>
+                        <div class="input-group mb-3">
+                            <input asp-for="IdConfiguracion" class="form-control" hidden />
+                            <input asp-for="PorcientoLey" type="number" min="0" class="form-control" required />
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon2">%</span>
+                            </div>
+                        </div>
+                        <span asp-validation-for="PorcientoLey" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Guardar" class="btn btn-primary" />
+                    </div>
+                    <input type="hidden" id="RequestVerificationToken"
+                           name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section script {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+
+    var formulario = document.getElementById("form");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+        //alert(formulario.checkValidity());
+        if (formulario.checkValidity()) {
+            var model = {
+                "PorcientoLey": document.getElementById("PorcientoLey").value,
+                "IdConfiguracion": document.getElementById("IdConfiguracion").value
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Update","Configuracion")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                    toastr.error("Error al guardar");
+                },
+                success: function () {
+                    toastr.success("Guardado con exito");
+                }
+            });
+        }
+    });
+    </script>
+}

@@ -1,0 +1,134 @@
+﻿@model IEnumerable<Monografico.ViewModels.UsuarioViewModel>
+
+@{
+    ViewData["Title"] = "Usuarios";
+    ViewData["Controller"] = "Empleado";
+}
+
+@section link {
+
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" onclick="abrirModalCrear();">
+                    Agregar Usuario
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="empleado-datatable" style="width:100%" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IdUsuario)
+                                </th>
+                                <th>
+                                    Imagen
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Nombre)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Apellido)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.NombreUsuario)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Rol)
+                                </th>
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
+
+<!-- Modal de confirmacion de eliminacion-->
+<partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
+
+@section script {
+    <script src="~/js/site.js"></script>
+
+    <script>
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {
+            $('#empleado-datatable').DataTable({
+                responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
+                ajax: {
+                    url: "@Url.Action("List", "Usuario")",
+                    dataSrc: ''
+                },
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }
+                ],
+                columns: [
+                    { data: 'idUsuario' },
+                    {
+                        data: 'imagenEncoded',
+                        render: function (data, type, row, meta) {
+                            var src;
+                            if (data == null)
+                                src = "/img/default_avatar.jpg";
+                            else
+                                src = 'data:image/jpeg;base64,' + data;
+                            return '<img class="rounded mx-auto d-block" src="' + src + '" width="80px" height="80px" />';
+                        }
+                    },
+                    { data: 'nombre' },
+                    { data: 'apellido' },
+                    { data: 'nombreUsuario' },
+                    { data: 'rol' },
+                    {
+                        data: 'idUsuario',
+                        render: function (data, type, row, meta) {
+                            return '<div class="btn-group">' +
+                                        '<button onclick="abrirModalEditar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                        '<button onclick="abrirModalBorrar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-trash"></i></button>' +
+                                    '</div>';
+                        }
+                    }
+                ]
+            });
+        });
+
+        function abrirModalCrear() {
+            agregarCrear("@Url.Action("Create","Usuario")");               
+        }
+
+        function abrirModalEditar(id) {
+            agregarEditar(id, "@Url.Action("Edit","Usuario")");
+        }
+
+        document.getElementById("botonEliminar").addEventListener('click', () => {
+            eliminar("@Url.Action("Delete","Usuario")", "empleado-datatable");
+        });
+    </script>
+}
+

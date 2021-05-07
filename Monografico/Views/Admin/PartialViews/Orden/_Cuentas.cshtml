@@ -1,0 +1,138 @@
+﻿@model IEnumerable<Monografico.Models.Cuenta>
+
+@{
+    var i = 1;
+    string numero = "00-";
+    var idMesa = (Model.FirstOrDefault().IdMesa == null) ? "null" : Model.FirstOrDefault().IdMesa.ToString();
+}
+
+
+<div class="cuentas-container w-100" style="overflow-x:scroll">
+    <button class="cuenta-add-btn btn btn-success">+</button>
+    <button class="cuenta-delete-btn btn btn-success">-</button>
+
+    @foreach (var cuenta in Model)
+    {
+        numero+= cuenta.IdCuenta;
+        if (i == 1)
+        {           
+            <span class="cuenta-btn cuenta cuenta-selected" data-id="@cuenta.IdCuenta">@numero</span>
+        }
+        else
+        {
+            <span class="cuenta-btn cuenta" data-id="@cuenta.IdCuenta">@numero</span>
+        }
+        i++;
+        numero = "00-";
+    }
+</div>
+
+
+<script>
+    document.addEventListener('click', function (e) {
+        if (e.target && e.target.matches("span.cuenta-btn")) {
+            var cuentaActiva = document.querySelector("span.cuenta-selected");
+            if (cuentaActiva !== null)
+                cuentaActiva.classList.remove("cuenta-selected");
+            e.target.classList.add("cuenta-selected");
+
+            var url = "@Url.Action("ListOfOrden","Cuenta")" + "/" + e.target.dataset.id;
+            $('#datatable').DataTable().ajax.url(url).load(actualizar);
+        }
+    });
+
+    document.querySelector(".cuenta-add-btn").addEventListener('click', function () {
+        $("#modal-conf-cuenta").modal({
+            keyboard: false,
+            backdrop: 'static'
+        });
+        @*var cuentaActiva = document.querySelector("span.cuenta-selected");
+        if (cuentaActiva !== null)
+            cuentaActiva.classList.remove("cuenta-selected");
+
+        if (!cuentaActiva.classList.contains("cuenta-selected")) {
+            $.ajax({
+                url: "@Url.Action("Create","Cuenta")",
+                method: "Post",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify({ "IdUsuario": "@Model.FirstOrDefault().IdUsuario", "IdMesa": (@idMesa === "null") ? 0 : @idMesa, "Activa": true }),
+                error: function () {
+
+                },
+                success: function (cuenta) {
+                    $('.cuentas-container').append(' <span class="cuenta-btn cuenta cuenta-selected" data-id="' + cuenta.idCuenta + '">' + "00-" + cuenta.idCuenta + '</span>')
+                    var url = "@Url.Action("ListOfOrden","Cuenta")" + "/" + cuenta.idCuenta;
+                    $('#datatable').DataTable().ajax.url(url).load(actualizar);
+                }
+            });
+        }*@  
+    });
+
+    document.getElementById("confirmarbtn").addEventListener('click', function () {
+        $("#modal-conf-cuenta").modal('hide');
+
+        $('#modalBody-div-cuenta').load("@Url.Action("DivisionCuenta","Cuenta")" + "?" + "idCuenta=" +
+            document.querySelector("span.cuenta-selected").dataset.id + "&idMesa=" + @idMesa, () => {
+            $('#modal-div-cuenta').modal({
+                keyboard: true,
+                backdrop: 'static'
+            });
+        });
+    });
+
+    document.getElementById("negarbtn").addEventListener('click', function () {
+        var cuentaActiva = document.querySelector("span.cuenta-selected");
+        if (cuentaActiva !== null)
+            cuentaActiva.classList.remove("cuenta-selected");
+
+        if (!cuentaActiva.classList.contains("cuenta-selected")) {
+            $.ajax({
+                url: "@Url.Action("Create","Cuenta")",
+                method: "Post",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify({ "IdUsuario": "@Model.FirstOrDefault().IdUsuario", "IdMesa": (@idMesa === "null") ? 0 : @idMesa, "Activa": true }),
+                error: function () {
+
+                },
+                success: function (cuenta) {
+                    $('.cuentas-container').append(' <span class="cuenta-btn cuenta cuenta-selected" data-id="' + cuenta.idCuenta + '">' + "00-" + cuenta.idCuenta + '</span>')
+                    var url = "@Url.Action("ListOfOrden","Cuenta")" + "/" + cuenta.idCuenta;
+                    $('#datatable').DataTable().ajax.url(url).load(actualizar);
+                }
+            });
+        }  
+    });
+
+    document.querySelector(".cuenta-delete-btn").addEventListener('click', function () {
+        cuentabtn = document.querySelector("span.cuenta-selected");
+        var idCuenta = cuentabtn.dataset.id;
+
+        var cuentas = document.querySelectorAll(".cuenta-btn");
+
+        if (ordenesEnviadas() > 0 && cuentas.length > 1) {
+            toastr.error("Debe cancelar las ordenes pendientes primero");
+        }
+
+        if (cuentas.length > 1 && ordenesEnviadas() == 0) {
+            $.ajax({
+                url: "@Url.Action("Delete","Cuenta")",
+                data: { "id": idCuenta },
+                error: function () {
+
+                },
+                success: function (response) {
+                    //console.log(cuenta);
+                    cuentabtn.remove();
+                    var cuenta = document.querySelector(".cuenta-btn");
+                    cuenta.classList.add("cuenta-selected");
+                    var url = "@Url.Action("ListOfOrden","Cuenta")" + "/" + cuenta.dataset.id;
+                    $('#datatable').DataTable().ajax.url(url).load(actualizar);
+                }
+            });
+        }   
+    });
+</script>

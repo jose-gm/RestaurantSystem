@@ -1,0 +1,209 @@
+﻿@model Monografico.ViewModels.UsuarioViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+@{
+    ViewData["Title"] = "Editar Perfil";
+    Layout = "~/Views/Admin/PartialViews/Layout/_Adminlayout.cshtml";
+}
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                @if (Model.ImagenEncoded != null)
+                {
+                    var src = $"data:image/jpeg;base64,{Model.ImagenEncoded}";
+                    <img id="perfil" class="img-thumbnail" src="@src" style="width:60%; height:100%" />
+                }
+                else
+                {
+                    <img id="perfil" class="img-thumbnail" src="~/img/default_avatar.jpg" style="width:60%; height:100%" />
+                }
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <button id="eliminar" class="btn btn-danger">Eliminar imagen</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <form id="form-editar" enctype="multipart/form-data" method="post" asp-antiforgery="false" novalidate>
+                        <div class="form-group">
+                            <ul class="errors">
+                            </ul>
+                        </div>
+                        <input asp-for="ImagenEncoded" hidden />
+                        <input asp-for="IdUsuario" hidden />
+                        <div class="form-group">
+                            <label asp-for="Nombre" class="control-label"></label>
+                            <input asp-for="Nombre" class="form-control" />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Apellido" class="control-label"></label>
+                            <input asp-for="Apellido" class="form-control" />
+                            <span asp-validation-for="Apellido" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
+                                <input asp-for="Sexo" class="form-check-input" type="radio" value="false">
+                                <label asp-for="Sexo" class="form-check-label">Hombre</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input asp-for="Sexo" class="form-check-input" type="radio" value="true">
+                                <label asp-for="Sexo" class="form-check-label">Mujer</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Telefono" class="control-label"></label>
+                            <input asp-for="Telefono" class="form-control" data-mask="000-000-0000" />
+                            <span asp-validation-for="Telefono" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Cedula" class="control-label"></label>
+                            <input asp-for="Cedula" class="form-control" data-mask="000-0000000-0" required />
+                            <span asp-validation-for="Cedula" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Direccion" class="control-label"></label>
+                            <input asp-for="Direccion" class="form-control" />
+                            <span asp-validation-for="Direccion" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="NombreUsuario" class="control-label" hidden></label>
+                            <input asp-for="NombreUsuario" class="form-control" hidden />
+                            <span asp-validation-for="NombreUsuario" class="text-danger" hidden></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Imagen</label>
+                            <div class="custom-file">
+                                <input asp-for="Imagen" class="custom-file-input">
+                                <label class="custom-file-label">Seleccionar imagen</label>
+                            </div>
+                        </div>
+
+                        <input type="submit" value="Guardar" class="btn btn-primary" />
+                        <input type="hidden" id="RequestVerificationToken"
+                                name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
+    <script>
+         $(document).ready(() => {
+            $('.custom-file-input').on("change", function() {
+                var nombreAchivo = $(this).val().split("\\").pop();
+                $(this).next('.custom-file-label').html(nombreAchivo);
+            });
+
+         });
+
+        var sexo = false;
+        $('input[type=radio][name=Sexo]').change(function () {
+            if (this.value == 'false')
+                sexo = this.value;
+            else
+                sexo = this.value;
+        });
+
+        var formulario = document.getElementById("form-editar");
+        formulario.addEventListener('submit', (e) => {
+            e.preventDefault();
+            //alert(formulario.checkValidity());
+            if (formulario.checkValidity()) {
+                var archivos = document.getElementById("Imagen").files;
+                var formData = new FormData();
+                for (var i = 0; i != archivos.length; i++) {
+                    formData.append("Imagen",archivos[i]);
+                }
+                formData.append("IdUsuario",document.getElementById("IdUsuario").value);
+                formData.append("Nombre",document.getElementById("Nombre").value);
+                formData.append("Apellido", document.getElementById("Apellido").value);
+                formData.append("Sexo",sexo);
+                formData.append("Cedula",document.getElementById("Cedula").value);
+                formData.append("Direccion",document.getElementById("Direccion").value);
+                formData.append("NombreUsuario",document.getElementById("NombreUsuario").value);
+                formData.append("Telefono",document.getElementById("Telefono").value);
+                formData.append("ImagenEncoded",document.getElementById("ImagenEncoded").value);
+
+                $.ajax({
+                    method: "POST",
+                    url: "@Url.Action("EditPerfil","Usuario")",
+                    headers: {
+                        "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    },
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    error: function (response) {
+                        console.log(response);
+                        if (response.responseJSON.response === false) {
+                            var errors = response.responseJSON.errors;
+                            if (errors.length > 0) {
+                                var ul = document.querySelector(".errors");
+                                ul.innerHTML = "";
+                                for (let i = 0; i < errors.length; i++) {
+                                    var li = document.createElement("li");
+                                    li.innerText = errors[i];
+                                    li.setAttribute("style", "color:red");
+                                    ul.appendChild(li);
+                                }
+                                
+                            }
+                        }
+                        else {
+                            toastr.error("Error al guardar");
+                        }
+                    },
+                    success: function () {
+                        document.querySelector(".errors").innerHTML = "";
+                        location.reload();
+                        toastr.success("Guardado con exito");
+                    }
+                });
+            }
+        });
+
+        document.getElementById("eliminar").addEventListener('click', function () {
+
+            $.ajax({
+                method: "GET",
+                url: "@Url.Action("EliminarImagen","Usuario")",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                error: function () {
+                },
+                success: function (response) {
+                    document.getElementById("perfil").src = "../img/default_avatar.jpg";
+                    document.querySelector(".img-avatar").src = "../img/default_avatar.jpg";
+                }
+            });
+        });
+    </script>
+}

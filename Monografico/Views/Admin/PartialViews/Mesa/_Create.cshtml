@@ -1,0 +1,80 @@
+﻿@model Monografico.Models.Mesa
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+
+@{
+    var modalTitle = "Formulario de mesas";
+}
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="form-crear" method="post" asp-antiforgery="false" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Numero" class="control-label"></label>
+                <input asp-for="Numero" type="text" class="form-control" readonly/>
+                <span asp-validation-for="Numero" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asientos" class="control-label"></label>
+                <input asp-for="Asientos" type="number" class="form-control" min="1" value="1" />
+                <span asp-validation-for="Asientos" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Zona</label>
+                <select asp-for="IdZona" class="custom-select" asp-items="@ViewBag.Zonas" required></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+            <input type="hidden" id="RequestVerificationToken"
+                   name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+        </form>
+    </div>
+</div>
+
+
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    $('#myModalLabel').html("@modalTitle");
+
+    var formulario = document.getElementById("form-crear");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+        //alert(formulario.checkValidity());
+        if (formulario.checkValidity()) {
+            var model = {
+                "Numero": document.getElementById("Numero").value,
+                "IdZona": document.getElementById("IdZona").value,
+                "Asientos": document.getElementById("Asientos").value,
+            };
+
+            //alert(model.Descripcion + model.Cantidad + model.Precio + model.FechaEntrada + model.EsContabilizable);
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Create","Mesa")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                    $('#myModal').modal('hide');
+                    toastr.error("Error al guardar");
+                },
+                success: function () {
+                    $('#mesa-datatable').DataTable().ajax.reload();
+                    $('#myModal').modal('hide');
+                    toastr.success("Guardado con exito");
+                }
+            });
+        }
+    });
+</script>

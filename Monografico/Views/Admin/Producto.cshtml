@@ -1,0 +1,195 @@
+﻿@model IEnumerable<Monografico.Models.Producto>
+
+@{
+    ViewData["Title"] = "Productos";
+}
+
+@section link {
+    <environment include="Development">
+        <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" onclick="abrirModal();">
+                    Agregar Producto
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="producto-datatable" style="width:100%" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IdProducto)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Descripcion)
+
+                                </th>
+                                <th>
+                                    Imagen
+                                </th>
+                                <th>
+                                    ITBIS%
+                                </th>
+                                <th>
+                                    Categoría
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.LlevaInventario)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Precio)
+                                </th>
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
+    
+<!-- Modal-lg -->
+<partial name="~/Views/Admin/PartialViews/_ModalLarge.cshtml" />
+
+<!-- Modal de confirmacion de eliminacion-->
+<partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
+
+@section script {
+    
+    <script src="~/js/site.js"></script>
+    <environment include="Development">
+        <script src="~/lib/select2/js/select2.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    </environment>
+
+    <script>
+
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {
+            $('#producto-datatable').DataTable({
+                responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
+                ajax: {
+                    url: "@Url.Action("List","Producto")",
+                    dataSrc: ''
+                },
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }
+                ],
+                columns: [
+                    { data: 'idProducto' },
+                    { data: 'descripcion', responsivePriority: 1 },
+                    {
+                        data: 'imagenEncoded',
+                        responsivePriority: 3,
+                        render: function (data, type, row, meta) {
+                            var src;
+                            if (data == null)
+                                src = "/img/noimage.png";
+                            else
+                                src = 'data:image/jpeg;base64,' + data;
+                            return '<img class="rounded mx-auto d-block" src="' + src + '" width="80px" height="80px" />';
+                        }
+                    },
+                    {
+                        data: 'itbis',
+                        responsivePriority: 4,
+                        render: function (data, type, row, meta) {
+                            var valor = (data === 0) ? "Exento" : data;
+                            return valor;
+                        }
+                    },
+                    { data: 'categoria', responsivePriority: 4 },
+                    {
+                        data: 'llevaInventario',
+                        title: "¿Tiene Inventario?",
+                        width: '6%',
+                        render: function (data, type, row, meta) {
+                            var text;
+                            if (data)
+                                text = "Si";
+                            else
+                                text = "No";
+                            return text;
+                        }
+                    },
+                    { data: 'precio', responsivePriority: 5, width: "5%", render: $.fn.dataTable.render.number( ',', '.', 2, '$' ), className: 'text-right'},
+                    {
+                        data: {
+                        },
+                        width: "15%",
+                        responsivePriority: 2,
+                        render: function (data, type, row, meta) {
+                            var template;
+                            var url = "@Url.Action("Ingredientes,Producto")";
+                            if (data.llevaIngredientes) {
+                                template = '<div class="btn-group">' +
+                                                '<button onclick="abrirModalIngrediente(' + data.idProducto + ')" class="action-btn btn btn-secondary"><i class="fas fa-list"></i></button>' +
+                                                '<button onclick="abrirModalEditar(' + data.idProducto + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                                '<button onclick="abrirModalBorrar(' + data.idProducto + ')" class="action-btn btn btn-secondary"><i class="fas fa-trash"></i></button>' +
+                                            '</div>';
+                            }
+                            else {
+                                template = '<div class="btn-group">' +
+                                                '<button onclick="abrirModalEditar(' + data.idProducto + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                                '<button onclick="abrirModalBorrar(' + data.idProducto + ')" class="action-btn btn btn-secondary"><i class="fas fa-trash"></i></button>' +
+                                            '</div>';                                  
+                            }
+                            return template;
+                        }
+                    }
+                ]
+            });
+        });
+
+        function abrirModal() {
+            agregarCrear("@Url.Action("Create","Producto")");                         
+        }
+
+        function abrirModalEditar(id) {
+            agregarEditar(id, "@Url.Action("Edit","Producto")");
+        }
+
+        function abrirModalIngrediente(id) {
+            agregarIngredientes(id, "@Url.Action("Ingredientes","Producto")");
+        }
+
+
+        document.getElementById("botonEliminar").addEventListener('click', () => {
+            eliminar("@Url.Action("Delete","Producto")", "producto-datatable");
+        });
+    </script>
+}

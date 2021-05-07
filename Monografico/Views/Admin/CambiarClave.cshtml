@@ -1,0 +1,95 @@
+﻿@model Monografico.ViewModels.CambiarClaveViewModel
+@{
+
+    ViewData["Title"] = "Cambiar Contraseña";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <ul class="errors">
+                    </ul>
+                </div>
+                <form method="post" asp-antiforgery="false" novalidate>
+                    <div class="form-group">
+                        <label class="control-label">Contraseña actual</label>
+                        <input asp-for="Clave" class="form-control" required />
+                        <span asp-validation-for="Clave" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Clavenueva" class="control-label"></label>
+                        <input asp-for="Clavenueva" class="form-control" required />
+                        <span asp-validation-for="Clavenueva" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="confirmarClave" class="control-label"></label>
+                        <input asp-for="confirmarClave" class="form-control" required />
+                        <span asp-validation-for="confirmarClave" class="text-danger"></span>
+                    </div>
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section script {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        var formulario = document.querySelector("form");
+        formulario.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (formulario.checkValidity()) {
+                var model = {
+                    Clave: document.getElementById("Clave").value,
+                    Clavenueva: document.getElementById("Clavenueva").value,
+                    confirmarClave: document.getElementById("confirmarClave").value
+                };
+
+                $.ajax({
+                    method: "POST",
+                    url: "@Url.Action("ActualizarClave","Usuario")",
+                    data: model,
+                    error: function (response) {
+                        console.log(response);
+                        if (response.responseJSON.response === false) {
+                            var errors = response.responseJSON.errors;
+                            if (errors.length > 0) {
+                                var ul = document.querySelector(".errors");
+                                ul.innerHTML = "";
+                                for (let i = 0; i < errors.length; i++) {
+                                    var li = document.createElement("li");
+                                    li.innerText = errors[i];
+                                    li.setAttribute("style", "color:red");
+                                    ul.appendChild(li);
+                                }                                
+                            }
+                        }
+                        else {
+                            toastr.error("Error al guardar");
+                        }
+                    },
+                    success: function () {
+                        document.querySelector(".errors").innerHTML = "";
+                        document.getElementById("Clave").value = "";
+                        document.getElementById("Clavenueva").value = "";
+                        document.getElementById("confirmarClave").value = "";
+
+                        toastr.success("Guardado con exito");
+                    }
+                });
+            }
+        });
+    </script>
+}

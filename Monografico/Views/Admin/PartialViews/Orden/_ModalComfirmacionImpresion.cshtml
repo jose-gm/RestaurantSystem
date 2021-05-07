@@ -1,0 +1,18 @@
+﻿<div class="modal fade" id="modal-conf-impr" tabindex="-1" role="dialog" aria-labelledby="Modal-confirmacion-impresion" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <h3>Se completo la impresion correctamente?</h3>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmar-imp-btn" class="btn btn-primary">Si</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("confirmar-imp-btn").addEventListener('click', function () {
+        window.location.replace("@Url.Action("SeleccionMesa","Admin")");
+    });
+</script>

@@ -1,56 +1,199 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿.chart-container {
+    position: relative;
+    height: 62vh;
+    width: 100%;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  font-size: 14px;
+.cuentas-container {
+    white-space: nowrap;
 }
+
+.cuenta {
+    display: inline;
+    font-weight: 400;
+    color: white;
+    background-color: #63c2de;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    border-bottom: 4px solid red;
+    padding: .375rem .75rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+}
+
+.cuenta-selected {
+    background-color: #557ff2;
+    border-bottom: 4px solid green;
+}
+
+.action-btn {
+    border: 0.5px solid black;
+}
+
+.img-modal {
+    display: block;
+    margin: 0 auto 0 auto;
+}
+
+.mesa-info {
+    position: absolute;
+}
+
+/*.tab-content-producto {
+    
+    overflow-y: scroll;
+    height: 450px;
+}*/
+
+
+.img-item {
+    width: 100%;
+    object-fit: cover;
+}
+
+.img-table {
+    object-fit: cover;
+}
+
+
+/*
+/*Extra small devices (portrait phones, less than 576px)
+@media (max-width: 575.98px) {
+    .img-item {
+        height: 22vw;
+    }
+}
+
+/*Small devices (landscape phones, less than 768px)
+@media (max-width: 767.98px) {
+    .img-item {
+        height: 20vw;
+    }
+}
+
+/*Medium devices (tablets, less than 992px)
+@media (max-width: 991.98px) {
+    .img-item {
+        height: 15vw;
+    }
+}
+
+/*Large devices (desktops, less than 1200px)*
+@media (max-width: 1199.98px) {
+    .img-item {
+        height: 10vw;
+    }
+}
+
+/*Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+    .img-item {
+        height: 7vw;
+    }
+}
+*/
+
+/*Extra small devices (portrait phones, less than 576px)*/
+@media (max-width: 575.98px) {
+    .img-item {
+        height: 22vw;
+    }
+
+    .img-table {
+        width: 70%;
+        height: 20vw;
+        object-fit: fill;
+    }
+
+    .chart-container {
+        height: 44vh;
+    }
+}
+
+
+/*Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) {
+    .img-item {
+        height: 20vw;
+    }
+
+    .img-table {
+        width: 60%;
+        height: 13vw;
+    }
+
+    .producto-descrip {
+        font-size: 1.7vw;
+    }
+
+    .chart-container {
+        height: 62vh;
+    }
+}
+
+/*Medium devices (tablets, 768px and up)*/
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    .img-item {
+        height: 10vw;
+    }
+
+    .img-table {
+        width: 50%;
+        height: 12vw;
+    }
+
+    .producto-descrip {
+        font-size: 1.5vw;
+    }
+
+    .chart-container {
+        height: 44vh;
+    }
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+/*Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) {
+    .img-item {
+        height: 10vw;
+    }
+
+    .img-table {
+        width: 80%;
+        height: 9vw;
+    }
+
+    .producto-descrip {
+        font-size: 1vw;
+    }
+
+    .chart-container {
+        height: 62vh;
+    }
 }
 
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
 
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
-}
+/*Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+    .img-item {
+        height: 7vw;
+    }
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
+    .img-table {
+        width: 60%;
+        height: 6vw;
+    }
 
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
+    .producto-descrip {
+        font-size: 1vw;
+    }
+
+    .chart-container {
+        height: 62vh;
+    }
 }

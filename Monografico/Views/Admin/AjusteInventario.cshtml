@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Monografico.Models.AjusteInventario>
+@{
+    ViewData["Title"] = "Ajuste de inventario";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="ajusteinventario-datatable" style="width:100%" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Descripcion)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CantidadAnterior)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CantidadActual)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Fecha)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Estado)
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
+
+<!-- Modal de confirmacion de eliminacion-->
+<partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
+
+@section script {
+    <script src="~/js/site.js"></script>
+
+    <script>
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {
+            $('#ajusteinventario-datatable').DataTable({
+                responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
+                ajax: {
+                    url: "@Url.Action("List","AjusteInventario")",
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'descripcion', title: "Ítem", width: '20%' },
+                    { data: 'cantidadAnterior' , width: '12%', className: 'text-right'},
+                    { data: 'cantidadActual', width: '12%', className: 'text-right' },
+                    {
+                        data: 'fecha',
+                        className: 'text-right',
+                        width: '10%',
+                        render: function (data, type, row) {
+                            return moment(data).format("MM/DD/YYYY");
+                        }
+                    },
+                    { data: 'estado', width: '10%' },
+                ]
+            });
+        });
+
+        function abrirModalEditar(id) {
+            agregarEditar(id, "@Url.Action("Edit","AjusteInventario")");
+        }
+
+        document.getElementById("botonEliminar").addEventListener('click', () => {
+            eliminar("@Url.Action("Delete","AjusteInventario")", "ajusteinventario-datatable");
+        });
+    </script>
+}

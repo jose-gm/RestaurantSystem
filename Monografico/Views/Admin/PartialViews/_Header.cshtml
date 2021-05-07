@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<Usuario> manager
+
+@{ 
+    var usuario =  await manager.GetUserAsync(User);
+}
+
+<header class="app-header navbar">
+    <!-- Header content here -->
+    <a class="navbar-brand" href="#">
+        <img src="~/img/LogoWIT.png" width="50" height="50" alt="">
+    </a>
+    <button class="navbar-toggler sidebar-toggler" type="button" data-toggle="sidebar-show">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <ul class="nav navbar-nav ml-auto mr-3">
+        <li class="nav-item dropdown">
+            <a class="nav-link nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                @User.Identity.Name
+                @if (string.IsNullOrEmpty(usuario.Imagen))
+                {
+                    <img class="img-avatar" style="object-fit:cover" src="~/img/default_avatar.jpg" alt="admin@bootstrapmaster.com">
+                }
+                else
+                {
+                    var src = $"data:image/jpeg;base64,{usuario.Imagen}";
+                    <img class="img-avatar" style="object-fit:cover" src="@src" alt="admin@bootstrapmaster.com">
+                }
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" asp-action="EditPerfil" asp-controller="Admin">
+                    <i class="fa fa-user-edit"></i> Perfil
+                </a>
+                <a class="dropdown-item" asp-action="CambiarClave" asp-controller="Admin">
+                    <i class="fa fa-key"></i> Cambiar contraseña
+                </a>
+                <a class="dropdown-item" asp-action="Logout" asp-controller="Home">
+                    <i class="fa fa-lock"></i> Logout
+                </a>
+            </div>
+        </li>
+        @if (User.IsInRole("Administrador") || User.IsInRole("Cajero"))
+        {
+            <li class="nav-item aside-button d-none">
+                <a class="navbar-toggler aside-menu-toggler" data-toggle="aside-menu-show">
+                    <i class="fas fa-ellipsis-v"></i>
+                </a>
+            </li>
+        }
+
+    </ul>    
+</header>

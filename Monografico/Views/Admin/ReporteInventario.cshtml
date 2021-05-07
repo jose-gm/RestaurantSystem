@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewData["Title"] = "Reporte de Inventario";
+}
+
+<div class="card">
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h1>@ViewData["Title"]</h1>
+                </div>
+            </div>
+            @*<div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Desde:</label>
+                        <input id="inventario-desde" class="form-control" type="date" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Hasta:</label>
+                        <input id="inventario-hasta" class="form-control" type="date" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button id="inbuscarbtn" class="btn btn-primary mt-4">Buscar</button>
+                </div>
+            </div>*@
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table id="inventario-datatable" style="width:100%" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Descripcion
+                                    </th>
+                                    <th>
+                                        Fecha
+                                    </th>
+                                    <th>
+                                        Cantidad
+                                    </th>
+                                    <th>
+                                        Costo
+                                    </th>
+                                    <th>
+                                        Total
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    <div class="card-footer">
+        <h4 id="inv-total"><strong>Total: </strong></h4><h4></h4>
+    </div>
+</div>
+
+@section script {
+    <script>
+        $(document).ready(() => {
+            $('#inventario-datatable').DataTable({
+                responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
+                ajax: {
+                    url: "@Url.Action("List","Inventario")",
+                    dataSrc: ''
+                },
+                dom: "<'row'<'col-sm-6'<'row'<'col-sm-6 p-0'l><'col-sm-6 p-0'B>>> <'col-sm-6'f>>" +
+                      "<'row'<'col-sm-12'tr>>" +
+                      "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                buttons: [
+                    {
+                        text: "Imprimir",
+                        action: function (e, dt, node, config) {
+                            window.open("@Url.Action("ListPDF","Inventario")", '_blank');
+                        }
+                    }
+                ],
+                initComplete: function (settings, json) {
+                    actualizarInventario();
+                },
+                columns: [
+                    { data: 'descripcion' },
+                    {
+                        data: 'fechaEntrada',
+                        className: 'text-right',
+                        render: function (data, type, row) {
+                            return moment(data).format("MM/DD/YYYY");
+                        }
+                    },
+                    { data: 'cantidad', className: 'text-right' },
+                    { data: 'costo', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ), className: 'text-right' },
+                    { data: 'total', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ), className: 'text-right' }
+                ]
+            });
+        });
+
+        /*document.getElementById("inbuscarbtn").addEventListener('click', function () {
+            $('#inventario-datatable').DataTable().ajax.reload(actualizarInventario);
+        });*/
+
+        function actualizarInventario() {
+            var table = $('#inventario-datatable').DataTable();
+            var sum = table.column(4).data().sum().toFixed(2);
+
+            var html = 'Total: '.bold() + formatMoney(sum);
+            $('#inv-total').html(html);
+        }
+    </script>
+}

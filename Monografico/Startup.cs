@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Monografico.Data;
 using Monografico.Models;
+using Monografico.Repositorio;
+using Rotativa.AspNetCore;
 
 namespace Monografico
 {
@@ -35,21 +37,21 @@ namespace Monografico
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<Contexto>(options => options.UseSqlServer(Configuration.GetConnectionString("ConStr")));
+            services.AddDbContext<Contexto>(options =>options.UseSqlServer(Configuration.GetConnectionString("ConStr")));
 
-            services.AddIdentity<Usuario, IdentityRole>()
+            services.AddIdentity<Usuario, Rol>()
                 .AddEntityFrameworkStores<Contexto>()
                 .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 8;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
+                options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
-                options.Password.RequiredUniqueChars = 6;
+                options.Password.RequiredUniqueChars = 1;
 
                 // Lockout settings
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
@@ -59,7 +61,7 @@ namespace Monografico
                 // User settings
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = true;
+                options.User.RequireUniqueEmail = false;
             });
 
             services.ConfigureApplicationCookie(options =>
@@ -69,12 +71,18 @@ namespace Monografico
                 options.Cookie.Expiration = TimeSpan.FromDays(150);
                 // If the LoginPath isn't set, ASP.NET Core defaults 
                 // the path to /Account/Login.
-                options.LoginPath = "/Account/Login";
+                options.LoginPath = "/Home/Login";
                 // If the AccessDeniedPath isn't set, ASP.NET Core defaults 
                 // the path to /Account/AccessDenied.
-                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.AccessDeniedPath = "/Home/AccesoDenegado";
                 options.SlidingExpiration = true;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             });
+
+            services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
+
+            services.AddScoped<RepositoryWrapper>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -105,6 +113,8 @@ namespace Monografico
                     name: "default",
                     template: "{controller=Admin}/{action=Index}/{id?}");
             });
+
+            RotativaConfiguration.Setup(env);
         }
     }
 }

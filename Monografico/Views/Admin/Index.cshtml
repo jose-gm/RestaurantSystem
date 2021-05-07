@@ -1,7 +1,131 @@
-﻿
+﻿@model Monografico.ViewModels.ViewModel
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Dashboard";
+    var total = Model.TotalDia + "$";
 }
 
-<h1>Index</h1>
+@section link {
+    <link href="~/css/site.css" rel="stylesheet" />
+}
 
+<div class="row">
+    <div class="col-lg-4 col-xl-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 border-right">
+                        <i class="fas fa-hamburger fa-3x"></i>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 style="display:inline;">@Model.CantidadProducto</h3>
+                        <br />
+                        <span>Productos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-xl-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 border-right">
+                        <i class="fas fa-lemon fa-3x"></i>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 style="display:inline;">@Model.CantidadIngrediente</h3>
+                        <br />
+                        <span>Ingredientes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-xl-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 border-right">
+                        <i class="fas fa-money-bill fa-3x"></i>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 style="display:inline;">@total</h3>
+                        <br />
+                        <span>Venta del dia</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="myChart"></canvas>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section script {
+    <environment include="Development">
+        <script src="~/lib/Chart.js/Chart.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="~https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    </environment>
+
+    <script>
+        var array = @Html.Raw(Json.Serialize(Model.MontoSemana));
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes','Sabado','Domingo'],
+                datasets: [{
+                    label: 'Ganancia de la semana',
+                    data: array,
+                    backgroundColor: [
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)'
+
+                    ],
+                    borderColor: [
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)',
+                        'rgba(5, 245, 45, 0.5)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+}

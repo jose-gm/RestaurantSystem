@@ -1,0 +1,151 @@
+﻿@model IEnumerable<Monografico.ViewModels.InventarioViewModel>
+
+@{
+    Layout = "";
+    decimal total = 0;
+    var i = 1;
+}
+
+<!DOCTYPE html>
+<html style="background-color:white;">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- CoreUI CSS -->
+    <environment include="Development">
+        <link href="~/lib/coreui-master/dist/css/coreui.min.css" rel="stylesheet" />
+        <link href="~/lib/coreui-icons-master/css/free.min.css" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link rel="stylesheet" href="https://unpkg.com/%40coreui/coreui/dist/css/coreui.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/%40coreui/icons/css/coreui-icons.min.css">
+    </environment>
+    <link href="~/css/invoice.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="receipt-content">
+        <div class="container bootstrap snippet">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="invoice-wrapper">
+                        <div class="intro">
+                            <img src="~/img/LogoWIT.png" width="80" height="80" alt="">
+                        </div>
+                        <div class="payment-info">
+                            <span>Reporte de inventario</span>
+                            @*<strong>434334343</strong>*@ <br />
+                            <span>Fecha: @DateTime.Now.Date</span>                                  
+                        </div>
+
+                        @*<div class="payment-details">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span>Client</span>
+                                    <strong>
+                                        Andres felipe posada
+                                    </strong>
+                                    <p>
+                                        989 5th Avenue <br>
+                                        City of monterrey <br>
+                                        55839 <br>
+                                        USA <br>
+                                        <a href="#">
+                                            jonnydeff@gmail.com
+                                        </a>
+                                    </p>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <span>Payment To</span>
+                                    <strong>
+                                        Juan fernando arias
+                                    </strong>
+                                    <p>
+                                        344 9th Avenue <br>
+                                        San Francisco <br>
+                                        99383 <br>
+                                        USA <br>
+                                        <a href="#">
+                                            juanfer@gmail.com
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>*@
+
+                        <div class="line-items">
+                            <div class="headers clearfix">
+                            </div>
+                            <div class="items">
+                                <table class="table table-borderless">
+                                    <thead class="headers clearfix">
+                                        <tr>
+                                            <th class="center">#</th>
+                                            <th>Item</th>
+                                            <th class="right">Costo</th>
+                                            <th class="center">Cantidad</th>
+                                            <th class="right">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr class="item">
+                                                <td>@i</td>
+                                                <td>@item.Descripcion</td>
+                                                <td>@item.Costo</td>
+                                                <td>@item.Cantidad</td>
+                                                <td>@item.Total</td>
+                                            </tr>
+                                            total += item.Total;
+                                            i++;
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="total text-right">
+                                @*<p class="extra-notes">
+                                    <strong>Extra Notes</strong>
+                                    Please send all items at the same time to shipping address by next week.
+                                    Thanks a lot.
+                                </p>*@
+                                <div class="field">
+                                    Total <span>@string.Concat("RD", string.Format("{0:C}", total))</span>
+                                </div>
+                            </div>
+
+                            @*<div class="print">
+                                <a href="#">
+                                    <i class="fa fa-print"></i>
+                                    Print this receipt
+                                </a>
+                            </div>*@
+                        </div>
+                    </div>
+
+                    <div class="footer">
+                        Copyright © 2014. company name
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery first, then Popper.js, Bootstrap, then CoreUI  -->
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/popper.js/popper.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/lib/coreui-master/dist/js/coreui.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/%40coreui/coreui/dist/js/coreui.min.js"></script>
+    </environment>
+</body>
+</html>

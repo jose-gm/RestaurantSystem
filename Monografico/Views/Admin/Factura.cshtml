@@ -1,0 +1,136 @@
+﻿@model IEnumerable<Monografico.ViewModels.FacturaViewModel>
+
+@{
+    ViewData["Title"] = "Consulta de facturas";
+}
+
+@section link {
+
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="row mb-2">
+                <div class="col-12">
+                    <h1>@ViewData["Title"]</h1>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="factura-datatable" style="width:100%" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IdFactura)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Usuario)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Fecha)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Monto)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.MetodoPago)
+                                </th>
+
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
+    
+    <!-- Modal -->
+<partial name="~/Views/Admin/PartialViews/_ModalProgress.cshtml" />
+
+<!-- Modal de factura-->
+<partial name="~/Views/Admin/PartialViews/Factura/_ModalFactura.cshtml" />
+
+@section script {
+    <script src="~/lib/printThis/printThis.min.js"></script>
+    <script src="~/js/site.js"></script>
+
+    <script>
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {
+            $('#factura-datatable').DataTable({
+                responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
+                ajax: {
+                    url: "@Url.Action("List","Factura")",
+                    dataSrc: ''
+                },
+                columnDefs: [
+                    {
+                        targets: [0],
+                        visible: false
+                    }
+                ],
+                columns: [
+                    { data: 'idFactura' },
+                    { data: 'usuario' },
+                    {
+                        data: 'fecha',
+                        className: 'text-right',
+                        render: function (data, type, row) {
+                            return moment(data).format("MM/DD/YYYY");
+                        }
+                    },                    
+                    { data: 'monto', render: $.fn.dataTable.render.number( ',', '.', 2, '$' ), className: 'text-right' },
+                    { data: 'metodoPago' },
+
+                    {
+                        data: 'idFactura',
+                        render: function (data, type, row, meta) {
+                            return '<button onclick="abrirModalFactura(' + data + ')" class="btn btn-secondary"><i class="fas fa-eye"></i></button>';
+                        }
+                    }
+                ]
+            });
+        });
+
+        function abrirModalFactura(id) {
+            @*window.open("@Url.Action("FacturaAsPDF","Factura")"+"/"+id, "_blank");*@
+            $('#modal-factura-body').load("@Url.Action("FacturaAsPDF","Factura")" + "/" + id, () => {
+                $('#modal-factura').modal({
+                    keyboard: false,
+                    backdrop: 'static'
+                });
+            });
+        }
+
+        document.getElementById("printbtn").addEventListener('click', function () {
+            var $div = $('<div></div>');
+            $div.html(document.getElementById("modal-factura-body"));
+            $div.printThis();
+            $div.remove();
+
+            $('#modal-factura').modal('hide');
+
+            $('#modal-progress').modal('show');
+
+            setTimeout(function () {
+                $('#modal-progress').modal('hide');
+            }, 1000);
+        });
+
+        @*document.getElementById("botonEliminar").addEventListener('click', () => {
+            eliminar("@Url.Action("Delete","Factura")", "factura-datatable");
+        });*@
+    </script>
+}

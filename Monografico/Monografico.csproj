@@ -1,15 +1,107 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
-
+  
+    <ItemGroup>
+      <Compile Remove="Autorizacion\**" />
+      <Compile Remove="Views\Inventario\**" />
+      <Content Remove="Autorizacion\**" />
+      <Content Remove="Views\Inventario\**" />
+      <EmbeddedResource Remove="Autorizacion\**" />
+      <EmbeddedResource Remove="Views\Inventario\**" />
+      <None Remove="Autorizacion\**" />
+      <None Remove="Views\Inventario\**" />
+    </ItemGroup>
+  
+    <ItemGroup>
+      <Compile Remove="Migrations\20191118051047_Inicial.cs" />
+      <Compile Remove="Migrations\20191118051047_Inicial.Designer.cs" />
+      <Compile Remove="Migrations\20191121002408_AgregandoDB.cs" />
+      <Compile Remove="Migrations\20191121002408_AgregandoDB.Designer.cs" />
+      <Compile Remove="Migrations\20191129014147_InicialCreate.cs" />
+      <Compile Remove="Migrations\20191129014147_InicialCreate.Designer.cs" />
+      <Compile Remove="Migrations\20191129014614_InicialCreate2.cs" />
+      <Compile Remove="Migrations\20191129014614_InicialCreate2.Designer.cs" />
+      <Compile Remove="Migrations\20191204030707_InicialDB.cs" />
+      <Compile Remove="Migrations\20191204030707_InicialDB.Designer.cs" />
+      <Compile Remove="Migrations\20191204031935_InicialCreate.cs" />
+      <Compile Remove="Migrations\20191204031935_InicialCreate.Designer.cs" />
+      <Compile Remove="Migrations\20191204032332_Change.cs" />
+      <Compile Remove="Migrations\20191204032332_Change.Designer.cs" />
+      <Compile Remove="Migrations\20191204032615_InicialCreate.cs" />
+      <Compile Remove="Migrations\20191204032615_InicialCreate.Designer.cs" />
+      <Compile Remove="Migrations\20191204060952_Change.cs" />
+      <Compile Remove="Migrations\20191204060952_Change.Designer.cs" />
+      <Compile Remove="Migrations\20191204071548_Change2.cs" />
+      <Compile Remove="Migrations\20191204071548_Change2.Designer.cs" />
+      <Compile Remove="Migrations\20191205011819_Change.cs" />
+      <Compile Remove="Migrations\20191205011819_Change.Designer.cs" />
+      <Compile Remove="Migrations\20200119030833_Caja2.cs" />
+      <Compile Remove="Migrations\20200119030833_Caja2.Designer.cs" />
+      <Compile Remove="Migrations\20200119031147_Caja2.cs" />
+      <Compile Remove="Migrations\20200119031147_Caja2.Designer.cs" />
+    </ItemGroup>
+  
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\login.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\tab.css" />
+    </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.6" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.2.0-beta" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.19" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\lib\Buttons-1.6.1\css\common.scss" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\css\mixins.scss" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.bootstrap.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.bootstrap.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.bootstrap4.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.bootstrap4.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.colVis.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.colVis.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.dataTables.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.dataTables.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.flash.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.flash.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.foundation.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.foundation.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.html5.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.html5.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.jqueryui.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.jqueryui.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.print.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.print.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.semanticui.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\buttons.semanticui.min.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\dataTables.buttons.js" />
+    <None Include="wwwroot\lib\Buttons-1.6.1\js\dataTables.buttons.min.js" />
+    <None Include="wwwroot\lib\datables-plugins\sum.js" />
+    <None Include="wwwroot\lib\jQuery-Mask-Plugin-master\dist\jquery.mask.js" />
+    <None Include="wwwroot\lib\jQuery-Mask-Plugin-master\dist\jquery.mask.min.js" />
+    <None Include="wwwroot\lib\jQuery-Mask-Plugin-master\src\jquery.mask.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\dataTables.responsive.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\dataTables.responsive.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.bootstrap.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.bootstrap.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.bootstrap4.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.bootstrap4.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.dataTables.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.dataTables.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.foundation.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.foundation.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.jqueryui.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.jqueryui.min.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.semanticui.js" />
+    <None Include="wwwroot\lib\Responsive-2.2.3\js\responsive.semanticui.min.js" />
   </ItemGroup>
 
 </Project>

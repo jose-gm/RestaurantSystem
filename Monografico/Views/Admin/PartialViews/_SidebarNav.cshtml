@@ -1,0 +1,169 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Usuario> singInManager
+
+<div class="sidebar">
+    <!-- Sidebar content here -->
+    <nav class="sidebar-nav">
+        <div class="sidebar-nav-container">
+            <ul class="nav">
+                @if (singInManager.IsSignedIn(User) && User.IsInRole("Administrador"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="Index" asp-controller="Admin">
+                            <i class="nav-icon cui-chart"></i> Dashboard
+                        </a>
+                    </li>
+
+                    <!-- Empleado -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="Empleado" asp-controller="Admin">
+                            <i class="nav-icon cui-user"></i> Usuarios
+                        </a>
+                    </li>
+
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle">
+                            <i class="nav-icon cui-industry"></i> Inventario
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Inventario">
+                                    Inventario
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="AjusteInventario">
+                                    Ajustes de inventario
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Producto -->
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle">
+                            <i class="nav-icon cui-dinner"></i> Producto
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Producto">
+                                    Productos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Categoria">
+                                    Categorias
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Ingrediente">
+                                    Ingredientes
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Factura -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="Factura" asp-controller="Admin">
+                            <i class="nav-icon cui-bookmark"></i> Facturas
+                        </a>
+                    </li>
+
+                    <!-- Mesas -->
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle">
+                            <i class="nav-icon cui-rectangle"></i> Mesas
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Zona">
+                                    Zona
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Mesa">
+                                    Mesa
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Reportes -->
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle">
+                            <i class="nav-icon cui-chart-line"></i> Reportes
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Reportes">
+                                    Restaurante
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="ReporteProducto">
+                                    Ventas
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="ReporteInventario">
+                                    Inventario
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="ReporteFactura">
+                                    Facturas
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="ReporteCaja">
+                                    Caja
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+    
+                    <!-- Configuracion -->
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle">
+                            <i class="nav-icon cui-settings"></i> Configuraciones
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Itbis">
+                                    ITBIS
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Configuracion">
+                                    Configuración
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+
+                @if (singInManager.IsSignedIn(User) && (User.IsInRole("Administrador") || User.IsInRole("Mesero") || User.IsInRole("Cajero")))
+                {
+                    <!-- Ordenes -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="SeleccionMesa" asp-controller="Admin">
+                            <i class="nav-icon cui-notes"></i> Ordenes
+                        </a>
+                    </li>
+                }
+                
+                @if (singInManager.IsSignedIn(User) && User.IsInRole("Host"))
+                {
+                    <!-- Listado de mesas -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="ListaMesas" asp-controller="Admin">
+                            <i class="nav-icon cui-rectangle"></i> Listado de mesas
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>  
+    </nav>
+    <button class="sidebar-minimizer brand-minimizer" type="button"></button>
+</div>

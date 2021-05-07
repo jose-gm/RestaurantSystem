@@ -1,0 +1,135 @@
+﻿@model IEnumerable<Monografico.ViewModels.InventarioViewModel>
+
+@{
+    ViewData["Title"] = "Inventario";
+}
+
+@section link {
+
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-5">
+                <label>Filtro</label>
+                <select id="filtro" class="custom-select">
+                    <option value="nada" disabled selected>Selecciona tipo</option>
+                    <option value="todo">Todo</option>
+                    <option value="producto">Producto</option>
+                    <option value="ingrediente">Ingrediente</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="inventario-datatable" style="width:100%" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Descripcion
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.FechaEntrada)
+                                </th>
+                                <th>
+                                    Tipo
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Cantidad)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Unidad)
+                                </th>
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
+
+<!-- Modal de confirmacion de eliminacion-->
+<partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
+
+@section script {
+    <script src="~/js/site.js"></script>
+
+    <script>
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {
+            $('#inventario-datatable').DataTable({
+                responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
+                ajax: {
+                    url: "@Url.Action("List","Inventario")",
+                    data: function (d) {
+                        return { filtro: document.getElementById("filtro").value };
+                    },
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'descripcion', width: '15%' },
+                    {
+                        data: 'fechaEntrada',
+                        title: 'Fecha entrada',
+                        className: 'text-right',
+                        width: '8%',
+                        render: function (data, type, row) {
+                            return moment(data).format("MM/DD/YYYY");
+                        }
+                    },
+                    {
+                        data: {},
+                        width: '8%',
+                        render: function (data, type, row) {
+                            var value = (data.idProducto == 0) ? "Ingrediente" : "Producto";
+                            return value;
+                        }
+                    },
+                    { data: 'cantidad', width: '6%', className: 'text-right' },
+                    { data: 'unidad', width: '6%'},
+                    {
+                        data: 'idInventario',
+                        width: '5%',
+                        render: function (data, type, row, meta) {
+                            return '<button onclick="abrirModalEditar(' + data + ')" class="btn btn-secondary"><i class="fas fa-edit"></i></button>';
+                        }
+                    }
+                ]
+            });
+        });
+
+        document.getElementById("filtro").addEventListener('change', function () {
+            $('#inventario-datatable').DataTable().ajax.reload();
+        });
+
+        function abrirModalCrear() {
+            agregarCrear("@Url.Action("Create","Inventario")");
+        }
+
+        function abrirModalEditar(id) {
+            agregarEditar(id, "@Url.Action("Create","AjusteInventario")");
+        }
+
+        document.getElementById("botonEliminar").addEventListener('click', () => {
+            eliminar("@Url.Action("Delete","Inventario")", "inventario-datatable");
+        });
+    </script>
+}

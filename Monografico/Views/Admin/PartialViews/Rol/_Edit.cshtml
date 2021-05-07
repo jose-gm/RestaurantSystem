@@ -1,0 +1,70 @@
+﻿@model Monografico.ViewModels.RolesViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery xsrf
+
+@{
+    var modalTitle = "Editar";
+}
+
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="form-editar" method="post" asp-antiforgery="false" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label hidden asp-for="Id" class="control-label"></label>
+                <input hidden asp-for="Id" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label hidden asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <input type="hidden" id="RequestVerificationToken"
+                   name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+        </form>
+    </div>
+</div>
+
+<script>
+    $('#myModalLabel').html("@modalTitle");
+
+    var formulario = document.getElementById("form-editar");
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (formulario.checkValidity()) {
+            var model = {
+                "Id": document.getElementById("Id").value,
+                "Nombre": document.getElementById("Nombre").value
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Edit","Rol")",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value,
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                    $('#myModal').modal('hide');
+                    toastr.error("Error al editar el inventario");
+                },
+                success: function (data) {
+                    $('#rol-datatable').DataTable().ajax.reload();
+                    $('#myModal').modal('hide');
+                    toastr.success("Se a editado con exito");
+                }
+            });
+        }
+    });
+</script>
+

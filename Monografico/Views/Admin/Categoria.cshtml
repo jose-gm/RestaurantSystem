@@ -1,0 +1,123 @@
+﻿@model IEnumerable<Monografico.Models.Categoria>
+
+@{
+ViewData["Title"] = "Categorías";
+}
+
+@section link {
+
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" onclick="abrirModalCrear();">
+                    Agregar Categoria
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="categoria-datatable" style="width:100%" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IdCategoria)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Descripcion)
+                                </th>
+                                <th>
+                                    Imagen
+                                </th>
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<partial name="~/Views/Admin/PartialViews/_Modal.cshtml" />
+
+<!-- Modal de confirmacion de eliminacion-->
+<partial name="~/Views/Admin/PartialViews/_ModalDelete.cshtml" />
+
+@section script {
+    <script src="~/js/site.js"></script>
+
+    <script>
+        //Carga la tabla cuando el documento html esta cargado
+        $(document).ready(() => {
+            $('#categoria-datatable').DataTable({
+                responsive: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
+                ajax: {
+                    url: "@Url.Action("List","Categoria")",
+                    dataSrc: ''
+                },
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }
+                ],
+                columns: [
+                    { data: 'idCategoria' },
+                    { data: 'descripcion', width: '30%' },
+                    {
+                        data: 'imagen',
+                        width: '20%',
+                        render: function (data, type, row, meta) {
+                            var src;
+                            if (data == null)
+                                src = "/img/noimage.png";
+                            else
+                                src = 'data:image/jpeg;base64,' + data;
+                            return '<img class="rounded mx-auto d-block" src="' + src + '" width="80px" height="80px" />';
+                        }
+                    },
+                    {
+                        data: 'idCategoria',
+                        width: '10%',
+                        render: function (data, type, row, meta) {
+                            return '<div class="btn-group">' +
+                                        '<button onclick="abrirModalEditar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                                        '<button onclick="abrirModalBorrar(' + data + ')" class="action-btn btn btn-secondary"><i class="fas fa-trash"></i></button>' +
+                                    '</div>';
+                        }
+                    }
+                ]
+            });
+        });
+
+        function abrirModalCrear() {
+            agregarCrear("@Url.Action("Create","Categoria")");               
+        }
+
+        function abrirModalEditar(id) {
+            agregarEditar(id, "@Url.Action("Edit","Categoria")");
+        }
+
+
+        document.getElementById("botonEliminar").addEventListener('click', () => {
+            eliminar("@Url.Action("Delete","Categoria")", "categoria-datatable");
+        });
+    </script>
+}

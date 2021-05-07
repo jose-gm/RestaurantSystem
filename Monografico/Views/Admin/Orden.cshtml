@@ -1,0 +1,1007 @@
+﻿@model Monografico.ViewModels.CuentaViewModel
+
+@{
+    ViewData["Orden"] = false;
+    ViewData["Title"] = "Lista de mesas";
+    //var cuentaInicial = Model.Cuentas[0].IdCuenta;
+}
+
+@section link {
+    <environment include="Development">
+        <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+        <link href="~/lib/select2-bootstrap4-theme-master/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+}
+
+<!-- Modal de confirmacion de division de cuenta-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalMensajeCuenta.cshtml" />
+    
+    <!-- Modal de confirmacion de division de cuenta-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalDivisionCuenta.cshtml" />
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-5 col-xl-5 p-1">
+                <div class="row">
+                    <div class="col-md-12">
+                        <partial name="~/Views/Admin/PartialViews/Orden/_Cuentas.cshtml" model="@Model.Cuentas" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <!--Acciones-->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <a asp-action="SeleccionMesa" asp-controller="Admin" class="btn btn-secondary btn-block">Mesas</a>
+                            </div>
+                            <div class="col-md-6">
+                                <button id="liberar-mesa-btn" class="btn btn-secondary btn-block">
+                                    @if (ViewBag.Delivery == false)
+                                    {
+                                        <text>Liberar mesa</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Cancelar Delivery</text>
+                                    }
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="control-label">Mesero: </label>
+                                <span>@ViewBag.Usuario</span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="control-label">Mesa: </label>
+                                <span>
+                                    @if (Model.Mesa == 0)
+                                    {
+                                        <text>Delivery</text>
+                                    }
+                                    else
+                                    {
+                                        @Model.Mesa
+                                    }
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Ordenes -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive-sm">
+                                    <table id="datatable" width="100%" class="table table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    IdCuenta
+                                                </th>
+                                                <th>
+                                                    IdOrden
+                                                </th>
+                                                <th>
+                                                    IdDetalle
+                                                </th>
+                                                <th>
+                                                    IdProducto
+                                                </th>
+                                                <th>
+                                                    Producto
+                                                </th>
+                                                <th>
+                                                    ITBIS%
+                                                </th>
+                                                <th>
+                                                    Precio
+                                                </th>
+                                                <th>
+                                                    Cantidad
+                                                </th>
+                                                <th>
+                                                    Total
+                                                </th>
+                                                <th>
+                                                    TotalItbis
+                                                </th>
+                                                <th>
+                                                    Enviado
+                                                </th>
+                                                <th>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+
+                                <hr />
+                            </div>
+                        </div>
+
+                        <!--Total-->
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <div class="row justify-content-between">
+                                    <div class="col-md-3">
+                                        <label>Subtotal:</label>
+                                    </div>
+                                    <div class="col-md-4 text-right">
+                                        <span id="subtotal" class="ml-auto">0</span>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-between">
+                                    <div class="col-md-3">
+                                        <label>ITBIS:</label>
+                                    </div>
+                                    <div class="col-md-4 text-right">
+                                        <span id="itbis" class="ml-auto">0</span>
+                                    </div>
+                                </div>
+
+                                @if (ViewBag.Delivery == false)
+                                {
+                                    <div class="row justify-content-between">
+                                        <div class="col-md-3">
+                                            <label>% Ley:</label>
+                                        </div>
+                                        <div class="col-md-4 text-right">
+                                            <span id="porciento-ley" class="ml-auto">0</span>
+                                        </div>
+                                    </div>
+                                }
+
+
+                                <div class="row justify-content-between">
+                                    <div class="col-md-3">
+                                        <label>Descuento:</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-sm">
+                                            <input id="descuento-inp" type="number" class="form-control text-right" value="0" min="0" />
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-between">
+                                    <div class="col-md-3">
+                                        <label>Total:</label>
+                                    </div>
+                                    <div class="col-md-4 text-right">
+                                        <span id="total-span" class="ml-auto">0</span>
+                                    </div>
+                                </div>
+                                <hr />
+                            </div>
+                        </div>
+
+                        <!--Acciones-->
+                        <div class="row">
+                            <div class="col-md-3 col-sm-4">
+                                <button id="cancelarbtn" class="btn btn-danger"><i class="fas fa-trash-alt"></i>Cancelar</button>
+                            </div>
+                            <div class="col-md-3 col-sm-4">
+                                <button id="ordenarbtn" class="btn btn-secondary"><i class="fas fa-sticky-note"></i>Ordenar</button>
+                            </div>
+                            <div class="col-md-3 col-sm-4">
+                                <button id="cuentaPrintbtn" class="btn btn-secondary"><i class="fas fa-print"></i>Cuenta</button>
+                            </div>
+                            <div class="col-md-3 col-sm-4">
+                                <button id="pagarbtn" class="btn btn-secondary">
+                                    <i class="fas fa-money-bill-alt"></i>Pagar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-7 col-xl-7 p-1">
+                <div class="row h-100">
+                    <div class="col-md-12 col-lg-12 col-xl-12 d-flex flex-column ">
+
+                        <!-- Categorias -->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-lg-12 col-xl-12">
+                                <ul class="nav nav-pills mb-3" id="pills-tab" style="overflow-x:scroll; white-space: nowrap; flex-wrap: nowrap" role="tablist">
+                                    <li class="nav-item mr-1">
+                                        <a class="nav-link active" id="pills-todo-tab" data-toggle="pill" href="#pills-todo" role="tab" aria-controls="pills-todo" aria-selected="true">Todo</a>
+                                    </li>
+                                    @foreach (var item in Model.Categorias)
+                                    {
+                                        <li class="nav-item mr-1">
+                                            <a class="nav-link" id="pills-@item.Descripcion.Replace(" ","-")-tab" data-toggle="pill" href="#pills-@item.Descripcion.Replace(" ","-")" role="tab" aria-controls="pills-@item.Descripcion.Replace(" ","-")" aria-selected="false">@item.Descripcion</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!--Productos-->
+                        <div class="row flex-grow-1">
+                            <div class="col-md-12 col-sm-12 col-lg-12 col-xl-12">
+                                <div class="tab-content tab-content-producto bg-light rounded h-100" id="pills-tabContent" style="border: 0px;">
+                                    <div class="tab-pane fade show active" id="pills-todo" role="tabpanel" aria-labelledby="pills-todo-tab">
+                                        <div class="row">
+                                            @foreach (var categ in Model.Categorias)
+                                            {
+                                                @foreach (var producto in categ.Productos)
+                                                {
+                                                    <div class="col-sm-4 col-md-3 col-lg-2 col-xl-2 p-2">
+                                                        <a href="#" class="productolink" data-idproducto="@producto.IdProducto">
+                                                            <span class="ml-auto text-black-50" style="position:absolute; font-weight:bold">@producto.Precio</span>
+                                                            @if (!string.IsNullOrEmpty(producto.Imagen))
+                                                            {
+                                                                <img class="rounded mx-auto d-block img-item" src="data:image/jpeg;base64,@producto.Imagen" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <img class="rounded mx-auto d-block img-item" src="~/img/noimage.png" />
+                                                            }
+                                                            <span class="text-dark producto-descrip">@producto.Descripcion</span>
+                                                        </a>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                    @foreach (var categ in Model.Categorias)
+                                    {
+                                        <div class="tab-pane fade" id="pills-@categ.Descripcion.Replace(" ","-")" role="tabpanel" aria-labelledby="pills-@categ.Descripcion.Replace(" ","-")-tab">
+                                            <div class="row">
+                                                @foreach (var producto in categ.Productos)
+                                                {
+                                                    <div class="col-sm-4 col-md-3 col-lg-2 col-xl-2 p-2">
+                                                        <a href="#" class="productolink" data-idproducto="@producto.IdProducto">
+                                                            <span class="ml-auto text-black-50" style="position:absolute; font-weight:bold">@producto.Precio</span>
+                                                            @if (!string.IsNullOrEmpty(producto.Imagen))
+                                                            {
+                                                                <img class="rounded mx-auto d-block img-item" src="data:image/jpeg;base64,@producto.Imagen" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <img class="rounded mx-auto d-block img-item" src="~/img/noimage.png" />
+                                                            }
+                                                            <span class="text-dark producto-descrip">@producto.Descripcion</span>
+                                                        </a>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (User.IsInRole("Mesero"))
+{
+    <!-- Modal de autorizacion-->
+    <partial name="~/Views/Admin/PartialViews/Orden/_ModalAutorizacion.cshtml" />
+}
+
+<!-- Modal de confirmacion de impresion-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalComfirmacionImpresion.cshtml" />
+
+
+<!-- Modal de barra de progreso-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalProgress.cshtml" />
+
+<!-- Modal de confirmacion de impresion de cuenta-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalConfirmarPago.cshtml" />
+
+<!-- Modal de confirmacion de impresion de cuenta-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalImprimirCuenta.cshtml" />
+
+<!-- Modal de confirmacion de eliminacion-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalMensaje.cshtml" />
+
+
+<!-- Modal de impresion de orden-->
+<partial name="~/Views/Admin/PartialViews/Orden/_ModalTicket.cshtml" />
+
+
+@section script {
+    <environment include="Development">
+        <script src="~/lib/printThis/printThis.min.js"></script>
+        <script src="~/js/site.js"></script>
+        <script src="~/lib/select2/js/select2.min.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="~/lib/printThis/printThis.min.js"></script>
+        <script src="~/js/site.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    </environment>
+
+    <script>
+        /*window.addEventListener('beforeunload', function (e) {
+            if (ordenesSinEnviar() > 0) {
+                e.preventDefault();
+                e.returnValue = null;
+                toastr.error("Posee ordenes sin procesar");
+            }
+            else {
+
+            }
+        });*/
+    </script>
+
+    <script>
+        var table;
+        var model;
+        var hasPrinted = false;
+
+        $(document).ready(function () {
+            var isCajaAbierta = "@Model.IsCajaAbierta";
+            if (isCajaAbierta === "False")
+                $('.card').append('<div id="blocker" style="position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.2;filter: alpha(opacity = 50); background-color: gray"></div>');
+
+            //Mostrando el boton de del menu de opciones
+            //document.querySelector(".aside-button").classList.add("d-none");
+
+            //Datatable
+            var _url = "@Url.Action("ListOfOrden","Cuenta")" + "/" + document.querySelector("span.cuenta-selected").dataset.id;
+            table = $('#datatable').DataTable({
+                language: {
+                    emptyTable: "No hay productos en la lista"
+                },
+                responsive: true,
+                info: false,
+                ordering: false,
+                searching: false,
+                paging: false,
+                autoWidth: false,
+                scrollY: 260,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json",
+                },
+                ajax: {
+                    url: _url,
+                    dataSrc: ''
+                },
+                initComplete: function (settings, json) {
+                    actualizar();
+                },
+                createdRow: function (row, data, dataIndex) {
+                    if (data.enviado == true) {
+                        $(row).css('background-color', '#ff8080');
+                        $(row).css('color', '#ffffff');
+                    }
+                },
+                columnDefs: [
+                    {
+                        targets: [0,1,2,3,9,10],
+                        visible: false
+                    },
+                ],
+                columns: [
+                    { data: 'idCuenta' },
+                    { data: 'idOrden' },
+                    { data: 'idDetalle' },
+                    { data: 'idProducto' },
+                    { data: 'descripcion', width: "15%", responsivePriority: 1 },
+                    {
+                        data: 'itbis',
+                        width: "1%",
+                        responsivePriority: 6,
+
+                    },
+                    {
+                        data: 'precio',
+                        width: "3%",
+                        className: 'text-right',
+                        responsivePriority: 4,
+                        render: $.fn.dataTable.render.number(',', '.', 2, '$'),
+                        className: 'text-right'
+                    },
+                    {
+                        data: {},
+                        width: "12%",
+                        className: 'text-right',
+                        responsivePriority: 3,
+                        render: function (data, type, row, meta) {
+
+
+                            if(data.enviado == false)
+                                return '<button id="btnmenos" class="btn btn-danger btn-sm"><i class="fas fa-minus"></i></button>' +
+                                    '<input class="cantidadInput text-center" size="2" style="border:0; background-color: white;" readonly value="' + data.cantidad + '" /> ' +
+                                    '<button id="btnmas" class="btn btn-danger btn-sm"><i class="fas fa-plus"></i></button>';
+                            else
+                                return data.cantidad;
+                        }
+                    },
+                    {
+                        data: 'total',
+                        width: "5%",
+                        className: 'text-right',
+                        responsivePriority: 5,
+                        render: $.fn.dataTable.render.number(',', '.', 2, '$'),
+                        className: 'text-right'
+                    },
+                    {
+                        data: 'totalItbis',
+                        width: "1%",
+                        className: 'text-right',
+                        className: 'text-right',
+                        render: $.fn.dataTable.render.number(',', '.', 2, '$')
+                    },
+                    { data: 'enviado'},
+                    {
+                        data: {},
+                        width: "2%",
+                        responsivePriority: 2,
+                        render: function (data, type, row, meta) {
+                            if (data.enviado == false)
+                                return '<input class="btn btn-danger btn-sm" type="button" value="X" onclick="borrarOrden(' + data.idOrden + ',' + data.idDetalle + ')" />';
+                            else
+                                return '<input class="btn btn-danger btn-sm" type="button" hidden />';
+                        }
+                    }
+                ]
+            });
+
+            //Actualiza la columna de total de la tabla
+            $('#datatable tbody').on('change', '.cantidadInput', function () {
+                var data = table.row($(this).parents('tr')).data();
+                var cellIndex = table.cell($(this).parents('td')).index();
+
+                var idorden = table.cell(cellIndex.row, 1).data();
+                var iddetalle = table.cell(cellIndex.row, 2).data();
+
+                var cantidadCell = table.cell(cellIndex.row, 7).nodes().to$().find('input').val();
+                var precio = table.cell(cellIndex.row, 6).data();
+                var itbis = table.cell(cellIndex.row, 5).data();
+                table.cell(cellIndex.row, 8).data(cantidadCell * precio).draw();
+                table.cell(cellIndex.row, 9).data((cantidadCell * precio) * (itbis/100)).draw();
+                actualizar();
+
+                 $.ajax({
+                    url: "@Url.Action("UpdateOrden","Cuenta")",
+                    data: { idOrden: idorden, idDetalle: iddetalle, cantidad: cantidadCell },
+                    error: function () {
+                    },
+                    success: function () {
+
+                    }
+                });
+            });
+
+            //Actualiza la columna de total de la tabla al precionar boton mas
+            $('#datatable tbody').on('click', '#btnmas', function () {
+                console.log("funciona");
+                var data = table.row($(this).parents('tr')).data();
+                var cellIndex = table.cell($(this).parents('td')).index();
+
+                var idorden = table.cell(cellIndex.row, 1).data();
+                var iddetalle = table.cell(cellIndex.row, 2).data();
+
+                var cantidadCell = table.cell(cellIndex.row, 7).nodes().to$().find('input').val();
+                table.cell(cellIndex.row, 7).nodes().to$().find('input').val(Number(cantidadCell) + 1);
+                cantidadCell = table.cell(cellIndex.row, 7).nodes().to$().find('input').val();
+                var precio = table.cell(cellIndex.row, 6).data();
+                var itbis = table.cell(cellIndex.row, 5).data();
+                table.cell(cellIndex.row, 8).data(cantidadCell * precio).draw();
+                table.cell(cellIndex.row, 9).data((cantidadCell * precio) * (itbis/100)).draw();
+                actualizar();
+
+                 $.ajax({
+                    url: "@Url.Action("UpdateOrden","Cuenta")",
+                    data: { idOrden: idorden, idDetalle: iddetalle, cantidad: cantidadCell },
+                    error: function () {
+                    },
+                    success: function () {
+
+                    }
+                });
+            });
+
+            //Actualiza la columna de total de la tabla al precionar boton menos
+            $('#datatable tbody').on('click', '#btnmenos', function () {
+                var data = table.row($(this).parents('tr')).data();
+                var cellIndex = table.cell($(this).parents('td')).index();
+
+                var idorden = table.cell(cellIndex.row, 1).data();
+                var iddetalle = table.cell(cellIndex.row, 2).data();
+
+                var cantidadCell = table.cell(cellIndex.row, 7).nodes().to$().find('input').val();
+                table.cell(cellIndex.row, 7).nodes().to$().find('input').val((cantidadCell <= 1) ? cantidadCell : Number(cantidadCell) - 1);
+                cantidadCell = table.cell(cellIndex.row, 7).nodes().to$().find('input').val();
+                var precio = table.cell(cellIndex.row, 6).data();
+                var itbis = table.cell(cellIndex.row, 5).data();
+                table.cell(cellIndex.row, 8).data(cantidadCell * precio).draw();
+                table.cell(cellIndex.row, 9).data((cantidadCell * precio) * (itbis/100)).draw();
+                actualizar();
+
+                 $.ajax({
+                    url: "@Url.Action("UpdateOrden","Cuenta")",
+                    data: { idOrden: idorden, idDetalle: iddetalle, cantidad: cantidadCell },
+                    error: function () {
+                    },
+                    success: function () {
+
+                    }
+                });
+            });
+
+
+            $('.sidebar-toggler').click(function () {
+                table.columns.adjust().responsive.recalc();
+            });
+        });//document ready end
+    </script>
+
+    <script>
+
+        //Evento de seleccion de producto y lo agrega a la lista
+        $('.productolink').click(function (e) {
+            e.preventDefault();
+
+            var model = {
+                "IdCuenta": document.querySelector("span.cuenta-selected").dataset.id,
+                "IdProducto": $(this).data('idproducto'),
+                "Cantidad": 1
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("AddOrden","Cuenta")",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                data: JSON.stringify(model),
+                error: function () {
+                },
+                success: function () {
+                    $('#datatable').DataTable().ajax.reload(actualizar);
+                }
+            });
+        });
+
+        //Abre modal de impresion de orden y lo envia a la cocina
+        document.getElementById("ordenarbtn").addEventListener('click', () => {
+            var table = $('#datatable').DataTable();
+
+            var data = table.rows().data().filter(function (data, index) {
+                return data.enviado === false ? true : false;
+            });
+
+            var ordenes = [];
+            for (let i = 0; i < data.length; i++) {
+                ordenes.push(data[i]);
+            }
+
+            if (ordenesEnviadas() > 0 && ordenes.length === 0) {
+                ordenes = [];
+                var d = table.rows().data().filter(function (data, index) {
+                    return data.enviado === true ? true : false;
+                });
+
+                for (let i = 0; i < d.length; i++) {
+                    ordenes.push(d[i]);
+                }
+
+                console.log(ordenes[ordenes.length-1]);
+                $('.imprimible').load("@Url.Action("ReHacerTicketOrden","Cuenta")" + "?id=" + document.querySelector("span.cuenta-selected").dataset.id + "&idOrden=" + ordenes[ordenes.length-1].idOrden, () => {
+                    $('#myModal').modal({
+                        keyboard: false,
+                        backdrop: 'static'
+                    });
+                });
+            }
+            else {
+                if (ordenes.length > 0) {
+                    $('.imprimible').load("@Url.Action("TicketOrden","Cuenta")" + "/" + document.querySelector("span.cuenta-selected").dataset.id, () => {
+                        $('#myModal').modal({
+                            keyboard: false,
+                            backdrop: 'static'
+                        });
+                    });
+                }
+                else {
+                    $("#myModal").modal('hide');
+                    toastr.warning("No hay ordenes para enviar");
+                }
+            }
+        });
+
+        //Imprime las ordenes
+        document.getElementById("com-ordenar").addEventListener('click', () => {
+            $('.imprimible').printThis();
+
+            setTimeout(function () {
+                $.ajax({
+                    url: "@Url.Action("EnviarOrdenes","Cuenta")",
+                    data: { id: document.querySelector("span.cuenta-selected").dataset.id },
+                    error: function () {
+                    },
+                    success: function () {
+                        $('#datatable').DataTable().ajax.reload(actualizar);
+                        $('#myModal').modal('hide');
+                    }
+                });
+            },
+                1000);
+        });
+
+        //Abre modal para imprimir cuenta
+        document.getElementById("cuentaPrintbtn").addEventListener('click', function (e) {
+            if (ordenesEnviadas() > 0) {
+                if (ordenesSinEnviar() > 0) {
+                    console.log("ddasdas");
+                    $("#modal-cuenta").modal('hide');
+                    toastr.warning("Hay ordenes sin procesar");
+                }
+                else {
+                    $('#modal-cuenta').modal({
+                        keyboard: false,
+                        backdrop: 'static'
+                    });
+                }
+            } else {
+                $("#modal-cuenta").modal('hide');
+                toastr.warning("No hay ordenes realizadas");
+            }
+        });
+
+        document.getElementById("pagarbtn").addEventListener('click', function (e) {
+            if (hasPrinted) {
+                $.ajax({
+                    method: "POST",
+                    url: "@Url.Action("ConfirmarPago","Factura")",
+                    data: JSON.stringify(model),
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    error: function () {
+                    },
+                    success: function (response) {
+                        $('#modal-cp-body').html(response);
+                        $('#modal-cp').modal({
+                            keyboard: false
+                        });
+                    }
+                });
+            } else {
+                toastr.warning("Debe imprimir la cuenta del cliente primero");
+            }
+        });
+
+        //Crea e imprime la factura de la cuenta
+        document.getElementById("imprimir-btn").addEventListener('click', function (e) {
+            var table = $('#datatable').DataTable();
+
+            var data = table.rows().data().filter(function (data, index) {
+                return data.enviado === true ? true : false;
+            });
+
+            /*var sum = table.cells(function (index, data, node) {
+                                return table.row(index).data().enviado === true ? true : false;
+                            }, 7, { search: 'applied' })
+                                .data()
+                                .sum().toFixed(2);*/
+
+            var ordenes = [];
+            for (let i = 0; i < data.length; i++) {
+                ordenes.push(data[i]);
+            }
+            var delivery = "@ViewBag.Delivery";
+            model = {
+                "IdCuenta": document.querySelector("span.cuenta-selected").dataset.id,
+                "IdMesa": @Model.IdMesa,
+                "Mesa": "@Model.Mesa",
+                "Monto": document.getElementById("total-span").innerText,
+                "Itbis": document.getElementById("itbis").innerText,
+                "PorcientoLey": (delivery === "True") ? 0 : document.getElementById("porciento-ley").innerText,
+                "Descuento": document.getElementById("descuento-inp").value,
+                "Ordenes": ordenes,
+                "Usuario": "@ViewBag.Usuario"
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("Cuenta","Factura")",
+                data: JSON.stringify(model),
+                headers: {
+                    "Content-type": "application/json"
+                },
+                error: function (response) {
+                    $("#modal-cuenta").modal('hide');
+                    toastr.error(response.responseJSON.message);
+                },
+                success: function (response) {
+                    var $div = $('<div></div>');
+                    $div.html(response);
+                    $div.printThis();
+                    $div.remove();
+                    hasPrinted = true;
+
+                    $("#modal-cuenta").modal('hide');
+                     $('#modal-progress').modal('show');
+
+                    setTimeout(function () {
+                        //console.log(model);
+                        $('#modal-progress').modal('hide');
+                    }, 1000);
+                }
+            });
+        });
+
+        //borra una orden de la lista
+        function borrarOrden(idorden, iddetalle) {
+            $.ajax({
+                url: "@Url.Action("DeleteOrden","Cuenta")",
+                data: { idOrden: idorden, idDetalle: iddetalle },
+                error: function () {
+                },
+                success: function () {
+                    $('#datatable').DataTable().ajax.reload(actualizar);
+                }
+            });
+        }
+
+        var parent;
+        //Abre el modal para cancelar todas las ordenes actuales
+        document.getElementById("cancelarbtn").addEventListener('click', function (e) {
+            parent = 1;
+            var isMesero = "@User.IsInRole("Mesero")";
+            if (isMesero === "True") {
+                console.log("mesero");
+                if (ordenesEnviadas() > 0) {
+                    modalAutorizacion(parent);
+                }
+                else {
+                    abrirModalMensaje("Seguro que desea eliminar las ordenes?", "/img/delete.png");
+                }
+            } else {
+                console.log("admin");
+                abrirModalMensaje("Seguro que desea cancelar la orden?", "/img/delete.png");
+            }
+        });
+
+        //Abre el modal para cancelar la cuenta actual y desocupar la mesa
+        document.getElementById("liberar-mesa-btn").addEventListener('click', async function (e) {
+            parent = 2;
+            var delivery = "@ViewBag.Delivery";
+            var mensaje = (delivery === "True") ? "Seguro que desea cancelar el delivery?" : "Seguro que desea liberar la mesa?";
+            var isMesero = "@User.IsInRole("Mesero")";
+            if (isMesero === "True") {
+                //console.log("mesero");
+                var data = await hayOrdenesEnviadas();
+                console.log(data);
+                if (data) {
+                    modalAutorizacion(parent)
+                }
+                else {
+                    abrirModalMensaje(mensaje, "/img/warning.png");
+                }
+            }
+            else {
+                //console.log("admin");
+                abrirModalMensaje(mensaje, "/img/warning.png");
+            }
+        });
+
+        //Evento del boton eliminar del modal mensaje
+        document.getElementById("botonEliminar").addEventListener('click', async function (e) {
+            switch (parent) {
+                case 1:
+                    var idCuenta = document.querySelector("span.cuenta-selected").dataset.id;
+                    if (ordenesEnviadas() > 0) {
+                        cancelarOrdenes("@Url.Action("CancelarOrden","Cuenta")",
+                                    "datatable", idCuenta, actualizar);
+                    }
+                    else {
+                        eliminarOrdenes("@Url.Action("CancelarOrden","Cuenta")", "datatable", idCuenta, actualizar);
+                    }
+                    break;
+
+                case 2:
+                    var data = await hayOrdenesEnviadas();
+
+                    if (data) {
+                        cancelarTodasLasOrdenes("@Url.Action("CancelAll","Cuenta")", @Model.IdMesa);
+                    }
+                    else {
+                        $.ajax({
+                            url: "@Url.Action("CancelAll","Cuenta")",
+                            method: "Post",
+                            data: { idMesa: @Model.IdMesa },
+                            error: function () {
+                            },
+                            success: function () {
+                                window.location.replace("@Url.Action("SeleccionMesa","Admin")");
+                            }
+                        });
+                    }
+                    break;
+            }
+        });
+
+        var tienePermiso = false;
+        //Evento clic en input de descuento
+        document.getElementById("descuento-inp").addEventListener('click', function () {
+            var isMesero = "@User.IsInRole("Mesero")";
+            if (isMesero === "True" && tienePermiso === false) {
+                modalAutorizacion(0);
+            }
+        });
+
+        //Abre el modal de autorizacion
+        function modalAutorizacion(parent) {
+            $('#modal-autorizacion').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+
+            document.getElementById("confirmar-admin").addEventListener('click', function () {
+                $.ajax({
+                    method: "POST",
+                    url: "@Url.Action("VerifyPassword","Usuario")",
+                    data: { "password": document.getElementById("admin-pass").value },
+                    error: function () {
+                        $('#modal-autorizacion').modal('hide');
+                        toastr.error("La contraseña no es valida");
+                    },
+                    success: function () {
+                        $('#modal-autorizacion').modal('hide');
+                        if(parent == 1)
+                            abrirModalMensaje("Seguro que desea eliminar las ordenes?", "/img/delete.png");
+                        if(parent == 2)
+                            abrirModalMensaje("Seguro que desea liberar la mesa?", "/img/warning.png");
+
+                        tienePermiso = true;
+                    }
+                });
+            });
+        }
+    </script>
+
+    <script>
+         //Devuelve true o false si hay ordenes pendiente en una de las cuentas de la mesa actual
+        async function hayOrdenesEnviadas() {
+            var response = await fetch("@Url.Action("OrdenesEnviadas","Cuenta", new { idMesa = Model.IdMesa})");
+            var data = await response.json();
+            return data;
+        }
+
+         //Actualiza los totales y impuestos
+        function actualizar() {
+            var delivery = "@ViewBag.Delivery";
+            var table = $('#datatable').DataTable();
+            var subtotal = table.column(8).data().sum().toFixed(2);
+            var itbis = table.column(9).data().sum().toFixed(2);
+            var porcientoLey = (delivery === "True") ? 0 : (subtotal * (@ViewBag.PorcientoLey/100)).toFixed(2);
+            var total = (Number(subtotal) + Number(itbis) + Number(porcientoLey)).toFixed(2);
+            /*console.log("suntotal: " + subtotal + "  itbis: " + itbis + "  porciento: " + porcientoLey + "  total: " + total);
+            console.log(table.column(9).data());*/
+
+            document.getElementById("subtotal").innerHTML = subtotal;
+            document.getElementById("itbis").innerHTML = itbis;
+            if (delivery === "False")
+                document.getElementById("porciento-ley").innerHTML = porcientoLey;
+            document.getElementById("total-span").innerHTML = total;
+        }
+
+
+        //Elimina las ordenes
+        function eliminarOrdenes(_url, table, id,callback) {
+            var url = _url;
+            $.ajax({
+                url: url,
+                data: { id: id },
+                error: function (response) {
+                    $('#borrarModal').modal('hide');
+                    //toastr.error("Error al borrar");
+                    //alert(response);
+                },
+                success: function () {
+                    $('#' + table).DataTable().ajax.reload(callback);
+                    $('#borrarModal').modal('hide');
+                    toastr.success("Eliminado");
+                }
+            });
+        }
+
+        //Cancela y elimina las ordenes e imprime un ticket de cancelacion de orden.
+        function cancelarOrdenes(_url, table, id,callback) {
+            var url = _url;
+            $.ajax({
+                url: url,
+                data: { id: id, ordenPendiente: true },
+                error: function (response) {
+                    $('#borrarModal').modal('hide');
+                    //toastr.error("Error al borrar");
+                    //alert(response);
+                },
+                success: function (response) {
+                    var $div = $('<div></div>');
+
+                    $div.html(response);
+                    $div.printThis();
+                    $div.remove();
+                    $('#borrarModal').modal('hide');
+
+                    $('#modal-progress').modal('show');
+
+                    setTimeout(function () {
+                        $('#' + table).DataTable().ajax.reload(callback);
+                        $('#modal-progress').modal('hide');
+                        toastr.success("Eliminado");
+                    },1000);
+                }
+            });
+        }
+
+        function cancelarTodasLasOrdenes(_url, idMesa) {
+            var url = _url;
+            $.ajax({
+                url: url,
+                method: "Post",
+                data: { idMesa: idMesa },
+                error: function (response) {
+                    $('#borrarModal').modal('hide');
+                    toastr.error("Error al liberar la mesa");
+                },
+                success: function (response) {
+                    var $div = $('<div></div>');
+
+                    $div.html(response);
+                    $div.printThis();
+                    $div.remove();
+                    $('#borrarModal').modal('hide');
+
+                    $('#modal-progress').modal('show');
+
+                    setTimeout(function () {
+                        //$('#datatable').DataTable().ajax.reload(callback);
+                        $('#modal-progress').modal('hide');
+                        $('#modal-conf-impr').modal('show');
+                    },1000);
+                }
+            });
+        }
+
+        //Devuelve la cantidad de ordenes pendientes en la cuenta que esta seleccionada
+        function ordenesEnviadas() {
+            var table = $('#datatable').DataTable();
+            var lenght = table.rows().data().filter(function (data, index) {
+                return data.enviado === true ? true : false;
+            }).length;
+            return lenght;
+        }
+
+        //Devuelve la cantidad de ordenes en la cuenta que esta seleccionada
+        function ordenesSinEnviar() {
+            var table = $('#datatable').DataTable();
+            var lenght = table.rows().data().filter(function (data, index) {
+                return data.enviado === false ? true : false;
+            }).length;
+            return lenght;
+        }
+    </script>
+
+    <script>
+        $('#modal-autorizacion').on('hidden.bs.modal', function (e) {
+            document.getElementById("admin-pass").value = "";
+        })
+    </script>
+}
